@@ -1,0 +1,80 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "task_code": {
+        "type": "string",
+        "required": true,
+        "length": 32
+    },
+    "task_name": {
+        "type": "string",
+        "required": true,
+        "length": 255
+    },
+    "task_name_unsigned": {
+        "type": "string",
+        "length": 255
+    },
+    "parent_code": {
+        "type": "string",
+        "length": 255
+    },
+    "employee_uid": {
+        "type": "string"
+    },
+    "tags": {
+        "type": "json"
+    },
+    "priority": {
+        "type": "number"
+    },
+    "attach_file": {
+        "type": "string",
+        "length": 255
+    },
+    "link_issue": {
+        "type": "string",
+        "length": 255
+    },
+    "original_estimate": {
+        "type": "number"
+    },
+    "start_time": {
+        "type": ""
+    },
+    "end_time": {
+        "type": ""
+    },
+    "status": {
+        "type": "number",
+        "default": 0
+    },
+    "rating": {
+        "type": "number"
+    },
+    "comments": {
+        "type": "json"
+    },
+    "description": {
+        "type": "string",
+        "length": 255
+    },
+    "employee": {
+        "type": "dict"
+    }
+}

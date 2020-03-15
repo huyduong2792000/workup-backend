@@ -1,0 +1,30 @@
+<div class="margin-bottom-10" block-bind="toolbar"></div>
+<div block-bind="content">
+	<div class="row" style="margin-bottom: 10px">
+		<div class="col-lg-4 col-md-4 col-sm-6 col-12">
+			<div class="form-group required">
+				<label class="text-gray text-uppercase mb-1">Tên hạng</label>
+				<input type="text" data-bind="value:name" />
+			</div>
+			<div class="form-group required">
+				<label class="text-gray text-uppercase mb-1">Số điểm đạt</label>
+				<input type="text" data-bind="value:start_scores" />
+			</div>
+			<div class="form-group required">
+				<label class="text-gray text-uppercase mb-1">Nguyên tắc tích điểm</label>
+				<input type="text" data-bind="dict:ranking_rule" />
+			</div>
+			<div class="form-group">
+				<label class="text-gray text-uppercase mb-1">Mô tả</label>
+				<textarea rows="5" class="form-control" data-bind="value:description"></textarea>
+			</div>
+			<div class="form-group">
+				<label class="text-gray text-uppercase mb-1">Trạng thái</label>
+				<label class="switch">
+					<input type="checkbox" class="form-control" id="status_switch">
+					<span class="slider round"></span>
+				</label>
+			</div>
+		</div>
+	</div>
+</div>

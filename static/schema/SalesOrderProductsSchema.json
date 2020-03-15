@@ -1,0 +1,94 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "salesorder_id": {
+        "type": "string"
+    },
+    "product_id": {
+        "type": "string"
+    },
+    "product_name": {
+        "type": "string",
+        "length": 150
+    },
+    "product_no": {
+        "type": "string",
+        "length": 40
+    },
+    "quantity": {
+        "type": "number",
+        "default": 1
+    },
+    "list_price": {
+        "type": "number",
+        "default": 0
+    },
+    "discount_percent": {
+        "type": "number",
+        "default": 0
+    },
+    "discount_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "net_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "amount": {
+        "type": "number",
+        "default": 0
+    },
+    "description": {
+        "type": "string"
+    },
+    "tax_percent": {
+        "type": "number",
+        "default": 0
+    },
+    "tax_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "purchase_cost": {
+        "type": "number",
+        "default": 0
+    },
+    "margin": {
+        "type": "number",
+        "default": 0
+    }
+}

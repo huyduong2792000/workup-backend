@@ -1,0 +1,70 @@
+<div block-bind="toolbar"></div>
+<div block-bind="content">
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left">
+			<label>ID</label>
+		</div>
+		<div class="col-md-3">
+			<input type="text" data-bind="value:workstation_no" id="workstation_no" readonly/>
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left">
+			<label>Tên đơn vị</label>
+		</div>
+		<div class="col-md-3">
+			<input type="text" data-bind="value:workstation_name" />
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left">
+			<label>Số điện thoại</label>
+		</div>
+		<div class="col-md-3">
+			<input type="text" data-bind="value:phone" />
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left">
+			<label>Địa chỉ</label>
+		</div>
+		<div class="col-md-3">
+			<input type="text" data-bind="value:address_street" />
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left">
+			<label>Quận/Huyện</label>
+		</div>
+		<div class="col-md-3">
+			<input type="text" data-bind="value:address_district" />
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left">
+			<label>Tỉnh/Thành phố</label>
+		</div>
+		<div class="col-md-3">
+			<input type="text" data-bind="value:address_country" />
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left">
+			<label>Ghi chú</label>
+		</div>
+		<div class="col-md-3">
+			<textarea rows="4" cols="50" data-bind="value:description" ></textarea>
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left">
+			<label>Hoạt động</label>
+		</div>
+		<div class="col-md-3">
+			<label class="switch">
+				<input type="checkbox" class="form-control" id="active">
+				<span class="slider round"></span>
+			</label>
+		</div>
+	</div>
+</div>

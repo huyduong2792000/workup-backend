@@ -1,0 +1,97 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "service_exid": {
+        "type": "string",
+        "length": 100
+    },
+    "service_no": {
+        "type": "string",
+        "required": true,
+        "length": 100
+    },
+    "servicename": {
+        "type": "string",
+        "required": true,
+        "length": 150
+    },
+    "qty_per_unit": {
+        "type": "number"
+    },
+    "list_price": {
+        "type": "number"
+    },
+    "sales_start_date": {
+        "type": "datetime"
+    },
+    "sales_end_date": {
+        "type": "datetime"
+    },
+    "start_date": {
+        "type": "datetime"
+    },
+    "expiry_date": {
+        "type": "datetime"
+    },
+    "discontinued": {
+        "type": "boolean"
+    },
+    "usageunit": {
+        "type": "string",
+        "length": 200
+    },
+    "website": {
+        "type": "string",
+        "length": 100
+    },
+    "taxclass": {
+        "type": "string",
+        "length": 200
+    },
+    "currency_id": {
+        "type": "string"
+    },
+    "commissionrate": {
+        "type": "number"
+    },
+    "purchase_cost": {
+        "type": "number"
+    },
+    "points": {
+        "type": "number",
+        "default": 0
+    }
+}

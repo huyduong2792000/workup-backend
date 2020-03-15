@@ -1,0 +1,38 @@
+<div class="margin-bottom-10" block-bind="toolbar"></div>
+<div block-bind="content">
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-3 text-left">
+			<label>Mã nhóm</label>
+		</div>
+		<div class="col-lg-3 col-md-4 col-sm-6 col-12">
+			<input type="text" class="form-control" data-bind="value:category_no"/>
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-3 text-left">
+			<label>Loại sản phẩm</label>
+		</div>
+		<div class="col-lg-3 col-md-4 col-sm-6 col-12">
+			<input type="text" class="form-control" data-bind="value:category_name" />
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-3 text-left">
+			<label>Chọn sản phẩm</label>
+		</div>
+		<div class="col-lg-3 col-md-4 col-sm-6 col-12">
+			<input type="text" class="form-control" data-bind="list:products" />
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-3 text-left">
+			<label>Hoạt động</label>
+		</div>
+		<div class="col-lg-3 col-md-4 col-sm-6 col-12">
+			<label class="switch">
+				<input type="checkbox" class="form-control" id="is_active">
+				<span class="slider round"></span>
+			</label>
+		</div>
+	</div>
+</div>

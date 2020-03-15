@@ -1,0 +1,113 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "contact_name": {
+        "type": "string",
+        "required": true,
+        "length": 50
+    },
+    "contact_phone": {
+        "type": "string",
+        "required": true,
+        "length": 20
+    },
+    "contact_gender": {
+        "type": "string",
+        "length": 20
+    },
+    "contact_address": {
+        "type": "string",
+        "length": 255
+    },
+    "contact_id": {
+        "type": "string"
+    },
+    "channel": {
+        "type": "string",
+        "length": 50
+    },
+    "table_id": {
+        "type": "string",
+        "length": 20
+    },
+    "order_time": {
+        "type": "string",
+        "length": 50
+    },
+    "people_number": {
+        "type": "number"
+    },
+    "order_requirement": {
+        "type": "string"
+    },
+    "is_delivery": {
+        "type": "boolean",
+        "default": false
+    },
+    "ship_order": {
+        "type": "boolean",
+        "default": false
+    },
+    "ship_address": {
+        "type": "string",
+        "length": 255
+    },
+    "workstation_id": {
+        "type": "string"
+    },
+    "from_page_id": {
+        "type": "string",
+        "length": 50
+    },
+    "page_user_id": {
+        "type": "string",
+        "length": 50
+    },
+    "note": {
+        "type": "string"
+    },
+    "status": {
+        "type": "string",
+        "length": 20,
+        "default": "new"
+    },
+    "contact": {
+        "type": "dict"
+    },
+    "workstation": {
+        "type": "dict"
+    }
+}

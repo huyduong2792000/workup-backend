@@ -1,0 +1,33 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "status": {
+        "type": "string",
+        "length": 255
+    },
+    "name": {
+        "type": "string"
+    },
+    "code": {
+        "type": "string",
+        "length": 255
+    },
+    "workstations": {
+        "type": "list"
+    }
+}

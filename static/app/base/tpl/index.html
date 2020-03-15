@@ -1,0 +1,104 @@
+<style>
+	.border {
+		background-color: #fff;
+		border: 0.5px solid #ddd !important;
+		border-radius: 4px;
+		overflow: hidden;
+	}
+
+	i {
+		font-size: 12px;
+	}
+
+	.nav-tabs li a {
+		padding-left: 2px;
+		padding-right: 2px;
+	}
+
+	.grid-header th {
+		text-align: center;
+	}
+</style>
+<div class="row">
+	<div class="col-lg-12 col-md-12 mobile-padding-30">
+		<h3 class="text-gray">Dashboard</h3>
+	</div>
+</div>
+<div class="row" style="margin-top: 15px;">
+	<div class="col-lg-3 col-md-3 col-sm-6 col-12">
+		<div class="info-box bg-indigo hover-expand-effect">
+			<div class="icon">
+				<i class="fas fa-users" style="font-size: 45px; margin-top: 20px;"></i>
+			</div>
+			<div class="content" style="width: calc((100% - 80px) / 1.5);">
+				<div class="text">Thành viên</div>
+				<div class="number count-to" id="total_contact_count" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20">0</div>
+			</div>
+			<div class="content" style="width: calc((100% - 80px) / 2.5);">
+				<div class="text">Hôm nay</div>
+				<div class="number count-to" id="new_contact_count" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20">0</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 col-md-3 col-sm-6 col-12">
+		<div class="info-box bg-indigo hover-expand-effect">
+			<div class="icon">
+				<i class="fas fa-chart-line" style="font-size: 45px; margin-top: 20px;"></i>
+			</div>
+			<div class="content" style="width: calc((100% - 80px) / 2.5);">
+				<div class="text">Chiến dịch</div>
+				<div class="number count-to" id="count_running_campaign" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20">0</div>
+			</div>
+			<div class="content" style="width: calc((100% - 80px) / 1.5);">
+				<div class="text">Doanh thu</div>
+				<div class="number count-to" id="campaign_total_amount" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20">0</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 col-md-3 col-sm-6 col-12">
+		<div class="info-box bg-indigo hover-expand-effect">
+			<div class="icon">
+				<i class="fas fa-wallet" style="font-size: 45px; margin-top: 20px;"></i>
+			</div>
+			<div class="content" style="width: calc((100% - 80px) / 1.5);">
+				<div class="text">Doanh thu</div>
+				<div class="number count-to" id="total" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20">0</div>
+			</div>
+			<div class="content" style="width: calc((100% - 80px) / 2.5);">
+				<div class="text">Hôm nay</div>
+				<div class="number count-to" id="total_tenant" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20">0</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 col-md-3 col-sm-6 col-12">
+		<div class="info-box bg-indigo hover-expand-effect">
+			<div class="icon">
+				<i class="fas fa-star-half-alt" style="font-size: 45px; margin-top: 20px;"></i>
+			</div>
+			<div class="content">
+				<div class="text">Đánh giá</div>
+				<div class="number count-to" id="total" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20">0</div>
+			</div>
+			<div class="content">
+				<div class="text">Hôm nay</div>
+				<div class="number count-to" id="total_tenant" data-from="0" data-to="0" data-speed="1000" data-fresh-interval="20">0</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" style="margin-top: 30px;">
+	<div class="col-lg-4 col-md-4 col-sm-12 col-12 mobile-padding-30">
+		<div class="border" style="padding: 0px 15px 0px 15px; min-height: 360px; position: relative;">
+			<!-- <div class="text-uppercase text-gray">Hôm nay</div>
+			<div style="font-size: 20px; text-align: center; position: absolute; top: 18px; left: 0px; width: 100%; color: #28a745;">
+				0</div>
+			<i id="new_contact_increment_rate" style="position: absolute; width: 100%; bottom: 5px; left: 0px;"></i> -->
+		</div>
+	</div>
+	<div class="col-lg-8 col-md-8 col-sm-8 col-12" style="text-align: center;">
+		<div class="border" style="min-height: 300px;">
+			<p class="text-gray">TỔNG SỐ THÀNH VIÊN</p>
+			<div id="amount_report"></div>
+		</div>
+	</div>
+</div>

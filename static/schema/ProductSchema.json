@@ -1,0 +1,203 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "product_exid": {
+        "type": "string",
+        "length": 100
+    },
+    "product_name": {
+        "type": "string",
+        "required": true,
+        "length": 150
+    },
+    "product_no": {
+        "type": "string",
+        "required": true,
+        "length": 40
+    },
+    "manufacturer": {
+        "type": "string",
+        "length": 200
+    },
+    "qty_per_unit": {
+        "type": "number"
+    },
+    "list_price": {
+        "type": "number",
+        "default": 0
+    },
+    "weight": {
+        "type": "number"
+    },
+    "pack_size": {
+        "type": "number"
+    },
+    "sales_start_date": {
+        "type": "datetime"
+    },
+    "sales_end_date": {
+        "type": "datetime"
+    },
+    "start_date": {
+        "type": "datetime"
+    },
+    "expiry_date": {
+        "type": "datetime"
+    },
+    "cost_factor": {
+        "type": "number"
+    },
+    "commissionrate": {
+        "type": "number"
+    },
+    "commissionmethod": {
+        "type": "string",
+        "length": 50
+    },
+    "discontinued": {
+        "type": "boolean"
+    },
+    "usageunit": {
+        "type": "string",
+        "length": 200
+    },
+    "reorderlevel": {
+        "type": "number"
+    },
+    "website": {
+        "type": "string",
+        "length": 100
+    },
+    "taxclass": {
+        "type": "string",
+        "length": 200
+    },
+    "mfr_part_no": {
+        "type": "string",
+        "length": 200
+    },
+    "vendor_part_no": {
+        "type": "string",
+        "length": 200
+    },
+    "serialno": {
+        "type": "string",
+        "length": 200
+    },
+    "qtyinstock": {
+        "type": "number"
+    },
+    "productsheet": {
+        "type": "string",
+        "length": 200
+    },
+    "qtyindemand": {
+        "type": "number"
+    },
+    "glacct": {
+        "type": "string",
+        "length": 200
+    },
+    "allow_delivery": {
+        "type": "boolean"
+    },
+    "imagename": {
+        "type": "string"
+    },
+    "is_sub_product": {
+        "type": "boolean",
+        "default": false
+    },
+    "is_virtual_product": {
+        "type": "boolean",
+        "default": false
+    },
+    "purchase_cost": {
+        "type": "number"
+    },
+    "points": {
+        "type": "number",
+        "default": 0
+    },
+    "active": {
+        "type": "boolean",
+        "default": true
+    },
+    "variant_no": {
+        "type": "string",
+        "length": 40
+    },
+    "size": {
+        "type": "string",
+        "length": 20
+    },
+    "color": {
+        "type": "string",
+        "length": 30
+    },
+    "variants": {
+        "type": "json"
+    },
+    "extra_attributes": {
+        "type": "json"
+    },
+    "product_type": {
+        "type": "string",
+        "length": 100
+    },
+    "product_class": {
+        "type": "string",
+        "length": 100
+    },
+    "package_products": {
+        "type": "json"
+    },
+    "description": {
+        "type": "string"
+    },
+    "vendor_id": {
+        "type": "string"
+    },
+    "currency_id": {
+        "type": "string"
+    },
+    "workstation_id": {
+        "type": "string"
+    },
+    "categories": {
+        "type": "list"
+    }
+}

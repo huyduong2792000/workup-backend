@@ -1,0 +1,46 @@
+<div class="container filter_sidebar">
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <label class="text-uppercase text-gray">Mã khách hàng</label>
+                <div style="display: flex;">
+                    <div style="width: 50%;padding: 0px 3px;">
+                        <label class="mb-0">Từ</label>
+                        <input class="form-control" contactfilter-bind="value:contact_no_from">
+                    </div>
+                    <div style="width: 50%;padding: 0px 3px;">
+                        <label class="mb-0">Đến</label>
+                        <input class="form-control" contactfilter-bind="value:contact_no_to">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="text-uppercase text-gray">Tích điểm</label>
+                <div style="display: flex;">
+                    <div style="width: 50%;padding: 0px 3px;">
+                        <label class="mb-0">Từ</label>
+                        <input class="form-control" contactfilter-bind="value:score_from">
+                    </div>
+                    <div style="width: 50%;padding: 0px 3px;">
+                        <label class="mb-0">Đến</label>
+                        <input class="form-control" contactfilter-bind="value:score_to">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="text-uppercase text-gray">Tháng</label>
+                <input class="form-control" contactfilter-bind="value:month" />
+            </div>
+            <div class="form-group">
+                <label class="text-uppercase text-gray">Ngày</label>
+                <input class="form-control" contactfilter-bind="value:date" />
+            </div>
+            <div class="form-group">
+                <button id="btn_filter" class="btn btn-warning col-12">Lọc</button>
+            </div>
+            <div class="form-group">
+                <button id="btn_cancel" class="btn btn-secondary col-12">Huỷ</button>
+            </div>
+        </div>
+    </div>
+</div>

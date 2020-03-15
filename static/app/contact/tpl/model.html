@@ -1,0 +1,149 @@
+<div class="margin-bottom-10" block-bind="toolbar"></div>
+<div block-bind="content">
+	<div class="col-lg-8 col-md-8 col-sm-12 col-12 float-left p-0">
+		<div class="row justify-content-md-center" style="margin-bottom: 10px; margin-top: 40px;">
+			<div class="col-lg-4 col-md-6 col-sm-12 col-12">
+				<div class="col-md-6 col-md-6 col-sm-6 col-6 float-left" style="border-bottom: 2px solid #17a2b8; border-radius: 0px 0px 0px 8px;">
+					<div class="col-md-6 col-sm-6 col-6 float-left padding-lr-0">
+						<label><span class="glyphicon glyphicon-star"></span> Điểm:</label>
+					</div>
+					<div class="col-md-6 col-sm-6 col-6 float-left padding-lr-0" id="score" style="text-align: right;"></div>
+				</div>
+				<div class="col-md-6 col-md-6 col-sm-6 col-6 float-left" style="border-bottom: 2px solid #17a2b8; border-radius: 0px 0px 8px 0px;">
+					<div class="col-md-6 col-sm-6 col-6 float-left padding-lr-0">
+						<label><span class="glyphicon glyphicon-time"></span> Lượt:</label>
+					</div>
+					<div class="col-md-6 col-sm-6 col-6 float-left padding-lr-0" id="used_times" style="text-align: right;"></div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left hide-on-mobile">
+				<div>Mã thành viên</div>
+				<div class="input-group">
+					<input class="form-control" type="text" id="contact_no" data-bind="value:contact_no" readonly />
+					<div class="input-group-append" title="Click to copy">
+						<span class="input-group-text" id="copy_contact_no"><span class="fa fa-copy"></span></span>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
+				<div>Số điện thoại*</div>
+				<div class="input-group">
+					<input class="form-control" type="text" id="contact_phone" data-bind="value:phone" />
+					<div class="input-group-append" title="Click to copy">
+						<span class="input-group-text" id="copy_phone"><span class="fa fa-copy"></span></span>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
+				<div>Tên khách hàng*</div>
+				<div>
+					<input class="form-control" type="text" data-bind="value:contact_name" />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
+				<div>Ngày sinh</div>
+				
+				<div class="input-group date" id="birthday" data-target-input="nearest">
+					<input type="text" class="form-control datetimepicker-input" data-target="#birthday" />
+					<div class="input-group-append" data-target="#birthday" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+					</div>
+				</div>
+				
+				<!-- <div>
+					<input class="form-control" type="text" data-bind="value:birthday" />
+				</div> -->
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
+				<div>Email</div>
+				<div>
+					<input class="form-control" type="text" data-bind="value:email" />
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
+				<div>Giới tính</div>
+				<div>
+					<input class="form-control" type="text" data-bind="value:gender" />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
+				<div>Địa chỉ</div>
+				<div>
+					<input class="form-control" type="text" data-bind="value:address_street" />
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
+				<div>Tỉnh thành</div>
+				<div>
+					<input class="form-control" type="text" data-bind="value:address_city" />
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
+				<div>Quốc gia</div>
+				<div>
+					<input class="form-control" type="text" data-bind="value:address_country" />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="text-uppercase" style="line-height: 26px; float: left;">Gắn thẻ / Tags</div>
+				<div id="tags_space" style="width: 100%; min-height: 80px;
+											border: 1px solid #ccc;
+											border-radius: 6px;
+											margin-top: 26px;"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="text-uppercase" style="line-height: 26px; float: left;">Thuộc tính mở rộng </div>
+				<button class="btn btn-ssm btn-info ml-2" id="btn_add_attribute"><span class="fa fa-plus"></span> Thêm</button>
+				<div id="add_attribute_space" style="position: relative;"></div>
+			</div>
+		</div>
+		<div class="row" id="extra_attributes">
+			<!-- RENDER EXTRA ATTRIBUTES HERE -->
+		</div>
+	</div>
+	<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left p-0" style="height: 860px; overflow: hidden; overflow-y: scroll;">
+		<div class="row">
+			<div class="col-lg-12 text-center text-uppercase font-bold" style="font-weight: 550; text-decoration: underline;">
+				Ghi chú, lịch sử chăm sóc khách hàng
+			</div>
+		</div>
+		<div id="note_space"></div>
+	</div>
+	<!-- <div class="row">
+		<div class="col-md-12 padding-lr-0">
+			<div class="col-md-6 col-12 float-left">
+				<h5>Thông tin mạng xã hội</h5>
+			</div>
+			<div class="col-md-6 col-12 float-left">
+				<div id="socialcontact_additem"></div>
+			</div>
+		</div>
+	</div> -->
+	<!-- <div class="row">
+		<div class="col-md-12 padding-lr-0">
+			<div class="col-md-12">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<td>Mã Trang</td>
+							<td>Tên mạng xã hội</td>
+							<td>Mã khách hàng</td>
+						</tr>
+					</thead>
+					<tbody id="socialcontact-list" data-bind="list:social_contact">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div> -->
+</div>

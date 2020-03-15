@@ -1,0 +1,67 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "user_phone": {
+        "type": "string",
+        "length": 15
+    },
+    "user_name": {
+        "type": "string",
+        "length": 100
+    },
+    "user_email": {
+        "type": "string",
+        "length": 100
+    },
+    "action": {
+        "type": "string",
+        "length": 32
+    },
+    "object": {
+        "type": "string",
+        "length": 32
+    },
+    "object_id": {
+        "type": "string",
+        "length": 128
+    },
+    "changed_data": {
+        "type": "json"
+    },
+    "device_info": {
+        "type": "json"
+    }
+}

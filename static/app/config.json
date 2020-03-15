@@ -1,0 +1,9 @@
+{
+	"account_portal": "https://upstart.vn/accounts",
+	"account_portal_version": "v1",
+	"logo_img": "https://upstart.vn/static/images/UpCRM.png",
+	"ipos_sync_products_api": "https://api.foodbook.vn/ipos/ws/xpartner/v2/items",
+	"rankingStars": 5,
+	"rankingRate": 1,
+	"highestScore": 0
+}

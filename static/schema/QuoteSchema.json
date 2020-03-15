@@ -1,0 +1,117 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "subject": {
+        "type": "string",
+        "length": 100
+    },
+    "potential_id": {
+        "type": "string"
+    },
+    "quotestage": {
+        "type": "string",
+        "length": 200
+    },
+    "validtill": {
+        "type": "datetime"
+    },
+    "contact_id": {
+        "type": "string"
+    },
+    "quote_no": {
+        "type": "string",
+        "length": 100
+    },
+    "subtotal": {
+        "type": "number"
+    },
+    "carrier": {
+        "type": "string",
+        "length": 200
+    },
+    "shipping": {
+        "type": "string",
+        "length": 100
+    },
+    "inventorymanager": {
+        "type": "number"
+    },
+    "type": {
+        "type": "string",
+        "length": 100
+    },
+    "adjustment": {
+        "type": "number"
+    },
+    "total": {
+        "type": "number"
+    },
+    "taxtype": {
+        "type": "string",
+        "length": 25
+    },
+    "discount_percent": {
+        "type": "number"
+    },
+    "discount_amount": {
+        "type": "number"
+    },
+    "s_h_amount": {
+        "type": "number"
+    },
+    "account_id": {
+        "type": "string"
+    },
+    "terms_conditions": {
+        "type": "string"
+    },
+    "currency_id": {
+        "type": "string"
+    },
+    "conversion_rate": {
+        "type": "number"
+    },
+    "compound_taxes_info": {
+        "type": "string"
+    },
+    "pre_tax_total": {
+        "type": "number"
+    },
+    "tags": {
+        "type": "string",
+        "length": 1
+    }
+}

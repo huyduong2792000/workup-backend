@@ -1,0 +1,36 @@
+<div block-bind="toolbar"></div>
+<div block-bind="content">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="col-md-3">
+				<label>Số hoá đơn</label>
+				<input type="text" data-bind="value:order_no"/>
+			</div>
+			<div class="col-md-3">
+				<label>Tổng tiền</label>
+				<input type="text" class="form-control" id="order_amount" placeholder="VNĐ" style="text-align: right" readonly/>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="col-md-3">
+				<label>SĐT</label>
+				<input type="text" data-bind="value:contact_phone"/>
+			</div>
+			<div class="col-md-3">
+				<label>Tên Khách hàng</label>
+				<input type="text" data-bind="value:contact_name"/>
+			</div>
+			<div class="col-md-3">
+				<label>Ngày sinh</label>
+				<input type="text" data-bind="value:contact_birthday"/>
+			</div>
+			<div class="col-md-3">
+				<label>Email</label>
+				<input type="text" data-bind="value:contact_email"/>
+			</div>
+		</div>
+	</div>
+	
+</div>

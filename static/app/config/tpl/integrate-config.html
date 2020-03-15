@@ -1,0 +1,150 @@
+<div class="row form-group">
+    <label class="col-lg-2 col-md-2 col-sm-2 col-12 float-left">Zalo</label>
+    <div class="col-lg-10 col-md-10 col-sm-10 col-12 float-left child" name="zalo">
+        <div id="zalo_login_space" class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left"></div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <button class="btn btn-sm" id="btn_login_zalo" style="color: #fff;
+                                                                    background-color: #008fe5;
+                                                                    border-color: #008fe5;
+                                                                    -webkit-box-shadow: 0 1px 1px 0 rgba(197, 197, 197, 0.5);
+                                                                    box-shadow: 0 1px 1px 0 rgba(197, 197, 197, 0.5);
+                                                                    position: relative; padding-right: 34px;">
+                    Kết nối Zalo OA
+                    <img src="{{static_url}}/images/icons/zalo-icon.png" style="height: 100%;
+                                                                                position: absolute;
+                                                                                right: 0px;
+                                                                                top: 0px;
+                                                                                background: #fff;
+                                                                                border-radius: 5px;"/>
+                </button>
+            </div>
+        </div>
+        <div id="zalo_oa_space" class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0 hide">
+            <div class="col-md-4 col-sm-4 col-12 float-left">Offical Account ID</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <input type="text" class="form-control" name="oa_id" />
+            </div>
+        </div>
+        <div id="zalo_expire_time_space" class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0 hide">
+            <div class="col-md-4 col-sm-4 col-12 float-left">Thời gian hết hạn</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <input type="text" class="form-control" name="expired_at" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row form-group">
+    <label class="col-lg-2 col-md-2 col-sm-2 col-12 float-left">Upstart POS</label>
+    <div class="col-lg-10 col-md-10 col-sm-10 col-12 float-left child" name="uppos">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">Workstation API</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left form-group" style="border: none;margin-bottom: 0;">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="workstation_api" aria-label="" readonly>
+                    <div class="input-group-append" id="workstation_sync_btn">
+                        <div class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Click to synchronize data.">
+                            <span class="fa fa-cloud-download-alt"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">Category API</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left form-group" style="border: none;margin-bottom: 0;">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="category_api" aria-label="" readonly>
+                    <div class="input-group-append" id="category_sync_btn">
+                        <div class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Click to synchronize data.">
+                            <span class="fa fa-cloud-download-alt"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">Product API</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left form-group" style="border: none;margin-bottom: 0;">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="product_api" aria-label="" readonly>
+                    <div class="input-group-append" id="product_sync_btn">
+                        <div class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Click to synchronize data.">
+                            <span class="fa fa-cloud-download-alt"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row form-group">
+    <label class="col-lg-2 col-md-2 col-sm-2 col-12 float-left">IPOS</label>
+    <div class="col-lg-10 col-md-10 col-sm-10 col-12 float-left child" name="ipos">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">Hệ thống nhà hàng</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <input type="text" class="form-control" name="workstation_parent" />
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">Api Access Token</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <input type="text" class="form-control" name="access_token" />
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">Điểm bán</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <div class="float-left" style="width: calc(100% - 100px);">
+                    <input type="text" class="form-control" id="workstations" name="workstations"/>
+                </div>
+                <button class="btn btn-default float-left" id="btn_sync_ipos" style="width: 100px;"><span class="fa fa-sync-alt"></span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row form-group d-none">
+	<div class="col-lg-2 col-md-2 col-sm-2 col-12 float-left">
+	    <label class="flex">KiotViet</label>
+		<a href='javascript:;' onclick='javascript:gonrinApp().getRouter().navigate("intergrate/kiotviet/check")'><button class="btn btn-sm btn-secondary" style="width:100%;border:1px solid #b9b9b9;">Quét mã <span class="fa fa-external-link-square-alt"></span></button></a>
+	</div>
+
+    <div class="col-lg-10 col-md-10 col-sm-10 col-12 float-left child" name="kiotviet">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">ID cửa hàng</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <input type="text" class="form-control" name="retailer_id" />
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">Mã Authorization</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <input type="text" class="form-control" name="authorization_str" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row form-group">
+    <label class="col-lg-2 col-md-2 col-sm-2 col-12 float-left">Stringee</label>
+    <div class="col-lg-10 col-md-10 col-sm-10 col-12 float-left child" name="stringee">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">SMS Brand</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <input type="text" class="form-control" name="sms_brand" />
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">SMS Api</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <input type="text" class="form-control" name="sms_api" />
+            </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-4 col-sm-4 col-12 float-left">SMS Token</div>
+            <div class="col-md-8 col-sm-8 col-12 float-left">
+                <input type="text" class="form-control" name="sms_token" />
+            </div>
+        </div>
+    </div>
+</div>

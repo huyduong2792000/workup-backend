@@ -1,0 +1,67 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "tenant_no": {
+        "type": "string",
+        "required": true,
+        "length": 50
+    },
+    "tenant_name": {
+        "type": "string",
+        "length": 255
+    },
+    "tenant_image": {
+        "type": "string"
+    },
+    "address": {
+        "type": "string"
+    },
+    "description": {
+        "type": "string",
+        "length": 100
+    },
+    "business_line": {
+        "type": "string",
+        "length": 10
+    },
+    "status": {
+        "type": "string",
+        "length": 50
+    },
+    "extension_data": {
+        "type": "json"
+    }
+}

@@ -1,0 +1,227 @@
+from gatco.response import json, text
+from application.server import app
+from application.database import db
+from application.extensions import auth
+import random
+import string
+from application.extensions import apimanager
+from application.models.model import User, Role,Employee
+from application.controllers import auth_func
+from sqlalchemy import and_, or_
+
+    
+@app.route("/api/v1/makesalt/<password>", methods=["POST", "GET"])
+async def makesalt(request,password):
+    letters = string.ascii_lowercase
+    user_salt = ''.join(random.choice(letters) for i in range(64))
+    user_password=auth.encrypt_password(password, user_salt)
+    return json({'user_password':user_password,'user_salt':user_salt})
+@app.route("/user_test")
+
+async def user_test(request):
+    # role_admin = Role.query.filter(Role.role_name == "admin").first()
+
+    # user = db.session.query(User).filter(User.user_name == 'admin').first()
+    # user.roles = [role_admin]
+    # db.session.add(user)
+    # db.session.commit()
+    return text("user_test api")
+
+@app.route("/user/login", methods=["POST", "GET"])
+async def user_login(request):
+    param = request.json
+    user_name = param.get("user_name")
+    password = param.get("password")
+    print(user_name, password)
+    if (user_name is not None) and (password is not None):
+        user = db.session.query(User).filter(User.user_name == user_name).first()
+        if (user is not None) and auth.verify_password(password, user.password, user.salt):
+            try:
+                user.employee.status = 'online'
+                db.session.commit()
+            except:
+                pass
+            auth.login_user(request, user)
+            print('user',user.roles)
+            return json({"id": user.id, "user_name": user.user_name, "full_name": user.full_name,"employee_id":user.employee_id,"role":user.roles[0].role_name})
+        return json({"error_code":"LOGIN_FAILED","error_message":"user does not exist or incorrect password"}, status=520)
+    else:
+        return json({"error_code": "PARAM_ERROR", "error_message": "param error"}, status=520)
+    return text("user_login api")
+
+@app.route("/user/logout", methods=["GET"])
+async def user_logout(request):
+    current_user = auth.current_user(request)
+    user = db.session.query(User).filter(User.id == int(current_user)).first()
+    try:
+        user.employee.status='offline'
+        db.session.commit()
+    except:
+        pass
+    print('current user',current_user)
+    auth.logout_user(request)
+    return json({})
+
+    
+def response_userinfo(user, **kw):
+    if user is not None:
+        user_info = to_dict(user)
+        exclude_attr = ["password", "salt", "created_at", "created_by", "updated_at", "updated_by",\
+                         "deleted_by", "deleted_at", "deleted","facebook_access_token","phone_country_prefix",\
+                         "phone_national_number","last_login_at","current_login_at",\
+                         "last_login_ip","current_login_ip","login_count"]
+        
+        for attr in exclude_attr:
+            if attr in user_info:
+                del(user_info[attr])
+                
+        return user_info
+    return None
+
+@app.route('/current-user', methods=["GET", "OPTIONS"])
+def get_current_user(request):
+    #user = auth.current_user(request)
+    return json({})
+    token = request.headers.get("Cookie", None)
+    if token is not None:
+#         print(token)
+        uid = redisdb.get("sessions:" + token)
+        scope = request.args.get("scope", None)
+        if uid is not None:
+            uid = uid.decode('utf8')
+            user = db.session.query(User).filter(User.id == uid).first()
+            if user is not None:
+                if user.active == 1:
+                    userobj = response_userinfo(user, scope)     
+                    return json(userobj)
+                else:  
+                    return json({"error_code": "LOGIN_FAILED", "error_message": "Tài khoản của bạn đã bị khoá. Vui lòng liên hệ quản trị hệ thống để được giải đáp"}, status=520)
+        else:
+            return json({
+                "error_code": "SESSION_EXPIRED",
+                "error_message":""
+            }, status = 520)
+    else:
+        return json({
+            "error_code": "SESSION_EXPIRED",
+            "error_message":""
+            }, status = 520)
+
+def valid_employe(request=None, data=None, **kw):
+    id_identifier =  data.get('id_identifier')
+    email = data.get('email')
+    password = data.get('password')
+    confirm_password = data.get('confirm_password')
+    position =  data.get('position')
+    if data.get('id') is None:
+        if email != None and id_identifier != None and password != None and password==confirm_password and position != None:
+            check_employee = Employee.query.filter(or_(Employee.email == email, Employee.id_identifier == id_identifier)).first()
+            if check_employee is None:
+                request.args['password'] = data['password']
+                request.args['confirm_password'] = data['confirm_password']
+                del data['confirm_password']
+                del data['password']
+                
+            else:
+                return json({"error_code": "INSERT_ERROR", "error_message": "Nhân viên đã tồn tại, vui lòng kiểm tra lại!"}, status=520)   
+        else:
+            return json({"error_code": "PARAM_INVALID", "error_message": "Dữ liệu không đúng định dạng!"}, status=520)
+    else:
+        del data['email']
+        if position is not None:
+            pass
+        else:
+            return json({"error_code": "PARAM_INVALID", "error_message": "Dữ liệu không đúng định dạng!"}, status=520)
+        
+def user_register(request=None, Model=None, result=None, **kw):
+    param = request.json
+    password = request.args['password']
+    confirm_password= request.args['confirm_password']
+    
+    role_admin = Role.query.filter(Role.role_name == "admin").first()
+    role_user = Role.query.filter(Role.role_name == "user").first()
+    role_employee = Role.query.filter(Role.role_name == "employee").first()
+    role_leader = Role.query.filter(Role.role_name == "leader").first()
+    # print("model==========",result)
+
+    letters = string.ascii_lowercase
+    user_salt = ''.join(random.choice(letters) for i in range(64))
+    user_password=auth.encrypt_password(password, user_salt)
+    user = User(email=param['email'], password=user_password, salt=user_salt, user_name= param['email'],  phone_number= param['phone_number'],  full_name=param['full_name'])
+    if (param['position']=='employee' or param['position'] is None):
+        user.roles = [role_employee]
+    if (param['position']=='leader'):
+        user.roles = [role_leader]
+        
+    employee = db.session.query(Employee).filter(Employee.id == result['id']).first()
+    employee.user = [user]
+#     print('role',role_employee)
+    db.session.add(employee)
+
+    db.session.commit()
+   
+def update_user(request=None, Model=None, result=None, **kw):
+    param = request.json
+   
+    role_admin = Role.query.filter(Role.role_name == "admin").first()
+    role_user = Role.query.filter(Role.role_name == "user").first()
+    role_employee = Role.query.filter(Role.role_name == "employee").first()
+    role_leader = Role.query.filter(Role.role_name == "leader").first()
+    user = db.session.query(User).filter(User.email == result['email']).first()
+    user.phone_number = param['phone_number']
+    user.full_name = param['full_name']
+    
+    if (param['position']=='employee' or param['position'] is None):
+        user.roles = [role_employee]
+    if (param['position']=='leader'):
+        user.roles = [role_leader]
+    
+    employee = db.session.query(Employee).filter(Employee.id == result['id']).first()
+    employee.user = [user]
+#     print('role',role_employee)
+    db.session.add(employee)
+
+    db.session.commit()
+    
+apimanager.create_api(collection_name='user', model=User,
+    methods=['GET', 'POST', 'DELETE', 'PUT'],
+    url_prefix='/api/v1',
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+    postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
+    )
+
+ 
+apimanager.create_api(collection_name='role', model=Role,
+    methods=['GET', 'POST', 'DELETE', 'PUT'],
+    url_prefix='/api/v1',
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+    postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
+    )
+
+
+apimanager.create_api(collection_name='employee', model=Employee,
+    methods=['GET', 'POST', 'DELETE', 'PUT'],
+    url_prefix='/api/v1',
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func, valid_employe], PUT_SINGLE=[auth_func, valid_employe], DELETE_SINGLE=[auth_func]),
+    postprocess=dict(POST=[user_register], PUT_SINGLE=[update_user], DELETE_SINGLE=[], GET_MANY =[])
+    )
+
+
+
+@app.route('/filter_employee', methods=["GET", "OPTIONS"])
+def filter_employee(request):
+    search_text = request.args.get("q", None)
+    if search_text is not None:
+        employees = db.session.query(Employee).filter(or_(Employee.full_name.like('%'+search_text+'%'), Employee.email.like('%'+search_text+'%'))).all()
+        data_resp = []
+        for employee in employees:
+            employee = employee.__dict__
+            obj = {"id": str(employee['id']),
+                   "full_name": employee['full_name'],
+                   "email": employee['email']
+                   }
+            data_resp.append(obj)
+#         print(data_resp)
+        return json(data_resp)
+    
+    else: return json([])

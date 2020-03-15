@@ -1,0 +1,30 @@
+<div class="margin-bottom-10" block-bind="toolbar"></div>
+<div block-bind="content">
+    <div class="row" style="margin-bottom: 10px">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+            <div class="form-group required">
+                <label class="text-gray text-uppercase mb-1">Tên nguyên tắc</label>
+                <input type="text" data-bind="value:rule_name" />
+            </div>
+            <div class="form-group required">
+                <label class="text-gray text-uppercase mb-1">Loại</label>
+                <input type="text" data-bind="value:rule_type" />
+            </div>
+            <div class="form-group">
+                <label class="text-gray text-uppercase mb-1">Trạng thái</label>
+                <label class="switch">
+                    <input type="checkbox" class="form-control" id="status_switch">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 col-12">
+            <div class="form-group">
+                <button id="btn_add_rule" class="btn btn-success btn-sm"><span class="fa fa-plus"></span> Thêm nguyên tắc</button>
+            </div>
+            <div class="" style="display: block;" id="rules_space">
+                <!-- RENDER RULES HERE -->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "contact_fid": {
+        "type": "string",
+        "length": 50
+    },
+    "contact_name": {
+        "type": "string",
+        "required": true,
+        "length": 100
+    },
+    "checkin_date": {
+        "type": "datetime"
+    },
+    "checkin_content": {
+        "type": "string"
+    },
+    "checkin_images": {
+        "type": "string"
+    },
+    "url": {
+        "type": "string",
+        "length": 255
+    }
+}

@@ -1,0 +1,46 @@
+<div class="margin-bottom-10" block-bind="toolbar"></div>
+<div block-bind="content">
+    <div class="row">
+        <div class="col-lg-5 col-md-5 col-sm-12 col-12">
+            <div class="row text-center" style="margin-bottom: 10px">
+                <div class="col-md-5 text-left">
+                    <label>Mã nhóm</label>
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-7 col-7">
+                    <input type="text" class="form-control" data-bind="value:category_no" />
+                </div>
+            </div>
+            <div class="row text-center required" style="margin-bottom: 10px">
+                <div class="col-md-5 text-left">
+                    <label>Tên nhóm khách hàng</label>
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-7 col-7">
+                    <input type="text" class="form-control" data-bind="value:category_name" />
+                </div>
+            </div>
+            <div class="row text-center" style="margin-bottom: 10px">
+                <div class="col-md-5 text-left">
+                    <label>Hoạt động</label>
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-7 col-7">
+                    <label class="switch">
+                <input type="checkbox" class="form-control" id="deleted">
+                <span class="slider round"></span>
+            </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-7 col-md-7 col-sm-12 col-12">
+            <div class="col-md-3 text-left">
+                <button id="add_contacts" class="btn btn-primary btn-sm font-weight-bold"><i class="fas fa-plus"></i>Thêm KH</button>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                <!-- <div id="add_contacts" style="position: absolute; left: 0px; padding: 4px">
+                    <button class="btn btn-sm btn-primary"><i class="fas fa-plus"></i></button>
+                </div> -->
+                <div class="" id="grid">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

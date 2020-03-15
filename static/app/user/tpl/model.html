@@ -1,0 +1,39 @@
+<div class="margin-bottom-10" block-bind="toolbar"></div>
+<div block-bind="content">
+	<div class="row" style="margin-top: 10px;">
+		<div class="col-md-2 col-sm-2 col-xs-12">Tên hiển thị</div>
+		<div class="col-md-6 col-sm-6 col-xs-12">
+			<input type="text" class="form-control" data-bind="value:display_name" maxlength="32"/>
+		</div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col-md-2 col-sm-2 col-xs-12">Phone</div>
+		<div class="col-md-6 col-sm-6 col-xs-12">
+			<input type="text" class="form-control" data-bind="value:phone" disabled />
+		</div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col-md-2 col-sm-2 col-xs-12">Email</div>
+		<div class="col-md-6 col-sm-6 col-xs-12">
+			<input type="text" class="form-control" data-bind="value:email" disabled />
+		</div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col-md-2 col-sm-2 col-xs-12">Vai trò</div>
+		<div class="col-md-6 col-sm-6 col-xs-12">
+			<input type="text" class="form-control" data-bind="list:roles" />
+		</div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col-md-2 col-sm-2 col-xs-12">Cửa hàng</div>
+		<div class="col-md-6 col-sm-6 col-xs-12">
+			<input type="text" class="form-control" data-bind="list:workstations" />
+		</div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col-md-2 col-sm-2 col-xs-12">Trạng thái</div>
+		<div class="col-md-6 col-sm-6 col-xs-12">
+			<input type="text" class="form-control" data-bind="value:deleted" />
+		</div>
+	</div>
+</div>

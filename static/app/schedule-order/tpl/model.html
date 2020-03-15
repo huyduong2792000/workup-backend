@@ -1,0 +1,63 @@
+<div block-bind="toolbar"></div>
+<div block-bind="content">
+	<div class="row col-md-12">
+		<h4>
+			<i>Thông tin khách hàng</i>
+		</h4>
+	</div>
+	<div class="row text-left" style="margin-bottom: 10px;">
+		<div class="col-md-4">
+			<div>Tên khách hàng*</div>
+			<input type="text" class="form-control" data-bind="value:contact_name" />
+		</div>
+		<div class="col-md-4">
+			<div>Điện thoại*</div>
+			<input type="text" class="form-control" data-bind="value:contact_phone" />
+		</div>
+		<div class="col-md-4">
+			<div>Giới tính</div>
+			<input type="text" class="form-control" data-bind="value:contact_gender" />
+		</div>
+		<div class="col-md-4">
+			<div>Kênh</div>
+			<input type="text" class="form-control" data-bind="value:channel" />
+		</div>
+		<div class="col-md-4">
+			<div>Trạng thái</div>
+			<input type="text" class="form-control" data-bind="value:status" />
+		</div>
+		<div class="col-md-4">
+			<div>Điạ chỉ</div>
+			<input type="text" class="form-control" data-bind="value:contact_address" />
+		</div>
+	</div>
+	<div class="row col-md-12">
+		<h4>
+			<i>Thông tin đặt bàn</i>
+		</h4>
+	</div>
+	<div class="row text-left" style="margin-bottom: 10px;">
+		<div class="col-md-4">
+			<div>Thời gian*</div>
+			<input type="text" class="form-control" data-bind="value:order_time"/>
+		</div>
+		<div class="col-md-4">
+			<div>Số người*</div>
+			<input type="text" class="form-control" data-bind="value:people_number" />
+		</div>
+		<div class="col-md-4">
+			<div>Tại quán</div>
+			<input data-bind="dict:workstation" class="form-control"/>
+		</div>
+	</div>
+	<div class="row" style="margin-bottom: 10px;">
+		<div class="col-md-6">
+			<div>Yêu cầu</div>
+			<textarea rows="5" class="form-control" data-bind="value:order_requirement"></textarea>
+		</div>
+		<div class="col-md-6">
+			<div>Note</div>
+			<textarea type="text" class="form-control" rows="5" data-bind="value:note"></textarea>
+		</div>
+	</div>
+</div>

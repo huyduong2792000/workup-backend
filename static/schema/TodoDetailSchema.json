@@ -1,0 +1,70 @@
+{
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "start_time_working": {
+        "type": ""
+    },
+    "end_time_working": {
+        "type": ""
+    },
+    "todo_schedule_id": {
+        "type": "string"
+    },
+    "day_working": {
+        "type": "string"
+    },
+    "time_working": {
+        "type": "string"
+    },
+    "employee_id": {
+        "type": "string",
+        "required": true
+    },
+    "employee_name": {
+        "type": "string"
+    },
+    "employee_assign_name": {
+        "type": "string"
+    },
+    "employee_assign_id": {
+        "type": "string"
+    },
+    "employee_assign": {
+        "type": "json"
+    },
+    "todo_id": {
+        "type": "string"
+    },
+    "todo_name": {
+        "type": "string"
+    },
+    "status_complete_manager": {
+        "type": "number",
+        "default": 0
+    },
+    "status_complete_employee": {
+        "type": "number",
+        "default": 0
+    },
+    "employee": {
+        "type": "dict"
+    },
+    "todo": {
+        "type": "dict"
+    }
+}

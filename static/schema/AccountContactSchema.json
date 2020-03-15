@@ -1,0 +1,67 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "account_id": {
+        "type": "string",
+        "primary": true
+    },
+    "contact_id": {
+        "type": "string",
+        "primary": true
+    },
+    "direct": {
+        "type": "boolean"
+    },
+    "relation_roles": {
+        "type": "string",
+        "length": 100
+    },
+    "relation_start_at": {
+        "type": ""
+    },
+    "relation_end_at": {
+        "type": ""
+    },
+    "relation_status": {
+        "type": "boolean"
+    },
+    "account": {
+        "type": "dict"
+    },
+    "contact": {
+        "type": "dict"
+    }
+}

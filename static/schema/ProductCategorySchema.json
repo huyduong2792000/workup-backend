@@ -1,0 +1,67 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "category_exid": {
+        "type": "string",
+        "length": 100
+    },
+    "category_no": {
+        "type": "string",
+        "length": 100
+    },
+    "category_name": {
+        "type": "string",
+        "required": true,
+        "length": 150
+    },
+    "is_show": {
+        "type": "boolean",
+        "default": true
+    },
+    "sort_number": {
+        "type": "number"
+    },
+    "status": {
+        "type": "string",
+        "length": 20
+    },
+    "workstation_id": {
+        "type": "string"
+    },
+    "products": {
+        "type": "list"
+    }
+}

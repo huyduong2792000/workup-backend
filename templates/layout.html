@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Upstart - Tasks</title>
+	<!--<link rel="shortcut icon" href="./favicon.ico">-->
+	<script>
+		var host = "{{host}}";
+		var static_url = "{{static_url}}";
+		var tenant_id = "{{tenant_id}}";
+		var release_version = "{{release_version}}";
+		var zalo_app_id = "{{zalo_app_id}}";
+	</script>
+
+	<link rel="stylesheet" href="{{static_url}}/vendors/fontawesome-5.4.2-web/css/all.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/bootstrap4/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="{{static_url}}/vendors/bootstrap4/css/bootstrap-grid.min.css" />
+	<link rel="stylesheet" href="{{static_url}}/css/bootstrap-responsive.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/bootstrap4/bootstrap-rating.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/bootstrap4/datetimepicker/css/datetimepicker.min.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/color-picker/css/bootstrap-colorpicker.min.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/c3-0.7.8/c3.min.css">
+
+	<link rel="stylesheet" href="{{static_url}}/vendors/jquery/jquery-confirm-3.3.0.min.css" />
+	<link rel="stylesheet" href="{{static_url}}/css/jquery.mCustomScrollbar.min.css">
+	<link rel="stylesheet" href="{{static_url}}/css/sidebar.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="{{static_url}}/css/layout.css">
+	<link rel="stylesheet" href="{{static_url}}/css/switch-ui.css">
+	<link rel="stylesheet" href="{{static_url}}/css/themes/login.css">
+	<link rel="stylesheet" href="{{static_url}}/css/themes/light.css">
+
+	<link rel="stylesheet" href="{{static_url}}/vendors/GonrinUI/css/gonrin.editor.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/GonrinUI/css/gonrin.pagination.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/GonrinUI/css/gonrin.tokenfield.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/GonrinUI/css/gonrin.ref.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/GonrinUI/css/gonrin.radio.css">
+	<link rel="stylesheet" href="{{static_url}}/vendors/GonrinUI/css/gonrin.grid.css">
+	<link rel="stylesheet" href="{{static_url}}/css/switch-ui.css">
+	<link rel="stylesheet" href="{{static_url}}/css/loader.css">
+	<link rel="stylesheet" href="{{static_url}}/css/style.css">
+	<link rel="stylesheet" href="{{static_url}}/css/style1.css">
+
+	<script type="text/javascript" src="{{static_url}}/lib/jquery.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/moment-js/moment.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/jquery/jquery-confirm-3.3.0.min.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/jquery/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/bootstrap4/popper.min.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/bootstrap4/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/bootstrap4/bootstrap-rating.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/bootstrap4/datetimepicker/js/datetimepicker.min.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/color-picker/js/bootstrap-colorpicker.min.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/fontawesome-5.4.2-web/js/all.js"></script>
+	<!-- <script type="text/javascript" src="{{static_url}}/vendors/c3-0.7.8/d3-5.4.0.min.js" charset="utf-8"></script> -->
+	<script type="text/javascript" src="{{static_url}}/vendors/c3-0.7.8/d3.v5.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/c3-0.7.8/c3.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/lodash/lodash.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/helpers/clipboard.copy.js"></script>
+
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.core.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.accounting.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.currency.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.notify.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.dialog.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.checkbox.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.textbox.js"></script>
+	<!-- <script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.radio.js"></script> -->
+	<!-- <script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.pagination.js"></script> -->
+	<!-- <script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.grid.js"></script> -->
+	<!-- <script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.ref.js"></script> -->
+	<!-- <script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.combobox.js"></script> -->
+
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.editor.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.numeric.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.tokenfield.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUI/js/gonrin.imagelink.js"></script>
+
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUIBoostrap4/gonrin.grid.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUIBoostrap4/gonrin.dialog.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUIBoostrap4/gonrin.pagination.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUIBoostrap4/gonrin.combobox.js"></script>
+	<script type="text/javascript" src="{{static_url}}/vendors/GonrinUIBoostrap4/gonrin.ref.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script data-main="{{static_url}}/app/app" src="{{static_url}}/app/require.js"></script>
+	<title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+	<div class="page-loader-wrapper">
+        <div class="loader">
+            <div class="preloader pl-size-md">
+                <div class="spinner-layer pl-white">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+            <p id="loader-content" class="d-none">Please wait...</p>
+        </div>
+    </div>
+	<div class="app">
+		<!-- APP CONTENT HERE -->
+	</div>
+	<div class="overlay"></div>
+</body>
+
+</html>

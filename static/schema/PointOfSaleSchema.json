@@ -1,0 +1,68 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "pointofsale_exid": {
+        "type": "string",
+        "length": 100
+    },
+    "pointofsale_no": {
+        "type": "string",
+        "length": 100
+    },
+    "pointofsale_name": {
+        "type": "string",
+        "required": true,
+        "length": 255
+    },
+    "extra_data": {
+        "type": "string",
+        "length": 255
+    },
+    "active": {
+        "type": "boolean",
+        "default": true
+    },
+    "workstation_id": {
+        "type": "string"
+    },
+    "tenant_id": {
+        "type": "string",
+        "length": 20
+    },
+    "workstation": {
+        "type": "dict"
+    }
+}

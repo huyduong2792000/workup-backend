@@ -1,0 +1,85 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "salesorder_id": {
+        "type": "string"
+    },
+    "service_id": {
+        "type": "string"
+    },
+    "service_name": {
+        "type": "string",
+        "length": 150
+    },
+    "service_no": {
+        "type": "string",
+        "length": 40
+    },
+    "quantity": {
+        "type": "number",
+        "default": 1
+    },
+    "list_price": {
+        "type": "number"
+    },
+    "discount_percent": {
+        "type": "number"
+    },
+    "discount_amount": {
+        "type": "number"
+    },
+    "net_amount": {
+        "type": "number"
+    },
+    "description": {
+        "type": "string"
+    },
+    "purchase_cost": {
+        "type": "number"
+    },
+    "margin": {
+        "type": "number"
+    },
+    "tax1": {
+        "type": "number"
+    },
+    "tax2": {
+        "type": "number"
+    },
+    "tax3": {
+        "type": "number"
+    }
+}

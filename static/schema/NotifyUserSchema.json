@@ -1,0 +1,34 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "user_id": {
+        "type": "string"
+    },
+    "notify_uid": {
+        "type": "string"
+    },
+    "notify_at": {
+        "type": ""
+    },
+    "read_at": {
+        "type": ""
+    },
+    "notify": {
+        "type": "dict"
+    }
+}

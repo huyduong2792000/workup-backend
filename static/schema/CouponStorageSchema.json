@@ -1,0 +1,144 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "promotion_id": {
+        "type": "string"
+    },
+    "promotion_name": {
+        "type": "string",
+        "length": 255
+    },
+    "promotion_discount_percent": {
+        "type": "number"
+    },
+    "promotion_discount_amount": {
+        "type": "number"
+    },
+    "promotion_data": {
+        "type": "json"
+    },
+    "salesorder_id": {
+        "type": "string"
+    },
+    "salesorder_exid": {
+        "type": "string",
+        "length": 100
+    },
+    "salesorder_no": {
+        "type": "string",
+        "length": 100
+    },
+    "logged_saleorders": {
+        "type": "json"
+    },
+    "contact_id": {
+        "type": "string"
+    },
+    "contact_name": {
+        "type": "string",
+        "length": 255
+    },
+    "contact_no": {
+        "type": "string",
+        "length": 50
+    },
+    "contact_phone": {
+        "type": "string",
+        "length": 50
+    },
+    "sub_coupon_code": {
+        "type": "string",
+        "length": 5
+    },
+    "coupon_code": {
+        "type": "string",
+        "length": 50
+    },
+    "coupon_created_at": {
+        "type": ""
+    },
+    "coupon_start_at": {
+        "type": "",
+        "required": true
+    },
+    "coupon_expire_at": {
+        "type": ""
+    },
+    "coupon_type": {
+        "type": "string",
+        "length": 10
+    },
+    "value": {
+        "type": "number"
+    },
+    "use_times": {
+        "type": "number",
+        "default": 1
+    },
+    "used_at": {
+        "type": ""
+    },
+    "status": {
+        "type": "string",
+        "length": 50
+    },
+    "without_condition": {
+        "type": "boolean",
+        "default": false
+    },
+    "notify_at": {
+        "type": ""
+    },
+    "notify_content": {
+        "type": "string"
+    },
+    "notify_channel": {
+        "type": "string",
+        "length": 50
+    },
+    "notify_data": {
+        "type": "json"
+    },
+    "timestamp": {
+        "type": ""
+    },
+    "workstation_id": {
+        "type": "string"
+    },
+    "tenant_id": {
+        "type": "string"
+    }
+}

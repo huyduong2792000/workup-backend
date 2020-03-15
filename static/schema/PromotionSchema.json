@@ -1,0 +1,113 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "promotion_no": {
+        "type": "string",
+        "length": 5
+    },
+    "promotion_name": {
+        "type": "string",
+        "required": true,
+        "length": 255
+    },
+    "promotion_type": {
+        "type": "string",
+        "length": 30,
+        "default": "base_salesorder"
+    },
+    "promotion_cost": {
+        "type": "number",
+        "default": 0
+    },
+    "promotion_condition": {
+        "type": "json"
+    },
+    "promotion_value": {
+        "type": "json"
+    },
+    "status": {
+        "type": "string",
+        "length": 25,
+        "default": "active"
+    },
+    "start_at": {
+        "type": "",
+        "required": true
+    },
+    "expire_at": {
+        "type": "",
+        "required": true
+    },
+    "promote_start_at": {
+        "type": ""
+    },
+    "promote_end_at": {
+        "type": ""
+    },
+    "allow_many": {
+        "type": "boolean",
+        "default": false
+    },
+    "max_discount": {
+        "type": "number"
+    },
+    "combine_other_promotion": {
+        "type": "string",
+        "length": 15
+    },
+    "apply_piority": {
+        "type": "number",
+        "default": 0
+    },
+    "is_private": {
+        "type": "boolean",
+        "default": false
+    },
+    "inherit": {
+        "type": "boolean",
+        "default": false
+    },
+    "exclude_valued_item": {
+        "type": "boolean",
+        "default": true
+    },
+    "tenant_id": {
+        "type": "string"
+    },
+    "workstations": {
+        "type": "list"
+    }
+}

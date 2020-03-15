@@ -1,0 +1,139 @@
+<nav id="sidebar">
+	<div id="dismiss">
+		<i class="fas fa-arrow-left"></i>
+	</div>
+
+	<div class="sidebar-header">
+		<a href="#index">
+			<h5>UpTM version <span class="release-version">1.x</span></h5>
+		</a>
+	</div>
+	<div class="left-navbar-space">
+		<ul class="list-unstyled components">
+			<li class="nav-item" role="sale-report">
+				<a href="#report/sale">Thống kê bán hàng</a>
+			</li>
+			<li class="nav-item" role="product-report">
+				<a href="#report/product-used">Thống kê theo món</a>
+			</li>
+			<li class="nav-item" role="general-report">
+				<a href="#report/overview">Thống kê tổng hợp</a>
+			</li>
+			<li class="nav-item" role="finance-report">
+				<a href="#report/revenue">Biểu đồ tài chính</a>
+			</li>
+			<li class="nav-item">
+				<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false">Hệ thống khác</a>
+				<ul class="collapse list-unstyled" id="pageSubmenu">
+					<li>
+						<a class="nav-link" href="https://upstart.vn/accounts/">UpCRM</a>
+					</li>
+					<li>
+						<a class="nav-link" href="https://upstart.vn/chatbot/">UpBOT</a>
+					</li>
+				</ul>
+				<a href="https://upstart.vn">Giới thiệu</a>
+			</li>
+		</ul>
+	</div>
+	<ul class="list-unstyled CTAs" style="padding: 6px 20px;">
+		<li>
+			<a href="https://upstart.vn/" target="_blank" class="download">TRANG CHỦ</a>
+		</li>
+	</ul>
+</nav>
+<nav id="right_sidebar">
+	<!-- <div id="right_dismiss">
+		<i class="fas fa-arrow-right"></i>
+	</div> -->
+	<div class="sidebar-header">
+		<a href="#index" class="form-inline">
+			<span class="fa fa-user-circle" style="font-size:34px;margin-right:3px;"></span> <span class="username" style="font-size:20px;font-weight:500;"></span>
+		</a>
+	</div>
+	<div class="right-navbar-space">
+		<ul class="list-unstyled components">
+			<li class="nav-item d-none">
+				<a href='javascript:;' id="swicth-workstation">
+					<i class="fa fa-map-marker-alt"></i> Đổi cửa hàng
+				</a>
+			</li>
+			<li class="nav-item" role="general-report">
+				<a href='https://upstart.vn/accounts/#profile?action=changepass' target="_blank">
+					<i class="fa fa-shield-alt"></i> Đổi mật khẩu
+				</a>
+			</li>
+			<li class="nav-item" role="product-report">
+				<a href='https://upstart.vn/accounts/'>
+					<i class="fa fa-briefcase"></i> Quản lý tài khoản
+				</a>
+			</li>
+		</ul>
+	</div>
+	<ul class="list-unstyled CTAs" style="padding: 6px 20px;">
+		<li>
+			<a href='javascript:;' class="" style="border:1px solid #808080;" onclick='javascript:gonrinApp().getRouter().navigate("logout")'>
+				<i class="fa fa-sign-out-alt"></i> Đăng xuất
+			</a>
+		</li>
+	</ul>
+</nav>
+
+<div style="height: 62px; width: 100%;">
+	<nav class="navbar navbar-expand-lg header-navbar justify-content-between" style="padding: .2rem .5rem;">
+		<div class="container-fluid" style="padding-left: 0px; padding-right: 0px;">
+			<div class="col-lg-3 col-3 padding-lr-0">
+				<button type="button" id="sidebarCollapse" class="btn btn-info">
+					<i class="fas fa-align-left"></i>
+				</button>
+			</div>
+			<div class="col-lg-6 col-6 padding-lr-0" style="text-align: center;">
+				<a class="navbar-brand logo-img" href='javascript:;' onclick='javascript:gonrinApp().getRouter().navigate("index")'
+				 style="font-weight: bold; line-height: 38px; font-family: 'Quicksand Regular'; font-size: 22px;">
+				 	Upstart Task Manager
+				</a>
+			</div>
+			<!-- <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<i class="fas fa-align-justify"></i>
+			</button> -->
+			<div class="col mobile-mode padding-lr-0" id="navbarSupportedContent">
+				<ul class="nav navbar-nav" style="margin: auto; display: inline;">
+					<li class="nav-item float-left text-right" style="width: calc(100%/2.5);">
+						<a class="nav-link" href='javascript:;' onclick="javascript:gonrinApp().getRouter().navigate('config')">
+							<span class="fa fa-sliders-h"></span> <span class="hide-on-mobile">Thiết lập</span>
+						</a>
+					</li>
+					<li class="nav-item float-left text-center dropdown" style="width: calc(100%/5*3);" id="profile-area">
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</div>
+
+<!-- END HEADER -->
+<div class="clearfix"></div>
+<!-- BEGIN CONTAINER -->
+<div class="page-container page-container-fixed">
+	<div class="page-navbar-wrapper">
+		<div class="page-navbar"></div>
+	</div>
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			<div class="tools-area"></div>
+			<div class="content-area"></div>
+		</div>
+	</div>
+</div>
+<div class="page-footer">
+	<div class="col-md-12 col-sm-12 col-xs-12 page-footer-inner" style="text-align: center;">
+		UpTS version <i class="release-version">0.x</i> - <a href="http://upstart.vn">UpStart Software</a> in Vietnam - <a href="http://static.upstart.vn/crm/annd/1.0/privacy.html">Privacy</a>
+		- <a href="http://static.upstart.vn/crm/annd/1.0/termofuse.html">Terms of Use</a> - <a href="http://static.upstart.vn/crm/documentation/huong-dan-su-dung-crm.html">CRM
+			Documentation</a>
+	</div>
+	<div class="scroll-to-top">
+		<i class="icon-arrow-up"></i>
+	</div>
+</div>
+<div id="free_space"></div>

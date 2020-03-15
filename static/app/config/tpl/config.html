@@ -1,0 +1,43 @@
+<style>
+	.config .form-group {
+		margin-bottom: 10px;
+		border-bottom: 1px solid #f0efef;
+		padding-bottom: 5px;
+	}
+	
+	.config .child .padding-lr-0 {
+		padding-bottom: 10px;
+	}
+	
+	.config .padding-lr-0 div {
+		line-height: 2.4;
+	}
+</style>
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-9 config">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-0" style="margin-bottom: 15px;">
+		<ul class="nav nav-tabs">
+			<li class="nav-item">
+				<a class="nav-link text-gray" data-toggle="tab" href="#user_config"><span class="fa fa-desktop"></span> <span class="hide-on-mobile">Hiển thị</span></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-gray" data-toggle="tab" href="#features"><span class="fa fa-cubes"></span> <span class="hide-on-mobile">Tính năng</span></a>
+			</li>
+			<li class="nav-item d-none">
+				<a class="nav-link text-gray" data-toggle="tab" href="#security"><span class="fa fa-shield-alt"></span> <span class="hide-on-mobile">Bảo mật</span></a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-gray" data-toggle="tab" href="#integrate"><span class="fa fa-link"></span> <span class="hide-on-mobile">Kết nối</span></a>
+			</li>
+		</ul>
+	</div>
+	<div class="tab-content">
+		<div id="user_config" class="tab-pane fade form-horizontal"></div>
+		<div id="features" class="tab-pane fade form-horizontal"></div>
+		<div id="security" class="tab-pane fade form-horizontal"></div>
+		<div id="integrate" class="tab-pane fade form-horizontal"></div>
+	</div>
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 padding-lr-0">
+		<button class="btn btn-primary" id="save">Save</button>
+		<button class="btn btn-warning" id="cancel">Cancel</button>
+	</div>
+</div>

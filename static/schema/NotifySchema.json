@@ -1,0 +1,38 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "title": {
+        "type": "string"
+    },
+    "content": {
+        "type": "string"
+    },
+    "type": {
+        "type": "string",
+        "length": 20
+    },
+    "url": {
+        "type": "string"
+    },
+    "iteminfo": {
+        "type": "json"
+    },
+    "notify_condition": {
+        "type": "json"
+    }
+}

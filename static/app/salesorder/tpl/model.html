@@ -1,0 +1,178 @@
+<div class="" style="margin-bottom: 10px; margin-top: 10px">
+	<div class="row">
+		<div block-bind="toolbar" class="col-lg-4 float-left"></div>
+		<div class="col-lg-8 float-left text-left">
+			<div class="col-lg-4 col-md-4 col-sm-4 col-12 padding-lr-0 float-right">
+				<div class="input-group">
+					<input type="text" id="searchText" class="form-control" placeholder="Tìm kiếm" />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div block-bind="content">
+	<div class="col-lg-6 col-md-6 col-sm-12 col-12 p-0 m-0">
+		<div class="row">
+			<div class="col-lg-12 col-12">
+				<h4>
+					Thông tin khách hàng
+				</h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6 col-sm-12">
+				<div>Tên khách hàng</div>
+				<input type="text" class="form-control" data-bind="value:contact_name" readonly />
+			</div>
+			<div class="col-md-6 col-sm-12">
+				<div>Số điện thoại</div>
+				<input type="text" class="form-control" data-bind="value:contact_phone" readonly />
+			</div>
+			<div class="col-md-6 col-sm-12">
+				<div>Email</div>
+				<input type="text" class="form-control" data-bind="value:contact_email" readonly />
+			</div>
+			<div class="col-md-6 col-sm-12">
+				<div>Điạ chỉ</div>
+				<input type="text" class="form-control" data-bind="value:contact_address" />
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-6 col-md-6 col-sm-12 col-12 p-0 m-0">
+		<div class="row">
+			<div class="col-lg-12 col-12">
+				<h4>
+					Thông tin hoá đơn
+				</h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6 col-sm-12">
+				<div>Số hoá đơn</div>
+				<input type="text" class="form-control" data-bind="value:salesorder_no" readonly />
+			</div>
+			<div class="col-md-6 col-sm-12">
+				<div>Ngày tạo</div>
+				<input type="text" class="form-control" data-bind="value:order_time" readonly />
+			</div>
+			<div class="col-md-6 col-sm-12">
+				<div>Người lập</div>
+				<input type="text" class="form-control" data-bind="value:created_by_name" readonly />
+			</div>
+			<div class="col-md-6 col-sm-12">
+				<div>Tại điểm bán</div>
+				<input type="text" class="form-control" data-bind="value:workstation_name" readonly />
+			</div>
+		</div>
+	</div>
+
+	<hr />
+
+	<div class="row text-left" style="margin-bottom: 10px;">
+		<div id="salesorderproducts"></div>
+	</div>
+
+	<div class="row text-left" style="margin-bottom: 10px;">
+		<div class="col-md-6">
+			<table>
+				<tr>
+					<td style="padding-right: 5px">
+						<div id="salesorderproducts_addItem" class="text-center"></div>
+					</td>
+					<td style="padding-right: 5px">
+						<div id="salesorderservices_addItem" class="text-center"></div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="col-md-3 text-right">Loại thuế:</div>
+		<div class="col-md-3 text-right">
+			<input type="text" readonly data-bind="value:taxtype" />
+		</div>
+	</div>
+
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th class='text-center' style="width: 110px">Mã hàng hoá</th>
+				<th class='text-center'>Tên hàng hoá</th>
+				<th class='text-center' style="width: 70px">SL</th>
+				<th class='text-center' style="width: 135px">Đơn giá (VNĐ)</th>
+				<th class='text-center' style="width: 75px">CK (%)</th>
+				<th class='text-center' style="width: 135px">CK (VNĐ)</th>
+				<th class='text-center' style="width: 180px">Thành tiền (VNĐ)</th>
+				<th class='text-center' style="width: 58px"></th>
+			</tr>
+			<tr>
+				<th class='text-left' colspan=8>Món</th>
+			</tr>
+		</thead>
+
+		<tbody id="salesorderproducts_grid" data-bind="list:salesorderproducts">
+		</tbody>
+		<thead class="hide">
+			<tr>
+				<th class='text-left' colspan=8>Dịch vụ</th>
+			</tr>
+		</thead>
+		<tbody class="hide" id="salesorderservices_grid" data-bind="list:salesorderservices">
+		</tbody>
+		<tfoot class="text-right" id="salesorder_gridfooter">
+			<tr>
+				<td colspan=5><b>Tổng:</b></td>
+				<td colspan=3><b><span data-bind="text:netAmountFormat" class="form-control"></span></b></td>
+			</tr>
+			<tr>
+				<td colspan=5><b>Chiết khấu:</b></td>
+				<td colspan=1><span class="form-control" data-bind="text:totalDiscountPercent"></span></td>
+				<td colspan=2><span class="form-control" data-bind="text:totalDiscountAmount"></span></td>
+			</tr>
+			<tr>
+				<td colspan=5><b>VAT:</b></td>
+				<td colspan=1><input type="text" class="form-control" readonly data-bind="value:tax_percent" /></td>
+				<td colspan=2><input type="text" class="form-control" readonly data-bind="value:tax_amount" /></td>
+			</tr>
+			<tr>
+				<td colspan=5><b>Phí quẹt thẻ:</b></td>
+				<td colspan=1>
+					<input type="text" class="form-control" id="card_swipe_fee_percent"
+						data-bind="value:card_swipe_fee_percent" readonly />
+				</td>
+				<td colspan=2>
+					<input type="text" class="form-control" id="card_swipe_fee_amount"
+						data-bind="value:card_swipe_fee_amount" readonly />
+				</td>
+			</tr>
+			<tr>
+				<td colspan=5><b>Thanh toán:</b></td>
+				<td class="text-right" colspan=3>
+					<b><span data-bind="text:totalFormat" class="form-control"></span></b>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+	<hr />
+	<div class="row text-left" style="margin-bottom: 10px; margin-top: 10px">
+		<div class="col-md-12">
+			Khuyến mại đã áp dụng: <strong><span id="promotion_name" data-bind="text:promotion_name"></span></strong>
+		</div>
+	</div>
+
+	<!-- <div class="row text-left" style="margin-bottom: 10px;">
+		<div class="col-md-4">
+			<div>Mã khuyến mại</div>
+			<div class="input-group">
+				<input type="text" class="form-control" id="coupon_code" class="form-control" />
+				<div class="input-group-btn">
+					<button id="searchcoupon_code" type="button" class="btn btn-primary">
+						<span>Áp dụng</span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8">
+			<div>Danh sách các chương trình được hưởng</div>
+			<div id="promotion_grid"></div>
+		</div>
+	</div> -->
+</div>

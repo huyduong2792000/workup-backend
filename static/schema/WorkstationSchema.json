@@ -1,0 +1,33 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "name": {
+        "type": "string"
+    },
+    "organization_uid": {
+        "type": "string",
+        "required": true
+    },
+    "address": {
+        "type": "string",
+        "length": 255
+    },
+    "organization": {
+        "type": "dict"
+    }
+}

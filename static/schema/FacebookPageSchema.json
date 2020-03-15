@@ -1,0 +1,79 @@
+{
+    "page_id": {
+        "type": "string",
+        "primary": true,
+        "length": 128
+    },
+    "page_name": {
+        "type": "string",
+        "required": true,
+        "length": 255
+    },
+    "page_profile_pic": {
+        "type": "string"
+    },
+    "page_url": {
+        "type": "string"
+    },
+    "page_messenger_url": {
+        "type": "string"
+    },
+    "phone": {
+        "type": "string",
+        "length": 50
+    },
+    "email": {
+        "type": "string",
+        "length": 100
+    },
+    "street": {
+        "type": "string",
+        "length": 150
+    },
+    "district": {
+        "type": "string",
+        "length": 100
+    },
+    "city": {
+        "type": "string",
+        "length": 100
+    },
+    "country": {
+        "type": "string",
+        "length": 25
+    },
+    "description": {
+        "type": "string",
+        "length": 255
+    },
+    "status": {
+        "type": "string",
+        "length": 20,
+        "default": "active"
+    },
+    "workstations": {
+        "type": "json"
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "tenant_id": {
+        "type": "string"
+    }
+}

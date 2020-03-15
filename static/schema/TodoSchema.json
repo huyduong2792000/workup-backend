@@ -1,0 +1,56 @@
+{
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "code": {
+        "type": "string",
+        "length": 255
+    },
+    "todo_info_id": {
+        "type": "string"
+    },
+    "name": {
+        "type": "string"
+    },
+    "unsigned_name": {
+        "type": "string"
+    },
+    "short_description": {
+        "type": "string"
+    },
+    "content": {
+        "type": "string"
+    },
+    "attachments": {
+        "type": "json"
+    },
+    "priority": {
+        "type": "number"
+    },
+    "comments": {
+        "type": "json"
+    },
+    "status": {
+        "type": "number"
+    },
+    "todo_info": {
+        "type": "dict"
+    },
+    "assigners": {
+        "type": "list"
+    }
+}

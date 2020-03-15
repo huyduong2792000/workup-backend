@@ -1,0 +1,35 @@
+<div block-bind="toolbar"></div>
+<div block-bind="content">
+	<div>
+		<h4>Đồng bộ dữ liệu</h4>
+	</div>
+	<div class="row">
+		<div class="col-md-12 col-xs-12">
+			<div class="col-md-4">
+				<label>Chuỗi nhà hàng</label>
+				<input class="form-control" id="parent"/>
+			</div>
+			<div class="col-md-4">
+				<label>Địa điểm</label>
+				<input class="form-control" id="workstation_exid"/>
+			</div>
+		
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-5 col-sm-4 col-xs-3"></div>
+		<div class="col-md-2 col-sm-4 col-xs-6 text-center">
+			<img style='width: 100%; cursor: pointer; padding: 10px;' id="sync-products" src='/static/images/sync-icon.ico' alt='updating...'/>
+			<label>Đồng bộ Sản phẩm</label>
+			<i id="sync-product-status"></i>
+		</div>
+		<div class="col-md-5 col-sm-4 col-xs-3"></div>
+	</div>
+	<!-- <div class="row">
+		<div class="col-md-12 col-xs-12">
+			<i><a href="https://api.foodbook.vn/ipos/ws/xpartner/v2/items?access_token=JHTHWPCE6OCZBW0PBH9XRRBC6JTR1UWA&pos_parent=SANH&pos_id=5043" target="_blank">Click here to get data below.</a></i>
+			<textarea class="form-control" rows="10" id="json_sync_data" placeholder="Json Raw Data"></textarea>
+		
+		</div>
+	</div> -->
+</div>

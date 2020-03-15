@@ -1,0 +1,68 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "contact_id": {
+        "type": "string",
+        "required": true
+    },
+    "contact_ranking_id": {
+        "type": "string"
+    },
+    "contact_ranking": {
+        "type": "json"
+    },
+    "verd": {
+        "type": "string",
+        "length": 20
+    },
+    "score": {
+        "type": "number",
+        "default": 0
+    },
+    "log_type": {
+        "type": "string",
+        "length": 20
+    },
+    "log_data": {
+        "type": "json"
+    },
+    "description": {
+        "type": "string"
+    },
+    "contact": {
+        "type": "dict"
+    }
+}

@@ -1,0 +1,136 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div block-bind="toolbar"></div>
+    </div>
+</div>
+<div block-bind="content">
+    <div class="row justify-content-md-center" style="margin-bottom: 10px; margin-top: 40px;">
+        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+            <div class="col-md-6 col-md-6 col-sm-6 col-6 float-left" style="border-bottom: 2px solid lightgray; border-radius: 0px 0px 0px 8px;">
+                <div class="col-md-6 col-sm-6 col-6 float-left padding-lr-0">
+                    <label><span class="glyphicon glyphicon-star"></span> Điểm:</label>
+                </div>
+                <div class="col-md-3 col-sm-3 col-6 float-left padding-lr-0" id="score" style="text-align: right;"></div>
+            </div>
+            <div class="col-md-6 col-md-6 col-sm-6 col-6 float-left" style="border-bottom: 2px solid lightgray; border-radius: 0px 0px 8px 0px;">
+                <div class="col-md-6 col-sm-6 col-6 float-left padding-lr-0">
+                    <label><span class="glyphicon glyphicon-time"></span> Lượt đổi:</label>
+                </div>
+                <div class="col-md-3 col-sm-3 col-6 float-left padding-lr-0" id="used_times" style="text-align: right;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Mã</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="coupon_code" aria-label="" readonly>
+                        <div class="input-group-append btn-pointer" title="click to copy">
+                            <span class="input-group-text" id="copy-voucher"><span class="fa fa-copy"></span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="col-md-10 col-10 float-left padding-lr-0 text-gray text-uppercase mb-1" style="line-height: 24px;">
+				Chia sẻ mã
+			</label>
+                    <div class="col-md-2 col-2 float-left padding-lr-0">
+                        <label class="switch">
+					<input type="checkbox" class="form-control" id="share_switch">
+					<span class="slider round"></span>
+				</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="voucher_url" aria-label="" style="font-size:14px;color:#6f6f6f;" readonly>
+                        <div class="input-group-append btn-pointer" title="click to copy">
+                            <span class="input-group-text" id="copy-voucher-url"><span class="fa fa-copy"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Loại mã</label>
+                    <input type="text" class="form-control" placeholder="Vourcher" readonly aria-label="">
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Giá trị</label>
+                    <input type="text" class="form-control text-right" id="coupon_value" />
+                </div>
+            </div>
+            <div class="row text-left" style="margin-top: 10px;">
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Chọn khuyến mãi</label>
+                    <input type="text" class="form-control" id="promotion" />
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Số lần sử dụng</label>
+                    <input type="text" class="form-control text-right" />
+                </div>
+                <!-- <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Tên khuyến mãi</label>
+                    <input type="text" class="form-control" readonly />
+                </div> -->
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Số điện thoại</label>
+                    <input type="text" class="form-control" id="contact_phone" readonly />
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Tên khách hàng</label>
+                    <input type="text" class="form-control" id="contact_name" readonly />
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Áp dụng cho</label>
+                    <input type="text" class="form-control" id="workstation" />
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Hết hạn trong ngày</label>
+                    <div>
+                        <div class="input-group date" id="expired_time_picker" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" data-target="#expired_time_picker" />
+                            <div class="input-group-append" data-target="#expired_time_picker" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px;">
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="col-md-10 col-10 float-left padding-lr-0 text-gray text-uppercase mb-1" style="line-height: 24px;">
+				Bỏ qua điều kiện của chương trình KM
+			</label>
+                    <div class="col-md-2 col-2 float-left padding-lr-0">
+                        <label class="switch">
+					<input type="checkbox" class="form-control" id="without_condition_switch">
+					<span class="slider round"></span>
+				</label>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-12 float-left">
+                    <label class="text-gray text-uppercase mb-1">Trạng thái</label>
+                    <input type="text" class="form-control" id="status" />
+                </div>
+            </div>
+            <!-- <div class="row" style="margin-top: 10px;">
+              
+            </div> -->
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+            <div class="text-gray text-uppercase mb-1">Lịch sử đổi voucher</div>
+            <div class="card">
+                <div class="card-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

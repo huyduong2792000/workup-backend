@@ -1,0 +1,91 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "vendor_no": {
+        "type": "string",
+        "length": 100
+    },
+    "vendorname": {
+        "type": "string",
+        "length": 100
+    },
+    "phone": {
+        "type": "string",
+        "length": 100
+    },
+    "email": {
+        "type": "string",
+        "length": 100
+    },
+    "website": {
+        "type": "string",
+        "length": 100
+    },
+    "glacct": {
+        "type": "string",
+        "length": 200
+    },
+    "category": {
+        "type": "string",
+        "length": 50
+    },
+    "street": {
+        "type": "string"
+    },
+    "city": {
+        "type": "string",
+        "length": 30
+    },
+    "state": {
+        "type": "string",
+        "length": 30
+    },
+    "pobox": {
+        "type": "string",
+        "length": 30
+    },
+    "postalcode": {
+        "type": "string",
+        "length": 100
+    },
+    "description": {
+        "type": "string"
+    },
+    "tags": {
+        "type": "string",
+        "length": 1
+    }
+}

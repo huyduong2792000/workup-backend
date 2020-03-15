@@ -1,0 +1,72 @@
+<div class="row form-group">
+    <label class="col-lg-3 col-md-4 col-sm-12 col-12 float-left">Mã khách hàng <span class="text-gray" id="contact_code_review"></span></label>
+    <div class="col-lg-2 col-md-2 col-sm-3 col-8 input-group float-left">
+        <div class="input-group-prepend" style="height: 38px;">
+            <span class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Ví dụ: Nhập mã ABC, thì mã khách hãng sẽ có định dạng ABC00001.">
+                <span class="fa fa-exclamation-circle"></span>
+            </span>
+        </div>
+        <input type="text" class="form-control" data-bind="value:contact_code_prefix" maxlength="4" placeholder="Ký tự bắt đầu" />
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-2 col-4 input-group float-left">
+        <div class="input-group-prepend" style="height: 38px;">
+            <span class="input-group-text" data-toggle="tooltip" data-placement="bottom" title="Độ dài của mã khách hàng, hệ thống sẽ tự động tăng độ dài khi đến giới hạn.">
+                <span class="fa fa-exclamation-circle"></span>
+            </span>
+        </div>
+        <input type="text" class="form-control" data-bind="value:contact_code_length" />
+    </div>
+</div>
+<div class="row form-group">
+    <label class="col-lg-3 col-md-4 col-sm-12 col-12 float-left">Tích điểm</label>
+    <div class=" col-lg-9 col-md-8 col-sm-12 col-12 float-left child" name="score">
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div class="col-md-6 col-sm-6 col-12 float-left padding-lr-0">
+                Số tiền tiêu để tích luỹ 1 điểm
+            </div>
+            <div class="col-md-4 col-sm-4 col-12 float-left">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="score_ratio" aria-label="">
+                    <div class="input-group-append">
+                        <span class="input-group-text">VNĐ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;">
+                <span class="fa fa-check-square" style="color: blue;"></span> Tích điểm sau khi trừ giảm giá
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;">
+                <span class="fa fa-check-square" style="color: blue;"></span> Tích điểm tất cả khách hàng
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;">
+                <span class="fa fa-times" style="color: red;"></span> Sử dụng điểm để thanh toán
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;">
+                <span class="fa fa-check-square" style="color: blue;"></span> Gửi thông báo điểm sau khi thanh toán</div>
+        </div>
+    </div>
+</div>
+<div class="row form-group d-none">
+    <div class="col-lg-3 col-md-4 col-sm-12 col-12 float-left text-right padding-lr-0">
+        <label>Cho phép dùng mã khách hàng để hưởng khuyến mại</label>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-12 col-12 float-left">
+        <!-- <input type="text" class="form-control" name="promotion_by_contact_code"/> -->
+        <label class="switch">
+            <input type="checkbox" class="form-control" name="promotion_by_contact_info" id="promotion_by_contact_info_switch">
+            <span class="slider round"></span>
+        </label>
+        <p style="color: #939393;">
+            <span class="fa fa-question-circle"></span>
+            <i> Cho phép dùng mã khách hàng hoặc số điện thoại để hưởng khuyến mãi.</i>
+        </p>
+    </div>
+</div>

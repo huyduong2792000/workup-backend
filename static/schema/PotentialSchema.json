@@ -1,0 +1,87 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "potential_no": {
+        "type": "string",
+        "length": 100
+    },
+    "related_to": {
+        "type": "string"
+    },
+    "potentialname": {
+        "type": "string",
+        "length": 120
+    },
+    "amount": {
+        "type": "number"
+    },
+    "currency": {
+        "type": "string",
+        "length": 20
+    },
+    "closingdate": {
+        "type": "datetime"
+    },
+    "typeofrevenue": {
+        "type": "string",
+        "length": 50
+    },
+    "nextstep": {
+        "type": "string",
+        "length": 100
+    },
+    "private": {
+        "type": "boolean"
+    },
+    "probability": {
+        "type": "number"
+    },
+    "campain_id": {
+        "type": "string"
+    },
+    "sales_stage": {
+        "type": "string",
+        "length": 200
+    },
+    "potentialtype": {
+        "type": "string",
+        "length": 200
+    },
+    "leadsource": {
+        "type": "string",
+        "length": 200
+    }
+}

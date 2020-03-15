@@ -1,0 +1,35 @@
+<div block-bind="toolbar"></div>
+<div block-bind="content">
+	<div class="row text-center" style="margin-top: 20px">
+		<div class="col-md-2 text-left required">
+			<label>Page Name</label>
+		</div>
+		<div class="col-md-4">
+			<input type="text" class="form-control" data-bind="value:page_name" readonly/>
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left required">
+			<label>Page ID</label>
+		</div>
+		<div class="col-md-4 input-with-icon-right">
+			<input type="text" class="form-control" data-bind="value:page_id" readonly/>
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left">
+			<label>Page URL</label>
+		</div>
+		<div class="col-md-4">
+			<input type="text" class="form-control" data-bind="value:page_url" />
+		</div>
+	</div>
+	<div class="row text-center" style="margin-bottom: 10px">
+		<div class="col-md-2 text-left required">
+			<label>Workstation</label>
+		</div>
+		<div class="col-md-4">
+			<input type="text" class="form-control" data-bind="list:workstations" />
+		</div>
+	</div>
+</div>

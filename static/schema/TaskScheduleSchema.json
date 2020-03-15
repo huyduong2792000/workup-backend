@@ -1,0 +1,31 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "day_of_week": {
+        "type": ""
+    },
+    "start_time_working": {
+        "type": ""
+    },
+    "end_time_working": {
+        "type": ""
+    },
+    "Tasks": {
+        "type": "list"
+    }
+}

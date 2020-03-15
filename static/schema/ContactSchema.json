@@ -1,0 +1,177 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "contact_exid": {
+        "type": "string",
+        "length": 100
+    },
+    "contact_no": {
+        "type": "string",
+        "length": 20
+    },
+    "contact_name": {
+        "type": "string",
+        "required": true,
+        "length": 255
+    },
+    "gender": {
+        "type": "string",
+        "length": 30
+    },
+    "birthday": {
+        "type": "string",
+        "length": 30
+    },
+    "phone": {
+        "type": "string",
+        "required": true,
+        "length": 50
+    },
+    "email": {
+        "type": "string",
+        "length": 100
+    },
+    "image": {
+        "type": "string"
+    },
+    "contacttype": {
+        "type": "string",
+        "length": 50
+    },
+    "bdate": {
+        "type": "number"
+    },
+    "bmonth": {
+        "type": "number"
+    },
+    "byear": {
+        "type": "number"
+    },
+    "title": {
+        "type": "string",
+        "length": 50
+    },
+    "department": {
+        "type": "string",
+        "length": 30
+    },
+    "fax": {
+        "type": "string",
+        "length": 50
+    },
+    "usertype": {
+        "type": "string",
+        "length": 50
+    },
+    "score": {
+        "type": "number",
+        "default": 0
+    },
+    "used_times": {
+        "type": "number",
+        "default": 0
+    },
+    "last_order_date": {
+        "type": ""
+    },
+    "donotcall": {
+        "type": "boolean"
+    },
+    "emailoptout": {
+        "type": "string",
+        "length": 3
+    },
+    "reference": {
+        "type": "string",
+        "length": 3
+    },
+    "reportsto": {
+        "type": "string",
+        "length": 30
+    },
+    "notify_owner": {
+        "type": "string",
+        "length": 3
+    },
+    "tags": {
+        "type": "json"
+    },
+    "note": {
+        "type": "string"
+    },
+    "address_city": {
+        "type": "string",
+        "length": 30
+    },
+    "address_code": {
+        "type": "string",
+        "length": 30
+    },
+    "address_country": {
+        "type": "string",
+        "length": 30
+    },
+    "address_state": {
+        "type": "string",
+        "length": 30
+    },
+    "address_street": {
+        "type": "string",
+        "length": 250
+    },
+    "address_pobox": {
+        "type": "string",
+        "length": 30
+    },
+    "extra_attributes": {
+        "type": "json"
+    },
+    "extra_data": {
+        "type": "json"
+    },
+    "social_info": {
+        "type": "json"
+    },
+    "workstation_id": {
+        "type": "string"
+    },
+    "tenant_id": {
+        "type": "string"
+    },
+    "accounts": {
+        "type": "list"
+    }
+}

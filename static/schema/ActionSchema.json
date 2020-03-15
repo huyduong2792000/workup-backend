@@ -1,0 +1,67 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "channel": {
+        "type": "string",
+        "required": true,
+        "length": 24
+    },
+    "channel_id": {
+        "type": "string"
+    },
+    "broadcast_id": {
+        "type": "string"
+    },
+    "send_from": {
+        "type": "string",
+        "length": 32
+    },
+    "send_to": {
+        "type": "json"
+    },
+    "send_time": {
+        "type": ""
+    },
+    "message_text": {
+        "type": "string"
+    },
+    "response_content": {
+        "type": "string"
+    },
+    "conditions": {
+        "type": "json"
+    }
+}

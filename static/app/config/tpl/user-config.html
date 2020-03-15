@@ -1,0 +1,70 @@
+<style>
+    .tab-content .form-group {
+        margin-bottom: 10px;
+    }
+</style>
+<div class="row form-group d-none">
+    <div class="col-lg-3 col-md-4 col-sm-12 col-12 float-left">
+        <label>Hiển thị Navbar</label>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-12 col-12 float-left">
+        <!-- <input type="checkbox" class="form-control-file" name="show_navbar" /> -->
+        <label class="switch">
+            <input type="checkbox" class="form-control" id="show_navbar_switch">
+            <span class="slider round"></span>
+        </label>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-3 col-md-4 col-sm-12 col-12 float-left">
+        <label>Chủ đề</label>
+    </div>
+    <div id="theme_color" class="col-lg-9 col-md-8 col-sm-12 col-12 float-left input-group colorpicker-component">
+        <input type="text" class="form-control" name="theme_color" value="#fff" />
+        <span class="input-group-addon"><i style="height: 38px;width: 38px;margin-top: -3px;"></i></span>
+    </div>
+
+</div>
+<div class="row form-group d-none">
+    <label class="col-lg-3 col-md-4 col-sm-12 col-12 float-left">Thay đổi logo</label>
+    <div class="col-lg-9 col-md-8 col-sm-12 col-12 float-left">
+        <input type="file" class="form-control-file" name="logo" value="https://upstart.vn/static/images/upstartvn_logo.png" />
+    </div>
+</div>
+<div class="row form-group">
+    <label class="col-lg-3 col-md-4 col-sm-12 col-12 float-left">Tuỳ chỉnh Dashboard</label>
+    <div class="col-lg-9 col-md-8 col-sm-12 col-12 float-left child" name="dashbroad_options">
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;"><span class="fa fa-check-square" style="color: blue;"></span> Theo
+                dõi lượng hoá đơn, doanh thu theo ngày tuần tháng</div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;"><span class="fa fa-check-square" style="color: blue;"></span> Tổng
+                tiền giảm giá trong ngày</div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;"><span class="fa fa-times" style="color: red;"></span>
+                Tổng tiền giảm giá trong tuần</div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;"><span class="fa fa-times" style="color: red;"></span>
+                Tổng tiền giảm giá trong tháng</div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;"><span class="fa fa-check-square" style="color: blue;"></span> Bảng
+                tình hình kinh doanh từng đơn vị</div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;"><span class="fa fa-times" style="color: red;"></span>
+                Biểu đồ doanh thu trong tuần</div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;"><span class="fa fa-check-square" style="color: blue;"></span> Biểu
+                đồ doanh thu trong 2 tuần</div>
+        </div>
+        <div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+            <div style="line-height: 2.3;"><span class="fa fa-times" style="color: red;"></span>
+                Biểu đồ doanh thu trong tháng</div>
+        </div>
+    </div>
+</div>

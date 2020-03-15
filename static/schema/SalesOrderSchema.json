@@ -1,0 +1,218 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "salesorder_exid": {
+        "type": "string",
+        "length": 100
+    },
+    "salesorder_no": {
+        "type": "string",
+        "length": 100
+    },
+    "title": {
+        "type": "string",
+        "length": 255
+    },
+    "order_time": {
+        "type": ""
+    },
+    "order_day": {
+        "type": "number"
+    },
+    "order_month": {
+        "type": "number"
+    },
+    "order_year": {
+        "type": "number"
+    },
+    "order_hour": {
+        "type": "number"
+    },
+    "order_minute": {
+        "type": "number"
+    },
+    "order_day_of_week": {
+        "type": "number"
+    },
+    "contact_id": {
+        "type": "string"
+    },
+    "contact_name": {
+        "type": "string",
+        "length": 255
+    },
+    "contact_phone": {
+        "type": "string",
+        "length": 50
+    },
+    "contact_email": {
+        "type": "string",
+        "length": 100
+    },
+    "contact_address": {
+        "type": "string"
+    },
+    "workstation_id": {
+        "type": "string"
+    },
+    "workstation_name": {
+        "type": "string",
+        "length": 255
+    },
+    "price_adjustment": {
+        "type": "number",
+        "default": 0
+    },
+    "salescommission": {
+        "type": "number",
+        "default": 0
+    },
+    "exciseduty": {
+        "type": "number",
+        "default": 0
+    },
+    "taxtype": {
+        "type": "string",
+        "length": 25,
+        "default": "group"
+    },
+    "tax_percent": {
+        "type": "number",
+        "default": 0
+    },
+    "tax_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "net_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "amount": {
+        "type": "number",
+        "default": 0
+    },
+    "discount_percent": {
+        "type": "number",
+        "default": 0
+    },
+    "discount_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "discount_other_percent": {
+        "type": "number",
+        "default": 0
+    },
+    "discount_other_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "card_swipe_fee_percent": {
+        "type": "number",
+        "default": 0
+    },
+    "card_swipe_fee_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "other_fee_percent": {
+        "type": "number",
+        "default": 0
+    },
+    "other_fee_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "ship_fee_amount": {
+        "type": "number",
+        "default": 0
+    },
+    "ship_partner": {
+        "type": "string",
+        "length": 200
+    },
+    "terms_conditions": {
+        "type": "string"
+    },
+    "purchaseorder": {
+        "type": "string",
+        "length": 200
+    },
+    "sostatus": {
+        "type": "string",
+        "length": 200
+    },
+    "currency_id": {
+        "type": "string"
+    },
+    "currency_code": {
+        "type": "string",
+        "length": 11
+    },
+    "conversion_rate": {
+        "type": "number"
+    },
+    "payment_method": {
+        "type": "string",
+        "length": 50
+    },
+    "payment_status": {
+        "type": "string",
+        "length": 20
+    },
+    "note": {
+        "type": "string"
+    },
+    "is_delivery": {
+        "type": "boolean",
+        "default": false
+    },
+    "delivery_address": {
+        "type": "string",
+        "length": 255
+    },
+    "created_by_name": {
+        "type": "string",
+        "length": 255
+    },
+    "currency": {
+        "type": "dict"
+    },
+    "salesorderproducts": {
+        "type": "list"
+    },
+    "salesorderservices": {
+        "type": "list"
+    }
+}

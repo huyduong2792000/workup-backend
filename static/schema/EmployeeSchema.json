@@ -1,0 +1,78 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "full_name": {
+        "type": "string",
+        "length": 255
+    },
+    "full_name_unsigned": {
+        "type": "string",
+        "length": 255
+    },
+    "avatar_url": {
+        "type": "string"
+    },
+    "email": {
+        "type": "string",
+        "length": 255
+    },
+    "birthday": {
+        "type": ""
+    },
+    "phone_number": {
+        "type": "string",
+        "required": true,
+        "length": 32
+    },
+    "id_identifier": {
+        "type": "string",
+        "length": 32
+    },
+    "attachment_files": {
+        "type": "json"
+    },
+    "address": {
+        "type": "string"
+    },
+    "gender": {
+        "type": "number",
+        "default": 1
+    },
+    "position": {
+        "type": "string",
+        "length": 32
+    },
+    "status": {
+        "type": "string"
+    },
+    "employee_type": {
+        "type": "string"
+    },
+    "start_time": {
+        "type": ""
+    },
+    "end_time": {
+        "type": ""
+    },
+    "workstations": {
+        "type": "list"
+    },
+    "user": {
+        "type": "list"
+    }
+}

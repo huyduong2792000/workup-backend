@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="col-md-9 col-sm-8 col-xs-6" >
+        <button class="btn btn-warning btn-sm" id="btn_filter"><span class="fa fa-filter"></span> Bộ lọc</button>
+        <a href="#contact/model"><button class="btn btn-success btn-sm"><span class="fa fa-plus"></span> Tạo mới</button></a>
+        <button class="btn btn-danger btn-sm ml-1" id="btn_show_membercard"><i class="far fa-id-card"></i> Thẻ thành viên</button>
+    </div>
+    <div class="col-md-3 col-sm-4 col-xs-6" id="filter"></div>
+</div>
+<div id="grid" data-bind='collection:$collection'></div>
+<div class="message-box hide">
+    <div class="header-message col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="float-left" style="font-weight: 600; line-height: 40px;">New Message</div>
+        <div id="close-message" class="btn-pointer float-right" style="line-height: 40px; width: 25px; text-align: center">
+            <span class="fa fa-times"></span>
+        </div>
+    </div>
+    <div class="float-left col-lg-12 col-md-12 col-sm-12 col-12 mt-2" style="height: 30px; border-bottom: 1px solid #efefef;"><span style="opacity: 0.5">To</span> <span id="send-to-message"></span></div>
+    <div class="body-message col-lg-12 col-md-12 col-sm-12 col-12" style="border-bottom: 1px solid #f1f1f1;">
+        <div>
+            <div class="form-group">
+                <div class="form-line">
+                    <textarea id="message-content" rows="9" class="no-resize" style="width: 100%; padding: 0" placeholder="Type message here..."></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom-message col-lg-12 col-md-12 col-sm-12 col-12">
+        <button class="btn btn-sm btn-primary float-right" id="send-message" style="margin-top: 5px">Send <i class="far fa-paper-plane"></i></button>
+    </div>
+</div>

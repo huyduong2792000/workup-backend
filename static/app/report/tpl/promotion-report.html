@@ -1,0 +1,63 @@
+<div class="col-lg-12 col-md-12 col-sm-12 col-12 report">
+	<div class="row">
+		<table class="table">
+			<tr class="tbl-header">
+				<th>CHƯƠNG TRÌNH</th>
+				<th>DOANH THU</th>
+				<th>TIỀN GIẢM GIÁ</th>
+				<th>TỈ LỆ GIẢM GIÁ</th>
+			</tr>
+			<tr class="tbl-body">
+				<td id="promotion-count"><img style='width: 28px;' src='https://upstart.vn/static/images/loading.gif' alt='Loading...' /></td>
+				<td id="amount-summary"><img style='width: 28px;' src='https://upstart.vn/static/images/loading.gif' alt='Loading...' /></td>
+				<td id="discount-summary"><img style='width: 28px;' src='https://upstart.vn/static/images/loading.gif' alt='Loading...' /></td>
+				<td id="discount-ratio"><img style='width: 28px;' src='https://upstart.vn/static/images/loading.gif' alt='Loading...' /></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div class="report" style="margin-bottom: 20px;" class="filter">
+	<div class="form-group">
+		<div class="col-lg-2 col-md-2 col-sm-2 col-12 float-left padding-lr-0">
+			<input class="form-control no-border-radius" id="workstation" />
+		</div>
+		<button class="btn btn-secondary col-lg-1 col-md-1 col-sm-1 col-3 float-left quick-filter no-border-radius" value="today">HÔM NAY</button>
+		<button class="btn btn-secondary col-lg-1 col-md-1 col-sm-1 col-3 float-left quick-filter no-border-radius" value="week">TUẦN</button>
+		<button class="btn btn-secondary col-lg-1 col-md-1 col-sm-1 col-3 float-left quick-filter no-border-radius" value="month">THÁNG</button>
+		<button class="btn btn-secondary col-lg-1 col-md-1 col-sm-1 col-3 float-left quick-filter no-border-radius" value="year">NĂM</button>
+		<div class="col-md-6 col-sm-6 col-12 float-left padding-lr-0">
+			<div class="col-md-4 col-sm-4 col-4 float-left padding-lr-0">
+				<input type="date" class="form-control no-border-radius" id="from-datetime" placeholder="Từ ngày" />
+			</div>
+			<div class="col-md-4 col-sm-4 col-4 float-left padding-lr-0">
+				<input type="date" class="form-control no-border-radius" id="to-datetime" placeholder="Đến ngày" />
+			</div>
+			<div class="col-md-4 col-sm-4 col-4 float-left padding-lr-0">
+				<button class="btn btn-coal col-md-12 col-sm-12 col-12 no-border-radius" id="filter-btn">XEM</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="report">
+	<div class="col-md-6 col-sm-6 col-12 float-left padding-lr-0">
+		<div class="col-md-12 col-sm-12 col-12 chart-field">
+			<p>TỈ LỆ HOÁ ĐƠN ÁP DỤNG KHUYẾN MÃI</p>
+			<div id="promotion-report">
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6 col-sm-6 col-12 float-left padding-lr-0">
+		<div class="col-md-12 col-sm-12 col-12 chart-field">
+			<p>DOANH THU THEO TỪNG CHƯƠNG TRÌNH</p>
+			<div id="each-promotion-revenue-report">
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12 col-sm-12 col-12 float-left padding-lr-0">
+		<div class="col-md-12 col-sm-12 col-12 chart-field">
+			<p>CHIẾT KHẤU/DOANH THU TỪNG CHƯƠNG TRÌNH KHUYẾN MÃI</p>
+			<div id="revenue-by-each-promotion">
+			</div>
+		</div>
+	</div>
+</div>

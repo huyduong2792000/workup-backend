@@ -1,0 +1,47 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "employee_uid": {
+        "type": "string",
+        "required": true
+    },
+    "start_time_working": {
+        "type": ""
+    },
+    "end_time_working": {
+        "type": ""
+    },
+    "year": {
+        "type": "number"
+    },
+    "month": {
+        "type": "number"
+    },
+    "day": {
+        "type": "number"
+    },
+    "hour": {
+        "type": "number"
+    },
+    "minute": {
+        "type": "number"
+    },
+    "employee": {
+        "type": "dict"
+    }
+}

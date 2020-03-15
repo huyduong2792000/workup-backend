@@ -1,0 +1,173 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "account_exid": {
+        "type": "string",
+        "length": 100
+    },
+    "account_no": {
+        "type": "string",
+        "required": true,
+        "length": 100
+    },
+    "accountname": {
+        "type": "string",
+        "required": true,
+        "length": 255
+    },
+    "parentid": {
+        "type": "string"
+    },
+    "account_type": {
+        "type": "string",
+        "length": 200
+    },
+    "industry": {
+        "type": "string",
+        "length": 200
+    },
+    "annualrevenue": {
+        "type": "number"
+    },
+    "rating": {
+        "type": "string",
+        "length": 200
+    },
+    "ownership": {
+        "type": "string",
+        "length": 50
+    },
+    "siccode": {
+        "type": "string",
+        "length": 50
+    },
+    "ticketsymbol": {
+        "type": "string",
+        "length": 30
+    },
+    "phone": {
+        "type": "string",
+        "length": 30
+    },
+    "phone_other": {
+        "type": "string",
+        "length": 30
+    },
+    "email": {
+        "type": "string",
+        "length": 100
+    },
+    "email_other": {
+        "type": "string",
+        "length": 100
+    },
+    "website": {
+        "type": "string",
+        "length": 100
+    },
+    "fax": {
+        "type": "string",
+        "length": 50
+    },
+    "employees": {
+        "type": "number",
+        "default": 0
+    },
+    "emailoptout": {
+        "type": "string",
+        "length": 3
+    },
+    "notify_owner": {
+        "type": "string",
+        "length": 3
+    },
+    "isconvertedfromlead": {
+        "type": "string",
+        "length": 3
+    },
+    "tags": {
+        "type": "string",
+        "length": 1
+    },
+    "bill_address_city": {
+        "type": "string",
+        "length": 30
+    },
+    "bill_address_code": {
+        "type": "string",
+        "length": 30
+    },
+    "bill_address_country": {
+        "type": "string",
+        "length": 30
+    },
+    "bill_address_state": {
+        "type": "string",
+        "length": 30
+    },
+    "bill_address_street": {
+        "type": "string",
+        "length": 250
+    },
+    "bill_address_pobox": {
+        "type": "string",
+        "length": 30
+    },
+    "ship_address_city": {
+        "type": "string",
+        "length": 30
+    },
+    "ship_address_code": {
+        "type": "string",
+        "length": 30
+    },
+    "ship_address_country": {
+        "type": "string",
+        "length": 30
+    },
+    "ship_address_state": {
+        "type": "string",
+        "length": 30
+    },
+    "ship_address_street": {
+        "type": "string",
+        "length": 250
+    },
+    "ship_address_pobox": {
+        "type": "string",
+        "length": 30
+    }
+}

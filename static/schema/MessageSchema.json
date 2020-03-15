@@ -1,0 +1,80 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": ""
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "created_by_name": {
+        "type": "string"
+    },
+    "updated_at": {
+        "type": ""
+    },
+    "updated_by": {
+        "type": "string"
+    },
+    "updated_by_name": {
+        "type": "string"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": ""
+    },
+    "deleted_by": {
+        "type": "string"
+    },
+    "deleted_by_name": {
+        "type": "string"
+    },
+    "channel": {
+        "type": "string",
+        "required": true,
+        "length": 24
+    },
+    "send_from": {
+        "type": "string",
+        "length": 32
+    },
+    "send_to": {
+        "type": "string",
+        "required": true,
+        "length": 32
+    },
+    "send_time": {
+        "type": ""
+    },
+    "message_text": {
+        "type": "string"
+    },
+    "message_attachment": {
+        "type": "string"
+    },
+    "price": {
+        "type": "number",
+        "default": 0
+    },
+    "has_response": {
+        "type": "boolean"
+    },
+    "response_content": {
+        "type": "string"
+    },
+    "conditions": {
+        "type": "json"
+    },
+    "request_response": {
+        "type": "json"
+    },
+    "status": {
+        "type": "string",
+        "length": 20
+    }
+}
