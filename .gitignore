@@ -7,7 +7,7 @@ alembic/**/__pycache_
 alembic.ini_
 alembic/versions
 application/**/__pycache__
-application/config.py
+
 nohup.out
 .vscode/*
 .project
