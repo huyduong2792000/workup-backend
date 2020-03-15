@@ -186,7 +186,7 @@ define(function (require) {
 							}
 						});
 
-					}else{
+					} else {
 						self.$el.find('#form_sub_task').show();
 					}
 				} else {
@@ -238,15 +238,7 @@ define(function (require) {
 				if (show_sub_priority == 4) {
 					show_sub_priority = "lowest"
 				}
-				let markup = `<tr>
-					<td><input type='checkbox' name='record'></td>
-					<td> ${ sub_task_code}  </td>
-					<td> ${ sub_name}  </td>
-					<td>${ sub_priority}</td>
-					<td>${sub_original_estimate}</td>
-					<td>${ sub_employee_val['full_name']}</td>
-					<td>${ sub_description}</td></tr>
-					`;
+
 
 
 
@@ -256,7 +248,7 @@ define(function (require) {
 				let parent_code = self.model.get("task_code");
 				let attach_file = self.model.get("attach_file");
 				let link_issue = self.model.get("link_issue");
-
+				
 				let sub_task = {
 					"priority": sub_priority,
 					"task_code": sub_task_code,
@@ -283,6 +275,15 @@ define(function (require) {
 					},
 					success: function (data) {
 						list_sub_task.push(sub_task)
+						let markup = `<tr>
+							<td><input type='checkbox' id="${data.id}" name='record'></td>
+							<td> ${ sub_task_code}  </td>
+							<td> ${ sub_name}  </td>
+							<td>${ sub_priority}</td>
+							<td>${sub_original_estimate}</td>
+							<td>${ sub_employee_val['full_name']}</td>
+							<td>${ sub_description}</td></tr>
+							`;
 						self.$el.find("table tbody").append(markup);
 					},
 					error: function (xhr, status, error) {
@@ -313,7 +314,25 @@ define(function (require) {
 			$(".delete-row").click(function () {
 				$("table tbody").find('input[name="record"]').each(function () {
 					if ($(this).is(":checked")) {
-						$(this).parents("tr").remove();
+						let id_task  = this.attributes.id.value;
+						
+						$.ajax({
+							url: self.getApp().serviceURL + '/api/v1/tasks/'+id_task,
+							method: "DELETE",
+							contentType: "application/json",
+							headers: {
+							},
+							beforeSend: function () {
+							},
+							success: function (data) {
+							
+								$(this).parents("tr").remove();
+							},
+							error: function (xhr, status, error) {
+								self.getApp().notify("xoá công việc không thành công", { type: "danger" });
+							},
+						});
+						
 					}
 				});
 			});
@@ -344,7 +363,7 @@ define(function (require) {
 				}
 			});
 
-			
+
 			self.model.on('change:tags', () => {
 				self.renderTags();
 			});
@@ -380,10 +399,10 @@ define(function (require) {
 
 			});
 		},
-		get_sub_tasks: function(){
+		get_sub_tasks: function () {
 			var self = this;
 			$.ajax({
-				url: self.getApp().serviceURL + '/api/v1/tasks?results_per_page=1000&q={"filters":{"$and":[{"parent_code":{"$eq":"'+self.model.get("task_code")+'"}}]},"order_by":[{"field":"created_at","direction":"asc"}]}',
+				url: self.getApp().serviceURL + '/api/v1/tasks?results_per_page=1000&q={"filters":{"$and":[{"parent_code":{"$eq":"' + self.model.get("task_code") + '"}}]},"order_by":[{"field":"created_at","direction":"asc"}]}',
 				method: "GET",
 				contentType: "application/json",
 				headers: {
@@ -392,13 +411,13 @@ define(function (require) {
 				},
 				success: function (data) {
 					let subtasks = data['objects']
-					if(subtasks.length > 0){
-						self.$el.find('#share_switch').attr( 'checked', true );
+					if (subtasks.length > 0) {
+						self.$el.find('#share_switch').attr('checked', true);
 						self.$el.find('#form_sub_task').show();
 					}
 					subtasks.forEach(element => {
 						let markup = `<tr>
-						<td><input type='checkbox' name='record'></td>
+						<td><input type='checkbox' id="${element.id}" name='record'></td>
 						<td> ${ element.task_code}  </td>
 						<td> ${ element.task_name}  </td>
 						<td>${ element.priority}</td>
@@ -408,7 +427,7 @@ define(function (require) {
 						`;
 						self.$el.find("table tbody").append(markup);
 					});
-					
+
 				},
 				error: function (xhr, status, error) {
 					self.getApp().notify("Lấy subtask k thành công", { type: "danger" });
