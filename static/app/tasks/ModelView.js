@@ -315,17 +315,16 @@ define(function (require) {
 				$("table tbody").find('input[name="record"]').each(function () {
 					if ($(this).is(":checked")) {
 						let id_task  = this.attributes.id.value;
-						
 						$.ajax({
 							url: self.getApp().serviceURL + '/api/v1/tasks/'+id_task,
 							method: "DELETE",
-							contentType: "application/json",
 							headers: {
 							},
 							beforeSend: function () {
 							},
 							success: function (data) {
-							
+								console.log(data);
+								
 								$(this).parents("tr").remove();
 							},
 							error: function (xhr, status, error) {
