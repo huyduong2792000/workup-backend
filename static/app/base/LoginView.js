@@ -11,6 +11,7 @@ define(function (require) {
 	return Gonrin.View.extend({
 		render: function () {
 			var self = this;
+			self.getApp().currentUser = null;
 			this.$el.html(template());
 			this.$el.find("#logo_img").attr("src", config.logo_img);
 			this.$el.find("#login-form").unbind("submit").bind("submit", function () {
@@ -20,6 +21,7 @@ define(function (require) {
 			return this;
 		},
 		processLogin: function () {
+
 			var username = this.$('[name=username]').val();
 			var password = this.$('[name=password]').val();
 
@@ -35,7 +37,7 @@ define(function (require) {
 				data: data,
 				headers: {
 					'content-type': 'application/json',
-					'app-key': null // set null to avoid lossing
+					// 'app-key': null // set null to avoid lossing
 				},
 				dataType: 'json',
 				success: function (data) {

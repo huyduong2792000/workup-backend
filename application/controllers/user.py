@@ -1,6 +1,6 @@
 from gatco.response import json, text
 from application.server import app
-from application.database import db
+from application.database import db, redisdb
 from application.extensions import auth
 import random
 import string
@@ -8,6 +8,7 @@ from application.extensions import apimanager
 from application.models.model import User, Role,Employee
 from application.controllers import auth_func
 from sqlalchemy import and_, or_
+from gatco_restapi.helpers import to_dict
 
     
 @app.route("/api/v1/makesalt/<password>", methods=["POST", "GET"])
@@ -27,10 +28,11 @@ async def user_test(request):
     # db.session.commit()
     return text("user_test api")
 
-@app.route("/user/login", methods=["POST", "GET"])
+@app.route("/login", methods=["POST", "GET"])
 async def user_login(request):
     param = request.json
-    user_name = param.get("user_name")
+    # print("pram =================",param)
+    user_name = param.get("username")
     password = param.get("password")
     print(user_name, password)
     if (user_name is not None) and (password is not None):
@@ -38,74 +40,99 @@ async def user_login(request):
         if (user is not None) and auth.verify_password(password, user.password, user.salt):
             try:
                 user.employee.status = 'online'
-                db.session.commit()
+                
             except:
                 pass
             auth.login_user(request, user)
-            print('user',user.roles)
-            return json({"id": user.id, "user_name": user.user_name, "full_name": user.full_name,"employee_id":user.employee_id,"role":user.roles[0].role_name})
+            result = to_dict(user)
+            db.session.commit()
+            # print('result==========',result)
+            return json(result)
         return json({"error_code":"LOGIN_FAILED","error_message":"user does not exist or incorrect password"}, status=520)
     else:
         return json({"error_code": "PARAM_ERROR", "error_message": "param error"}, status=520)
     return text("user_login api")
 
-@app.route("/user/logout", methods=["GET"])
+@app.route("/logout", methods=["GET"])
 async def user_logout(request):
     current_user = auth.current_user(request)
-    user = db.session.query(User).filter(User.id == int(current_user)).first()
+    # user = db.session.query(User).filter(User.id == int(current_user)).first()
     try:
         user.employee.status='offline'
         db.session.commit()
     except:
         pass
-    print('current user',current_user)
     auth.logout_user(request)
     return json({})
 
     
-def response_userinfo(user, **kw):
-    if user is not None:
-        user_info = to_dict(user)
-        exclude_attr = ["password", "salt", "created_at", "created_by", "updated_at", "updated_by",\
-                         "deleted_by", "deleted_at", "deleted","facebook_access_token","phone_country_prefix",\
-                         "phone_national_number","last_login_at","current_login_at",\
-                         "last_login_ip","current_login_ip","login_count"]
-        
-        for attr in exclude_attr:
-            if attr in user_info:
-                del(user_info[attr])
-                
-        return user_info
-    return None
+
 
 @app.route('/current-user', methods=["GET", "OPTIONS"])
-def get_current_user(request):
-    #user = auth.current_user(request)
-    return json({})
-    token = request.headers.get("Cookie", None)
-    if token is not None:
-#         print(token)
-        uid = redisdb.get("sessions:" + token)
-        scope = request.args.get("scope", None)
-        if uid is not None:
-            uid = uid.decode('utf8')
-            user = db.session.query(User).filter(User.id == uid).first()
-            if user is not None:
-                if user.active == 1:
-                    userobj = response_userinfo(user, scope)     
-                    return json(userobj)
-                else:  
-                    return json({"error_code": "LOGIN_FAILED", "error_message": "Tài khoản của bạn đã bị khoá. Vui lòng liên hệ quản trị hệ thống để được giải đáp"}, status=520)
-        else:
-            return json({
-                "error_code": "SESSION_EXPIRED",
-                "error_message":""
-            }, status = 520)
+async def get_current_user(request):
+    error_msg = None
+    uid = auth.current_user(request)
+    if uid is not None:
+        user_info = db.session.query(User).filter(User.id == uid).first()
+        user_info = to_dict(user_info)
+        return json(user_info)
     else:
-        return json({
-            "error_code": "SESSION_EXPIRED",
-            "error_message":""
-            }, status = 520)
+        # return json("ok")
+         return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+    
+    # print("===============", user_info)
+    # if user_info is not None:
+        
+        
+   
+# def get_current_user(request):
+#     #user = auth.current_user(request)
+#     # return json({"id": user.id, "user_name": user.user_name, "full_name": user.full_name,"employee_id":user.employee_id,"role":user.roles[0].role_name})
+#     # return json({})
+#     # print('request',request.json)
+#     token = request.headers.get("Cookie", None)
+#     print("token============",token)
+#     if token is not None:
+#         uid = redisdb.get("sessions:" + token)
+#         print("uid=======",uid)
+#         scope = request.args.get("scope", None)
+#         if uid is not None:
+#             uid = uid.decode('utf8')
+#             user = db.session.query(User).filter(User.id == uid).first()
+#             if user is not None:
+#                 if user.is_active == True:
+#                     userobj = response_userinfo(user, scope)     
+#                     return json(userobj)
+#                 else:  
+#                     return json({"error_code": "LOGIN_FAILED", "error_message": "Tài khoản của bạn đã bị khoá. Vui lòng liên hệ quản trị hệ thống để được giải đáp"}, status=520)
+#         else:
+#             return json({
+#                 "error_code": "SESSION_EXPIRED",
+#                 "error_message":""
+#             }, status = 520)
+#     else:
+#         return json({
+#             "error_code": "SESSION_EXPIRED",
+#             "error_message":""
+#             }, status = 520)
+# def response_userinfo(user, **kw):
+#     if user is not None:
+#         user_info = to_dict(user)
+#         exclude_attr = ["password", "salt", "created_at", "created_by", "updated_at", "updated_by",\
+#                          "deleted_by", "deleted_at", "deleted","facebook_access_token","phone_country_prefix",\
+#                          "phone_national_number","last_login_at","current_login_at",\
+#                          "last_login_ip","current_login_ip","login_count"]
+        
+#         for attr in exclude_attr:
+#             if attr in user_info:
+#                 del(user_info[attr])
+                
+#         return user_info
+#     return None
+
 
 def valid_employe(request=None, data=None, **kw):
     id_identifier =  data.get('id_identifier')

@@ -90,9 +90,11 @@ require([
 
     var app = new Gonrin.Application({
         serviceURL: host + tenant_id,
+        // serviceURL: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port : ''),
         staticURL: static_url,
         ZaloAppID: null,
-        verifyApi: host + tenant_id + "/api/v1/verify-info",
+        // verifyApi: host + tenant_id + "/api/v1/verify-info",
+        verifyApi: host + tenant_id,
         tenantConfig: null,
         userConfig: null,
         router: new Router(),
@@ -100,26 +102,26 @@ require([
         initialize: function () {
             var self = this;
             loader.show();
+            this.getRouter().registerAppRoute();
             this.getCurrentUser();
+            // $.ajax({
+            //     url: self.serviceURL + "/api/v1/ranking/count_people_per_rank",
+            //     data: null,
+            //     type: "GET",
+            //     contentType: "application/json",
+            //     success: function (response) {
+            //         config.rankingList = response ? response : [];
 
-            $.ajax({
-                url: self.serviceURL + "/api/v1/ranking/count_people_per_rank",
-                data: null,
-                type: "GET",
-                contentType: "application/json",
-                success: function (response) {
-                    config.rankingList = response ? response : [];
+            //         if (config.rankingList.length > 0 && response[response.length - 1].start_scores > 0) {
+            //             config.rankingStars = response.length;
+            //         } else {
+            //             config.rankingStars = response && response.length > 0 ? response.length - 1 : 0;
+            //         }
+            //     },
+            //     error: function (model, xhr, options) {
 
-                    if (config.rankingList.length > 0 && response[response.length - 1].start_scores > 0) {
-                        config.rankingStars = response.length;
-                    } else {
-                        config.rankingStars = response && response.length > 0 ? response.length - 1 : 0;
-                    }
-                },
-                error: function (model, xhr, options) {
-
-                }
-            });
+            //     }
+            // });
 
 
         },
@@ -128,7 +130,7 @@ require([
             var self = this;
             $.ajax({
                 url: self.serviceURL + '/current-user',
-                dataType: "json",
+                type:'GET',
                 success: function (data) {
                     loader.hide();
                     self.verifyAppData();
@@ -139,25 +141,25 @@ require([
                     var currentURL = window.location.href;
                     var backRouter = currentURL.substring(0, currentURL.indexOf("#"));
                     $.notify({ message: XMLHttpRequest.responseJSON.error_message });
-                    window.location.replace("https://upstart.vn/accounts");
+                    self.router.navigate("login");
                 }
             });
         },
         postLogin: function (data) {
             var self = this;
             self.currentUser = new Gonrin.User(data);
-            $('body').find(".app").html(layout);
+            $('body').html(layout);
             $.each($('.release-version'), function () {
                 $(this).html(release_version);
             });
-            this.$header = $('.app').find(".header-navbar");
-            this.$content = $('.app').find(".content-area");
-            this.$navbar = $('.app').find(".left-navbar-space");
-            this.$toolbox = $('.app').find(".tools-area");
-
+            this.$header = $('body').find(".header-navbar");
+            this.$content = $('body').find(".content-area");
+            this.$navbar = $('body').find(".left-navbar-space");
+            this.$toolbox = $('body').find(".tools-area");
             this.nav = new Nav({ el: this.$navbar });
             self.nav.render();
 
+            this.$toolbox = $('body').find(".tools-area");
             // add logo
             if (config.logo_img) {
                 this.$header.find("#logo-img").attr("src", "https://upstart.vn/static/images/UpCRM.png");
