@@ -74,6 +74,10 @@
         "type": "string",
         "length": 255
     },
+    "active": {
+        "type": "number",
+        "default": 1
+    },
     "employee": {
         "type": "dict"
     }

@@ -106,16 +106,22 @@ define(function (require) {
 				},
 				command: function () {
 					var self = this;
-					self.model.destroy(null, {
+					self.model.set('active', 0);
+
+					self.model.save(null, {
 						success: function (model, respose, options) {
 							self.getApp().notify({ message: "Đã xoá" });
 							self.getApp().getRouter().navigate(self.collectionName + "/collection");
-
 						},
-						error: function (model, xhr, options) {
-							self.getApp().notify('Save error');
+						error: function (modelData, xhr, options) {
+							if (xhr && xhr.responseJSON && xhr.responseJSON.error_message) {
+								self.getApp().notify({ message: xhr.responseJSON.error_message }, { type: "danger" });
+								return;
+							}
+							self.getApp().notify({ message: "Lỗi hệ thống, thử lại sau." }, { type: "danger" });
 						}
 					});
+					
 				}
 			},
 			]
@@ -312,20 +318,21 @@ define(function (require) {
 
 			// Find and remove selected table rows
 			$(".delete-row").click(function () {
+				
 				$("table tbody").find('input[name="record"]').each(function () {
+					var thatEl = this;
 					if ($(this).is(":checked")) {
 						let id_task  = this.attributes.id.value;
 						$.ajax({
 							url: self.getApp().serviceURL + '/api/v1/tasks/'+id_task,
-							method: "DELETE",
+							method: "PUT",
+							data: JSON.stringify({"active":0}),
 							headers: {
 							},
 							beforeSend: function () {
 							},
-							success: function (data) {
-								console.log(data);
-								
-								$(this).parents("tr").remove();
+							success: function (data) {								
+								$(thatEl).parents("tr").remove();
 							},
 							error: function (xhr, status, error) {
 								self.getApp().notify("xoá công việc không thành công", { type: "danger" });
@@ -414,7 +421,7 @@ define(function (require) {
 						self.$el.find('#share_switch').attr('checked', true);
 						self.$el.find('#form_sub_task').show();
 					}
-					subtasks.forEach(element => {
+					subtasks.forEach(element => {						
 						let markup = `<tr>
 						<td><input type='checkbox' id="${element.id}" name='record'></td>
 						<td> ${ element.task_code}  </td>
