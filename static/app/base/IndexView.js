@@ -14,8 +14,8 @@ define(function (require) {
 		render: function () {
 			var self = this;
 			self.applyBindings();
-			self.loadData();
-			this.loadContactLineTimeData();
+			// self.loadData();
+			// this.loadContactLineTimeData();
 		},
 
 		loadData: function () {
