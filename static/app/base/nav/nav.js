@@ -21,7 +21,18 @@ define(function (require) {
             "visible": true,
             "entries": [
                 {
-                    "text": "Tasks",
+                    "text": "Công việc ngày hôm nay",
+                    "type": "view",
+                    "collectionName": "tasks",
+                    "route": "tasks/collection",
+                    "$ref": "app/tasks/CollectionView",
+                    "icon": "<i class='fa fa-sitemap'></i>",
+                    "visible": function () {
+                        return true;
+                    }
+                },
+                {
+                    "text": "Quản lý công việc",
                     "type": "view",
                     "collectionName": "tasks",
                     "route": "tasks/collection",

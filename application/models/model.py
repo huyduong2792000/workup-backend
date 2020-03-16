@@ -96,6 +96,7 @@ class Tasks(CommonModel):
     rating = db.Column(SmallInteger)
     comments = db.Column(JSONB())
     description = db.Column(String(255))
+    active = db.Column(SmallInteger, default=1)
     
     
   
