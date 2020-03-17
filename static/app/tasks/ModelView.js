@@ -45,14 +45,14 @@ define(function (require) {
 					value: 2
 				},
 				{
-					field: "employee",
+					field: "employees",
 					label: "Nhân viên",
 					uicontrol: "ref",
 					textField: "full_name",
-					selectionMode: "single",
+					selectionMode: "multiple",
 					size: "large",
 					dataSource: EmployeeSelectView
-				},
+				}
 
 			],
 		},
@@ -209,12 +209,12 @@ define(function (require) {
 			var sub_employee = this.$el.find('#sub_employee').ref({
 				contex: this,
 				textField: "full_name",
-				selectionMode: "single",
+				selectionMode: "multiple",
 				size: "large",
 				dataSource: SubEmployeeSelectView
 			});
 			sub_employee.on('change.gonrin', function (e) {
-				var sub_employee_val = sub_employee.data('gonrin').getValue() || {};
+				var sub_employee_val = sub_employee.data('gonrin').getValue() || [];
 				// console.log(sub_employee_val);
 
 			});
@@ -223,7 +223,11 @@ define(function (require) {
 			self.$el.find(".add-row").click(function () {
 				let sub_name = $("#sub_name").val();
 				// console.log(sub_name);
-				var sub_employee_val = sub_employee.data('gonrin').getValue() || {};
+				var sub_employee_val = sub_employee.data('gonrin').getValue() || [];
+				let employees_name = [];
+				sub_employee_val.forEach(element => {
+					employees_name.push(element.full_name);
+				});
 				let sub_priority = $("#sub_priority").val();
 				let sub_original_estimate = $("#sub_original_estimate").val();
 				// let sub_employee = $("#sub_employee").val();
@@ -259,7 +263,7 @@ define(function (require) {
 					"priority": sub_priority,
 					"task_code": sub_task_code,
 					"task_name": sub_name,
-					"employee_uid": sub_employee_val['id'],
+					"employees": sub_employee_val,
 					"original_estimate": sub_original_estimate,
 					"description": sub_description,
 					"start_time": start_time,
@@ -270,6 +274,8 @@ define(function (require) {
 					"parent_code": parent_code
 
 				}
+				console.log(sub_task);
+				
 				$.ajax({
 					url: self.getApp().serviceURL + "/api/v1/tasks",
 					data: JSON.stringify(sub_task),
@@ -287,7 +293,7 @@ define(function (require) {
 							<td> ${ sub_name}  </td>
 							<td>${ sub_priority}</td>
 							<td>${sub_original_estimate}</td>
-							<td>${ sub_employee_val['full_name']}</td>
+							<td>${ employees_name.toString()}</td>
 							<td>${ sub_description}</td></tr>
 							`;
 						self.$el.find("table tbody").append(markup);
@@ -421,14 +427,19 @@ define(function (require) {
 						self.$el.find('#share_switch').attr('checked', true);
 						self.$el.find('#form_sub_task').show();
 					}
-					subtasks.forEach(element => {						
+					subtasks.forEach(element => {
+						let employees = element.employees;
+						let employees_name = []
+						employees.forEach(employee => {
+							employees_name.push(employee.full_name);
+						});
 						let markup = `<tr>
 						<td><input type='checkbox' id="${element.id}" name='record'></td>
 						<td> ${ element.task_code}  </td>
 						<td> ${ element.task_name}  </td>
 						<td>${ element.priority}</td>
 						<td>${element.original_estimate}</td>
-						<td>${ element.employee.full_name}</td>
+						<td>${ employees_name.toString()}</td>
 						<td>${ element.description}</td></tr>
 						`;
 						self.$el.find("table tbody").append(markup);

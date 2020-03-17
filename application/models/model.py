@@ -48,6 +48,21 @@ class User(CommonModel):
         """ Show user object info. """
         return '<User: {}>'.format(self.id)
 
+class TasksEmployees(CommonModel):
+    __tablename__ = 'tasks_employees'
+    task_uid = db.Column(UUID(as_uuid=True), ForeignKey('tasks.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task = db.relationship("Tasks")
+    employee_uid = db.Column(UUID(as_uuid=True), ForeignKey('employee.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    employee = db.relationship("Employee")
+    
+    
+    
+# tasks_employees = db.Table(
+#     "tasks_employees",
+#     db.Column("task_uid", UUID(as_uuid=True), db.ForeignKey("tasks.id", ondelete="cascade"), primary_key=True),
+#     db.Column("employee_uid", UUID(as_uuid=True), db.ForeignKey("employee.id", ondelete="cascade"), primary_key=True)
+# )
+
 
 class Employee(CommonModel):
     __tablename__= 'employee'
@@ -69,11 +84,7 @@ class Employee(CommonModel):
     end_time = db.Column(BigInteger(), index=True)
     user = db.relationship("User", cascade="all, delete-orphan", lazy='dynamic')
   
-taskschedules_tasks = db.Table(
-    "taskschedules_tasks",
-    db.Column("task_uid", UUID(as_uuid=True), db.ForeignKey("tasks.id", ondelete="cascade"), primary_key=True),
-    db.Column("task_schedule_uid", UUID(as_uuid=True), db.ForeignKey("task_schedule.id", ondelete="cascade"), primary_key=True)
-)
+
 
 class Tasks(CommonModel):
     __tablename__='tasks'
@@ -82,8 +93,10 @@ class Tasks(CommonModel):
     task_name_unsigned = db.Column(String(255), nullable=True) # tên không dấu phục vụ truy vấn dữ liệu lớn
 #     sub_task = db.Column(Boolean, default=False) # Nếu là subtask thì bắt buộc phải có parent mới cho lưu vào
     parent_code = db.Column(String(255), nullable = True)
-    employee = db.relationship("Employee")
-    employee_uid = db.Column(UUID(as_uuid=True), ForeignKey('employee.id', onupdate='CASCADE', ondelete='SET NULL'), index=True, nullable=True)
+    employees = db.relationship("Employee",
+                            secondary="tasks_employees")
+#     employee = db.relationship("Employee")
+#     employee_uid = db.Column(UUID(as_uuid=True), ForeignKey('employee.id', onupdate='CASCADE', ondelete='SET NULL'), index=True, nullable=True)
 #     reporter = db.Column(String, ForeignKey('employee.id',ondelete="cascade"), nullable=False)
     tags = db.Column(JSONB())
     priority = db.Column(SmallInteger, index=True) # {1: highest, 2: high, 3: low, 4: lowest}
@@ -99,7 +112,12 @@ class Tasks(CommonModel):
     active = db.Column(SmallInteger, default=1)
     
     
-  
+taskschedules_tasks = db.Table(
+    "taskschedules_tasks",
+    db.Column("task_uid", UUID(as_uuid=True), db.ForeignKey("tasks.id", ondelete="cascade"), primary_key=True),
+    db.Column("task_schedule_uid", UUID(as_uuid=True), db.ForeignKey("task_schedule.id", ondelete="cascade"), primary_key=True)
+)
+         
    
 class TaskSchedule(CommonModel):
     __tablename__ = 'task_schedule'
@@ -110,8 +128,7 @@ class TaskSchedule(CommonModel):
                             secondary="taskschedules_tasks",
                             )
 
-# 0:0 job ngay mai co vievj 
-
+# 0:0 job ngay mai co vievj
 # class TodoInfo(CommonModel):
 #     __tablename__ = 'todoinfo'
 #     code = db.Column(String(255))
@@ -204,13 +221,15 @@ employee_workstation = db.Table(
     db.Column("employee_id", UUID(as_uuid=True), db.ForeignKey("employee.id", ondelete="cascade")),
     db.Column("workstation_id", UUID(as_uuid=True), db.ForeignKey("workstation.id", ondelete="cascade"))
 )
+
 class Workstation(CommonModel):
     __tablename__ = 'workstation'
     name = db.Column(String)
     organization = db.relationship("Organization")
     organization_uid = db.Column(UUID(as_uuid=True), ForeignKey('organization.id', onupdate='CASCADE', ondelete='SET NULL'), index=True, nullable=False)
     address = db.Column(String(255))
-#  
+
+
 class Organization(CommonModel):
     __tablename__ = 'organization'
     status = db.Column(String(255))
