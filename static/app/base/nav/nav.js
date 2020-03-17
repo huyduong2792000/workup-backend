@@ -49,7 +49,24 @@ define(function (require) {
                     "$ref": "app/tasks/ModelView",
                     "visible": false
                 },
-               
+                {
+                    "text": "Lên lịch công việc",
+                    "type": "view",
+                    "collectionName": "task_schedule",
+                    "route": "task_schedule/collection",
+                    "$ref": "app/task_schedule/CollectionView",
+                    "icon": '<i class="far fa-calendar-plus"></i>',
+                    "visible": function () {
+                        return true;
+                    }
+                },
+                {
+                    "type": "view",
+                    "collectionName": "task_schedule",
+                    "route": "task_schedule/model(/:id)",
+                    "$ref": "app/task_schedule/ModelView",
+                    "visible": false
+                },
                 
             ]
         },

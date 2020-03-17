@@ -19,11 +19,16 @@
     "day_of_week": {
         "type": ""
     },
-    "start_time_working": {
+    "hour_of_day": {
         "type": ""
     },
+    "start_time_working": {
+        "type": "",
+        "default": 0
+    },
     "end_time_working": {
-        "type": ""
+        "type": "",
+        "default": 0
     },
     "Tasks": {
         "type": "list"

@@ -97,15 +97,13 @@ class Tasks(CommonModel):
     comments = db.Column(JSONB())
     description = db.Column(String(255))
     active = db.Column(SmallInteger, default=1)
-    
-    
-  
-   
+
 class TaskSchedule(CommonModel):
     __tablename__ = 'task_schedule'
     day_of_week = db.Column(BigInteger()) # 2^n
-    start_time_working = db.Column(BigInteger())
-    end_time_working = db.Column(BigInteger())
+    hour_of_day = db.Column(BigInteger()) #2^n
+    start_time_working = db.Column(BigInteger(), default = 0) #equal 0 because 0*2^n =0
+    end_time_working = db.Column(BigInteger(),default = 0) #equal 0 because 0*2^n =0
     Tasks = db.relationship("Tasks",
                             secondary="taskschedules_tasks",
                             )
