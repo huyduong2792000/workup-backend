@@ -22,12 +22,13 @@ define(function (require) {
 				{ field: "hour_of_day", label: "Giờ làm" },
 				{
 					field: "start_time_working", label: "Ngày bắt đầu", template: function (rowObj) {
-						return Helpers.setDatetime(rowObj.start_time_working);
+						console.log('rowobject',rowObj)
+						return moment.unix(rowObj.start_time_working).format("DD/MM/YYYY HH:mm:ss");
 					}
 				},
 				{
 					field: "end_time_working", label: "Ngày kết thúc", template: function (rowObj) {
-						return Helpers.setDatetime(rowObj.end_time_working);
+						return moment.unix(rowObj.end_time_working).format("DD/MM/YYYY HH:mm:ss");
 					}
 				},
 				{
