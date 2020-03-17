@@ -21,7 +21,7 @@ define(function (require) {
 			return this;
 		},
 		processLogin: function () {
-
+			console.log('process login')
 			var username = this.$('[name=username]').val();
 			var password = this.$('[name=password]').val();
 
