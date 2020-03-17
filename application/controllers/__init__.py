@@ -6,7 +6,7 @@ from application.extensions import jinja, auth
 def init_views(app):
     import application.controllers.user
     import application.controllers.apimanger
-    import application.controllers.todoschedule
+    import application.controllers.task_schedule
     import application.controllers.tasks
     
     @app.route('/')

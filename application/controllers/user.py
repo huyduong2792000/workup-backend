@@ -11,12 +11,6 @@ from sqlalchemy import and_, or_
 from gatco_restapi.helpers import to_dict
 
     
-@app.route("/api/v1/makesalt/<password>", methods=["POST", "GET"])
-async def makesalt(request,password):
-    letters = string.ascii_lowercase
-    user_salt = ''.join(random.choice(letters) for i in range(64))
-    user_password=auth.encrypt_password(password, user_salt)
-    return json({'user_password':user_password,'user_salt':user_salt})
 @app.route("/user_test")
 
 async def user_test(request):
@@ -31,7 +25,6 @@ async def user_test(request):
 @app.route("/login", methods=["POST", "GET"])
 async def user_login(request):
     param = request.json
-    # print("pram =================",param)
     user_name = param.get("username")
     password = param.get("password")
     print(user_name, password)
@@ -40,12 +33,12 @@ async def user_login(request):
         if (user is not None) and auth.verify_password(password, user.password, user.salt):
             try:
                 user.employee.status = 'online'
-                
+                db.session.commit()
             except:
                 pass
             auth.login_user(request, user)
             result = to_dict(user)
-            db.session.commit()
+            
             # print('result==========',result)
             return json(result)
         return json({"error_code":"LOGIN_FAILED","error_message":"user does not exist or incorrect password"}, status=520)
@@ -55,10 +48,11 @@ async def user_login(request):
 
 @app.route("/logout", methods=["GET"])
 async def user_logout(request):
-    current_user = auth.current_user(request)
+    uid = auth.current_user(request)
     # user = db.session.query(User).filter(User.id == int(current_user)).first()
     try:
-        user.employee.status='offline'
+        user_info = db.session.query(User).filter(User.id == uid).first()
+        user_info.employee.status='offline'
         db.session.commit()
     except:
         pass

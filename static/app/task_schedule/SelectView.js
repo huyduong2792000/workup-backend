@@ -5,14 +5,14 @@ define(function (require) {
 		Gonrin = require('gonrin');
 
 	var template = require('text!./tpl/select.html'),
-		schema = require('json!schema/TasksSchema.json');
+		schema = require('json!schema/TaskScheduleSchema.json');
 	var Helpers = require('app/common/Helpers');
 	return Gonrin.CollectionDialogView.extend({
 		template: template,
 		modelSchema: schema,
 		urlPrefix: "/api/v1/",
-		collectionName: "tasks",
-		textField: "task_name",
+		collectionName: "employee",
+		textField: "full_name",
 		tools: [
 			{
 				name: "close",
@@ -36,9 +36,11 @@ define(function (require) {
 		],
 		uiControl: {
 			fields: [
-				{ field: "task_name", label: "Tên" },
-				{ field: "priority", label: "Mức độ" },
-				{ field: "status", label: "Trạng thái" },
+				{ field: "full_name", label: "Tên nhân viên" },
+				{ field: "email", label: "Email" },
+				{ field: "phone_number", label: "Điện thoại" },
+				{ field: "avatar_url", label: "ẢNH ĐẠI DIỆN", visible: true, template: '<img src="{{avatar_url}}" alt="" style="max-height:60px">', width: 150 },
+				{ field: "position", label: "Chức vụ" },
 				{
 					field: "start_time", label: "Thời gian bắt đầu", template: function (rowObj) {
 						return Helpers.setDatetime(rowObj.start_time);
@@ -49,6 +51,7 @@ define(function (require) {
 						return Helpers.setDatetime(rowObj.end_time);
 					}
 				},
+
 			],
 			onRowClick: function (event) {
 				this.uiControl.selectedItems = event.selectedItems;

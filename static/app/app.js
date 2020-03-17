@@ -92,7 +92,7 @@ require([
         serviceURL: host + tenant_id,
         // serviceURL: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port : ''),
         staticURL: static_url,
-        ZaloAppID: null,
+        // ZaloAppID: null,
         // verifyApi: host + tenant_id + "/api/v1/verify-info",
         verifyApi: host + tenant_id,
         tenantConfig: null,
@@ -128,12 +128,13 @@ require([
 
         getCurrentUser: function () {
             var self = this;
+            console.log('process get current user')
             $.ajax({
                 url: self.serviceURL + '/current-user',
                 type:'GET',
                 success: function (data) {
                     loader.hide();
-                    self.verifyAppData();
+                    // self.verifyAppData();
                     self.postLogin(data);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -147,6 +148,7 @@ require([
         },
         postLogin: function (data) {
             var self = this;
+            console.log('process post login')
             self.currentUser = new Gonrin.User(data);
             $('body').html(layout);
             $.each($('.release-version'), function () {
@@ -166,7 +168,7 @@ require([
             }
             this.profileArea = new ProfileAreaView({ el: $('body').find('#profile-area') });
             this.profileArea.render();
-            self.router.navigate("index");
+            // self.router.navigate("index");
             // this.renderTheme(self.currentUser.config_data);
         },
 
