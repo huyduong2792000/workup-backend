@@ -54,8 +54,7 @@ class TasksEmployees(CommonModel):
     task = db.relationship("Tasks")
     employee_uid = db.Column(UUID(as_uuid=True), ForeignKey('employee.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     employee = db.relationship("Employee")
-    
-    
+   
     
 # tasks_employees = db.Table(
 #     "tasks_employees",
@@ -109,14 +108,24 @@ class Tasks(CommonModel):
     rating = db.Column(SmallInteger)
     comments = db.Column(JSONB())
     description = db.Column(String(255))
+    day_of_week = db.Column(BigInteger()) # +=2^n
+    hour_of_day = db.Column(BigInteger()) # +=2^n
     active = db.Column(SmallInteger, default=1)
     
+
+class TaskschedulesTasks(CommonModel):
+    __tablename__ = 'taskschedules_tasks'
+    task_uid = db.Column(UUID(as_uuid=True), ForeignKey('tasks.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task = db.relationship("Tasks")
+    task_schedule_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_schedule.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task_schedule = db.relationship("TaskSchedule")
     
-taskschedules_tasks = db.Table(
-    "taskschedules_tasks",
-    db.Column("task_uid", UUID(as_uuid=True), db.ForeignKey("tasks.id", ondelete="cascade"), primary_key=True),
-    db.Column("task_schedule_uid", UUID(as_uuid=True), db.ForeignKey("task_schedule.id", ondelete="cascade"), primary_key=True)
-)
+    
+# taskschedules_tasks = db.Table(
+#     "taskschedules_tasks",
+#     db.Column("task_uid", UUID(as_uuid=True), db.ForeignKey("tasks.id", ondelete="cascade"), primary_key=True),
+#     db.Column("task_schedule_uid", UUID(as_uuid=True), db.ForeignKey("task_schedule.id", ondelete="cascade"), primary_key=True)
+# )
          
    
 class TaskSchedule(CommonModel):

@@ -21,7 +21,7 @@ define(function (require) {
             "visible": true,
             "entries": [
                 {
-                    "text": "Công việc của tôi",
+                    "text": "Công việc hôm nay",
                     "type": "view",
                     "collectionName": "mytasks",
                     "route": "mytasks/collection",
@@ -37,7 +37,7 @@ define(function (require) {
                     "collectionName": "tasks",
                     "route": "tasks/collection",
                     "$ref": "app/tasks/CollectionView",
-                    "icon": "<i class='fa fa-sitemap'></i>",
+                    "icon": "<i class='fa fa-cog'></i>",
                     "visible": function () {
                         return true;
                     }

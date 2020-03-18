@@ -41,6 +41,27 @@
 				</div>
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
+				<div>Người nhận</div>
+				<div>
+					<input class="form-control" type="text" data-bind="list:employees" />
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-rigth">
+					<div class="text-uppercase" style="line-height: 26px; float: left;">Gắn thẻ / Tags</div>
+					<div id="tags_space" style="width: 100%; min-height: 60px;
+												border: 1px solid #ccc;
+												border-radius: 6px;
+												margin-top: 26px;"></div>
+				</div>
+			<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
+				<div>Mô tả</div>
+				<div>
+					<textarea name="" id="description" cols="30" rows="3" class="form-control" type="text" data-bind="value:description"></textarea>
+					<!-- <input class="form-control" type="text" data-bind="value:description" /> -->
+				</div>
+			</div>
+			
+			<!-- <div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
 				<div>Mức độ công việc*</div>
 				<div>
 					<input class="form-control" type="text" data-bind="value:priority" />
@@ -51,22 +72,15 @@
 				<div>
 					<input class="form-control" type="number" data-bind="value:original_estimate" />
 				</div>
-			</div>
+			</div> -->
 
 		</div>
 
 		<div class="row">
-			<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
-				<div>Người nhận</div>
-				<div>
-					<input class="form-control" type="text" data-bind="list:employees" />
-				</div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
+			
+			<!-- <div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
 				<div>Thời gian bắt đầu*</div>
-				<!-- <div>
-					<input class="form-control" type="date" data-bind="value:start_time" />
-				</div> -->
+				
 				<div class="input-group date" id="start_time" data-target-input="nearest">
 					<input type="text" class="form-control datetimepicker-input" data-target="#start_time" />
 					<div class="input-group-append" data-target="#start_time" data-toggle="datetimepicker">
@@ -77,25 +91,23 @@
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
 				<div>Thời gian kết thúc*</div>
-				<!-- <div>
-					<input class="form-control" type="date" data-bind="value:end_time" />
-				</div> -->
+				
 				<div class="input-group date" id="end_time" data-target-input="nearest">
 					<input type="text" class="form-control datetimepicker-input" data-target="#end_time" readonly />
 					<div class="input-group-append" data-target="#end_time" data-toggle="datetimepicker">
 						<div class="input-group-text"><i class="fa fa-calendar"></i></div>
 					</div>
 				</div>
-			</div>
-			<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
+			</div> -->
+			<!-- <div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
 				<div>Mô tả</div>
 				<div>
 					<input class="form-control" type="text" data-bind="value:description" />
 				</div>
-			</div>
+			</div> -->
 
 		</div>
-		<div class="row">
+		<!-- <div class="row">
 			<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-rigth">
 				<div class="text-uppercase" style="line-height: 26px; float: left;">Gắn thẻ / Tags</div>
 				<div id="tags_space" style="width: 100%; min-height: 80px;
@@ -103,7 +115,7 @@
 											border-radius: 6px;
 											margin-top: 26px;"></div>
 			</div>
-		</div>
+		</div> -->
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="row form-group">
@@ -122,32 +134,32 @@
 					<!-- RENDER EXTRA ATTRIBUTES HERE -->
 					<form>
 						<div class="row">
-							<div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left hide-on-mobile">
+							<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
 								<div class="input-group">
-									<input type="text" class="form-control" id="sub_name" placeholder="Công việc">
+									<input type="text" class="form-control" id="sub_name" placeholder="Tên công việc">
 								</div>
 							</div>
-							<div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left">
+							<!-- <div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left">
 								<div class="input-group">
 									<input type="text" class="form-control" id="sub_priority" placeholder="Mức độ">
 								</div>
-							</div>
-							<div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left">
+							</div> -->
+							<!-- <div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left">
 								<div class="input-group">
 									<input type="number" class="form-control" id="sub_original_estimate" placeholder="Ước lượng">
 								</div>
-							</div>
-							<div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left">
+							</div> -->
+							<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
 								<div class="input-group">
 
 									<input type="text" class="form-control" id="sub_employee" placeholder="Người thực hiện">
 								</div>
 							</div>
-							<div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left">
+							<!-- <div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left">
 								<div class="input-group">
 									<input type="text" class="form-control" id="sub_description" placeholder="Mô tả">
 								</div>
-							</div>
+							</div> -->
 							<div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left ">
 								<button class="btn btn-ssm btn-info ml-2 add-row" id="add-row"><span class="fa fa-plus"></span> Thêm</button>
 							</div>
@@ -162,8 +174,8 @@
 								<th>Chọn</th>
 								<th>Mã công việc</th>
 								<th>Công việc</th>
-								<th>Mức độ</th>
-								<th>Ước lượng</th>
+								<!-- <th>Mức độ</th>
+								<th>Ước lượng</th> -->
 								<th>Người thực hiện</th>
 								<th>Mô tả</th>
 							</tr>

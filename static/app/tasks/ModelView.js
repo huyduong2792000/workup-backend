@@ -205,6 +205,8 @@ define(function (require) {
 			const self = this;
 			var id = this.getApp().getRouter().getParam("id");
 			self.switchUIControlRegister()
+			self.formartTime("#start_time",'start_time')
+			self.formartTime("#end_time",'end_time')
 			var list_sub_task = []
 			var sub_employee = this.$el.find('#sub_employee').ref({
 				contex: this,
@@ -231,7 +233,8 @@ define(function (require) {
 				let sub_priority = $("#sub_priority").val();
 				let sub_original_estimate = $("#sub_original_estimate").val();
 				// let sub_employee = $("#sub_employee").val();
-				let sub_description = $("#sub_description").val();
+				// let sub_description = $("#sub_description").val();
+				let sub_description = '';
 				let sub_task_code = self.getUniqueID();
 
 				let show_sub_priority = sub_priority;
@@ -274,7 +277,7 @@ define(function (require) {
 					"parent_code": parent_code
 
 				}
-				console.log(sub_task);
+				// console.log(sub_task);
 				
 				$.ajax({
 					url: self.getApp().serviceURL + "/api/v1/tasks",
@@ -287,12 +290,12 @@ define(function (require) {
 					},
 					success: function (data) {
 						list_sub_task.push(sub_task)
+						// <td>${ sub_priority}</td>
+						// 	<td>${sub_original_estimate}</td>
 						let markup = `<tr>
 							<td><input type='checkbox' id="${data.id}" name='record'></td>
 							<td> ${ sub_task_code}  </td>
 							<td> ${ sub_name}  </td>
-							<td>${ sub_priority}</td>
-							<td>${sub_original_estimate}</td>
 							<td>${ employees_name.toString()}</td>
 							<td>${ sub_description}</td></tr>
 							`;
@@ -349,31 +352,6 @@ define(function (require) {
 				});
 			});
 
-
-
-			var birthday = false;
-			if (self.model.get("birthday") && self.model.get("birthday").indexOf("T")) {
-				birthday = moment(self.model.get("birthday"), "YYYY-MM-DDTHH:mm:ss");
-			} else if (self.model.get("birthday") && self.model.get("birthday").indexOf("-")) {
-				birthday = moment(self.model.get("birthday"), "YYYY-MM-DD");
-			} else if (self.model.get("birthday")) {
-				birthday = moment(self.model.get("birthday"), "DD/MM/YYYY");
-			}
-			self.$el.find('#birthday').datetimepicker({
-				defaultDate: birthday,
-				format: "DD/MM/YYYY",
-				icons: {
-					time: "fa fa-clock"
-				}
-			});
-
-			self.$el.find('#birthday').on('change.datetimepicker', function (e) {
-				if (e && e.date) {
-					self.model.set("birthday", e.date.format("YYYY-MM-DD"))
-				} else {
-					self.model.set("birthday", null);
-				}
-			});
 
 
 			self.model.on('change:tags', () => {
@@ -433,12 +411,12 @@ define(function (require) {
 						employees.forEach(employee => {
 							employees_name.push(employee.full_name);
 						});
+						// <td>${ element.priority}</td>
+						// <td>${element.original_estimate}</td>
 						let markup = `<tr>
 						<td><input type='checkbox' id="${element.id}" name='record'></td>
 						<td> ${ element.task_code}  </td>
 						<td> ${ element.task_name}  </td>
-						<td>${ element.priority}</td>
-						<td>${element.original_estimate}</td>
 						<td>${ employees_name.toString()}</td>
 						<td>${ element.description}</td></tr>
 						`;
@@ -462,7 +440,32 @@ define(function (require) {
 				});
 			}
 		},
+		formartTime :function(selector,field){
+			var self = this;
+			var time_working = null;
+            if (self.model.get(field) != 0){
+				time_working = moment.unix(self.model.get(field)).format("YYYY-MM-DDTHH:mm:ss");
+			}else{
+				time_working = null
+			}
+			
+            self.$el.find(selector).datetimepicker({
+                defaultDate: time_working,
+                format: "DD/MM/YYYYTHH:mm:ss",
+                icons: {
+                    time: "fa fa-clock"
+                }
+            });
 
+            self.$el.find(selector).on('change.datetimepicker', function(e) {
+                if (e && e.date) {
+					let dateFomart = moment(e.date).unix()
+                    self.model.set(field, dateFomart)
+                } else {
+                    self.model.set(field, null);
+                }
+            });
+		},
 		renderExtraAttributes: function () {
 			const self = this;
 			var extra_attributes = self.model.get('extra_attributes');
