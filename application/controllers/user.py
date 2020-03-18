@@ -25,7 +25,6 @@ async def user_test(request):
 @app.route("/login", methods=["POST", "GET"])
 async def user_login(request):
     param = request.json
-    # print("pram =================",param)
     user_name = param.get("username")
     password = param.get("password")
     print(user_name, password)
@@ -73,10 +72,10 @@ async def get_current_user(request):
         return json(user_info)
     else:
         return json("ok")
-        #  return json({
-        #     "error_code": "USER_NOT_FOUND",
-        #     "error_message":"USER_NOT_FOUND"
-        # }, status = 520)
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
     
     # print("===============", user_info)
     # if user_info is not None:

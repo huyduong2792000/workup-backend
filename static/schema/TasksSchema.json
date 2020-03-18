@@ -16,6 +16,12 @@
     "deleted_at": {
         "type": "datetime"
     },
+    "created_by": {
+        "type": "string"
+    },
+    "update_by": {
+        "type": "string"
+    },
     "task_code": {
         "type": "string",
         "required": true,
@@ -33,9 +39,6 @@
     "parent_code": {
         "type": "string",
         "length": 255
-    },
-    "employee_uid": {
-        "type": "string"
     },
     "tags": {
         "type": "json"
@@ -78,7 +81,7 @@
         "type": "number",
         "default": 1
     },
-    "employee": {
-        "type": "dict"
+    "employees": {
+        "type": "list"
     }
 }

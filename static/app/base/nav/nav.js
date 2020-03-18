@@ -21,11 +21,11 @@ define(function (require) {
             "visible": true,
             "entries": [
                 {
-                    "text": "Công việc ngày hôm nay",
+                    "text": "Công việc của tôi",
                     "type": "view",
-                    "collectionName": "tasks",
-                    "route": "tasks/collection",
-                    "$ref": "app/tasks/CollectionView",
+                    "collectionName": "mytasks",
+                    "route": "mytasks/collection",
+                    "$ref": "app/mytasks/CollectionView",
                     "icon": "<i class='fa fa-sitemap'></i>",
                     "visible": function () {
                         return true;

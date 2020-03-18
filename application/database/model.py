@@ -52,6 +52,8 @@ class CommonModel(db.Model):
     updated_at = db.Column(DateTime)
     deleted = db.Column(Boolean, default=False)
     deleted_at = db.Column(DateTime)
+    created_by = db.Column(UUID(as_uuid=True))
+    update_by = db.Column(UUID(as_uuid=True))
     
 
 event.listen(CommonModel, 'before_insert', model_oncreate_listener, propagate=True)

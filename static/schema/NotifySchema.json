@@ -16,6 +16,12 @@
     "deleted_at": {
         "type": "datetime"
     },
+    "created_by": {
+        "type": "string"
+    },
+    "update_by": {
+        "type": "string"
+    },
     "title": {
         "type": "string"
     },

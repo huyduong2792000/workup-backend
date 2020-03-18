@@ -22,19 +22,18 @@
     "update_by": {
         "type": "string"
     },
-    "user_id": {
-        "type": "string"
+    "task_uid": {
+        "type": "string",
+        "primary": true
     },
-    "notify_uid": {
-        "type": "string"
+    "employee_uid": {
+        "type": "string",
+        "primary": true
     },
-    "notify_at": {
-        "type": ""
+    "task": {
+        "type": "dict"
     },
-    "read_at": {
-        "type": ""
-    },
-    "notify": {
+    "employee": {
         "type": "dict"
     }
 }
