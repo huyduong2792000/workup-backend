@@ -54,8 +54,7 @@ class TasksEmployees(CommonModel):
     task = db.relationship("Tasks")
     employee_uid = db.Column(UUID(as_uuid=True), ForeignKey('employee.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     employee = db.relationship("Employee")
-    
-    
+   
     
 # tasks_employees = db.Table(
 #     "tasks_employees",
@@ -109,6 +108,8 @@ class Tasks(CommonModel):
     rating = db.Column(SmallInteger)
     comments = db.Column(JSONB())
     description = db.Column(String(255))
+    day_of_week = db.Column(BigInteger()) # +=2^n
+    hour_of_day = db.Column(BigInteger()) # +=2^n
     active = db.Column(SmallInteger, default=1)
     
 

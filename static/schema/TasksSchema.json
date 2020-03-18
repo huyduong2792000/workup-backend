@@ -77,6 +77,12 @@
         "type": "string",
         "length": 255
     },
+    "day_of_week": {
+        "type": ""
+    },
+    "hour_of_day": {
+        "type": ""
+    },
     "active": {
         "type": "number",
         "default": 1

@@ -205,8 +205,8 @@ define(function (require) {
 			const self = this;
 			var id = this.getApp().getRouter().getParam("id");
 			self.switchUIControlRegister()
-			self.eventTimeWorking("#start_time",'start_time')
-			self.eventTimeWorking("#end_time",'end_time')
+			self.formartTime("#start_time",'start_time')
+			self.formartTime("#end_time",'end_time')
 			var list_sub_task = []
 			var sub_employee = this.$el.find('#sub_employee').ref({
 				contex: this,
@@ -233,7 +233,8 @@ define(function (require) {
 				let sub_priority = $("#sub_priority").val();
 				let sub_original_estimate = $("#sub_original_estimate").val();
 				// let sub_employee = $("#sub_employee").val();
-				let sub_description = $("#sub_description").val();
+				// let sub_description = $("#sub_description").val();
+				let sub_description = '';
 				let sub_task_code = self.getUniqueID();
 
 				let show_sub_priority = sub_priority;
@@ -289,12 +290,12 @@ define(function (require) {
 					},
 					success: function (data) {
 						list_sub_task.push(sub_task)
+						// <td>${ sub_priority}</td>
+						// 	<td>${sub_original_estimate}</td>
 						let markup = `<tr>
 							<td><input type='checkbox' id="${data.id}" name='record'></td>
 							<td> ${ sub_task_code}  </td>
 							<td> ${ sub_name}  </td>
-							<td>${ sub_priority}</td>
-							<td>${sub_original_estimate}</td>
 							<td>${ employees_name.toString()}</td>
 							<td>${ sub_description}</td></tr>
 							`;
@@ -410,12 +411,12 @@ define(function (require) {
 						employees.forEach(employee => {
 							employees_name.push(employee.full_name);
 						});
+						// <td>${ element.priority}</td>
+						// <td>${element.original_estimate}</td>
 						let markup = `<tr>
 						<td><input type='checkbox' id="${element.id}" name='record'></td>
 						<td> ${ element.task_code}  </td>
 						<td> ${ element.task_name}  </td>
-						<td>${ element.priority}</td>
-						<td>${element.original_estimate}</td>
 						<td>${ employees_name.toString()}</td>
 						<td>${ element.description}</td></tr>
 						`;
@@ -439,7 +440,7 @@ define(function (require) {
 				});
 			}
 		},
-		eventTimeWorking :function(selector,field){
+		formartTime :function(selector,field){
 			var self = this;
 			var time_working = null;
             if (self.model.get(field) != 0){
