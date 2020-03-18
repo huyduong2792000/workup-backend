@@ -108,8 +108,6 @@ class Tasks(CommonModel):
     rating = db.Column(SmallInteger)
     comments = db.Column(JSONB())
     description = db.Column(String(255))
-    day_of_week = db.Column(BigInteger()) # +=2^n
-    hour_of_day = db.Column(BigInteger()) # +=2^n
     active = db.Column(SmallInteger, default=1)
     
 

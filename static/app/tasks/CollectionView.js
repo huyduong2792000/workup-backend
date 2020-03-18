@@ -8,7 +8,7 @@ define(function (require) {
 		schema = require('json!schema/TasksSchema.json');
 
 	var Helpers = require('app/common/Helpers');
-
+	
 
 	return Gonrin.CollectionView.extend({
 		template: template,

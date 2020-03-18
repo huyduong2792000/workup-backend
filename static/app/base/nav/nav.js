@@ -23,9 +23,9 @@ define(function (require) {
                 {
                     "text": "Công việc hôm nay",
                     "type": "view",
-                    "collectionName": "mytasks",
-                    "route": "mytasks/collection",
-                    "$ref": "app/mytasks/CollectionView",
+                    "collectionName": "tasks_employees",
+                    "route": "tasks_employees/collection",
+                    "$ref": "app/tasks_employees/CollectionView",
                     "icon": "<i class='fa fa-sitemap'></i>",
                     "visible": function () {
                         return true;
@@ -169,60 +169,60 @@ define(function (require) {
         //         }
         //     ]
         // },
-        {
-            "text": "Thống kê",
-            "icon": "<i class='fa fa-signal'></i>",
-            "type": "category",
-            "visible": function () {
-                //return this.checkUserHasRole("admin");
-                return true;
-            },
-            "entries": [
-                // {
-                //     "text": "TK Khách Hàng",
-                //     "type": "view",
-                //     "collectionName": "customer",
-                //     "route": "report/customer",
-                //     "$ref": "app/report/CustomerReport",
-                //     "icon": "<i class='fa fa-chart-pie'></i>",
-                //     "visible": function () {
-                //         return true;
-                //     }
-                // },
-                // {
-                //     "text": "TK CT Khuyến Mãi",
-                //     "type": "view",
-                //     "collectionName": "promotion",
-                //     "route": "report/promotion",
-                //     "$ref": "app/report/PromotionReport",
-                //     "icon": "<i class='fa fa-chart-line'></i>",
-                //     "visible": function () {
-                //         return true;
-                //     }
-                // },
-                {
-                    "text": "TK Theo Sản Phẩm",
-                    "type": "view",
-                    "collectionName": "product",
-                    "route": "report/product",
-                    "$ref": "app/report/ProductReport",
-                    "icon": "<i class='fa fa-chart-bar'></i>",
-                    "visible": function () {
-                        return false;
-                    }
-                },
-                {
-                    "text": "TK Doanh Thu",
-                    "type": "view",
-                    "collectionName": "revenue",
-                    "route": "report/revenue",
-                    "$ref": "app/report/RevenueReport",
-                    "visible": function () {
-                        return false;
-                    }
-                }
-            ]
-        },
+        // {
+        //     "text": "Thống kê",
+        //     "icon": "<i class='fa fa-signal'></i>",
+        //     "type": "category",
+        //     "visible": function () {
+        //         //return this.checkUserHasRole("admin");
+        //         return true;
+        //     },
+        //     "entries": [
+        //         {
+        //             "text": "TK Khách Hàng",
+        //             "type": "view",
+        //             "collectionName": "customer",
+        //             "route": "report/customer",
+        //             "$ref": "app/report/CustomerReport",
+        //             "icon": "<i class='fa fa-chart-pie'></i>",
+        //             "visible": function () {
+        //                 return true;
+        //             }
+        //         },
+        //         {
+        //             "text": "TK CT Khuyến Mãi",
+        //             "type": "view",
+        //             "collectionName": "promotion",
+        //             "route": "report/promotion",
+        //             "$ref": "app/report/PromotionReport",
+        //             "icon": "<i class='fa fa-chart-line'></i>",
+        //             "visible": function () {
+        //                 return true;
+        //             }
+        //         },
+        //         {
+        //             "text": "TK Theo Sản Phẩm",
+        //             "type": "view",
+        //             "collectionName": "product",
+        //             "route": "report/product",
+        //             "$ref": "app/report/ProductReport",
+        //             "icon": "<i class='fa fa-chart-bar'></i>",
+        //             "visible": function () {
+        //                 return false;
+        //             }
+        //         },
+        //         {
+        //             "text": "TK Doanh Thu",
+        //             "type": "view",
+        //             "collectionName": "revenue",
+        //             "route": "report/revenue",
+        //             "$ref": "app/report/RevenueReport",
+        //             "visible": function () {
+        //                 return false;
+        //             }
+        //         }
+        //     ]
+        // },
         {
             "text": "Quản trị",
             "icon": "<i class='fa fa-cogs'></i>",
