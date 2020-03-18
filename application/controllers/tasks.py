@@ -107,21 +107,24 @@ async def tasks_employees(request):
         for task_employee in tasks_employees:
             task = task_employee.task
             employee = task_employee.employee
+            
             obj = {
-                "task_uid": task.id,
+                "id": str(task_employee.id),
+                "task_uid": str(task.id),
                 "task_code": task.task_code,
                 "task_name": task.task_name,
-                "employee_uid": employee.id,
+                "employee_uid": str(employee.id),
                 "employee_name": employee.full_name,
                 "employee_phone": employee.phone_number,
                 "employee_position": employee.position,
                 "start_time": task.start_time,
                 "end_time": task.end_time,
-                ""
+                "status": task.status
                 
                 }
+            list_task.append(obj)
             
-        return json({})
+        return json(list_task)
     else:
         return json("ok")
         return json({

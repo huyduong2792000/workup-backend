@@ -67,7 +67,12 @@ define(function (require) {
 				label: "<span class='fa fa-chevron-left'></span> Quay lại",
 				command: function () {
 					var self = this;
-					self.getApp().getRouter().navigate(self.collectionName + "/collection");
+					var backcol = self.getApp().getRouter().getParam("backcol");
+					if (backcol != null) {
+						self.getApp().getRouter().navigate(backcol + "/collection");
+					} else {
+						self.getApp().getRouter().navigate(self.collectionName + "/collection");
+					}
 				}
 			},
 			{
@@ -84,7 +89,12 @@ define(function (require) {
 					self.model.save(null, {
 						success: function (model, respose, options) {
 							self.getApp().notify({ message: "Thành công." }, { type: "success" });
-							self.getApp().getRouter().navigate(self.collectionName + "/collection");
+							var backcol = self.getApp().getRouter().getParam("backcol");
+							if (backcol != null) {
+								self.getApp().getRouter().navigate(backcol + "/collection");
+							} else {
+								self.getApp().getRouter().navigate(self.collectionName + "/collection");
+							}
 						},
 						error: function (modelData, xhr, options) {
 							if (xhr && xhr.responseJSON && xhr.responseJSON.error_message) {
@@ -102,7 +112,12 @@ define(function (require) {
 				buttonClass: "btn-danger btn-sm",
 				label: "<span class='fa fa-trash'></span> Xoá",
 				visible: function () {
-					return this.getApp().getRouter().getParam("id") !== null;
+					var backcol = this.getApp().getRouter().getParam("backcol");
+					if (backcol != null) {
+						return false;
+					} else {
+						return this.getApp().getRouter().getParam("id") !== null;
+					}
 				},
 				command: function () {
 					var self = this;
@@ -121,7 +136,7 @@ define(function (require) {
 							self.getApp().notify({ message: "Lỗi hệ thống, thử lại sau." }, { type: "danger" });
 						}
 					});
-					
+
 				}
 			},
 			]
@@ -143,6 +158,14 @@ define(function (require) {
 						self.loadDefaultData();
 						self.eventRegister();
 						self.get_sub_tasks();
+
+						self.$el.find("#view_description").show();
+						self.$el.find("#view_start_time").show();
+						self.$el.find("#view_end_time").show();
+						self.$el.find("#view_priority").show();
+						self.$el.find("#view_original_estimate").show();
+						self.$el.find("#view_status").show();
+
 					},
 					error: function () {
 						self.getApp().notify({ message: "Get data Eror" }, { type: "danger" });
@@ -170,8 +193,6 @@ define(function (require) {
 		},
 		switchUIControlRegister: function () {
 			var self = this;
-
-
 
 			self.$el.find(".switch input[id='share_switch']").unbind("click").bind("click", function ($event) {
 				if ($(this).is(":checked")) {
@@ -205,8 +226,8 @@ define(function (require) {
 			const self = this;
 			var id = this.getApp().getRouter().getParam("id");
 			self.switchUIControlRegister()
-			self.formartTime("#start_time",'start_time')
-			self.formartTime("#end_time",'end_time')
+			self.formartTime("#start_time", 'start_time')
+			self.formartTime("#end_time", 'end_time')
 			var list_sub_task = []
 			var sub_employee = this.$el.find('#sub_employee').ref({
 				contex: this,
@@ -252,16 +273,13 @@ define(function (require) {
 					show_sub_priority = "lowest"
 				}
 
-
-
-
 				let start_time = self.model.get("start_time");
 				let end_time = self.model.get("end_time");
 				let tags = self.model.get("tags");
 				let parent_code = self.model.get("task_code");
 				let attach_file = self.model.get("attach_file");
 				let link_issue = self.model.get("link_issue");
-				
+
 				let sub_task = {
 					"priority": sub_priority,
 					"task_code": sub_task_code,
@@ -278,7 +296,7 @@ define(function (require) {
 
 				}
 				// console.log(sub_task);
-				
+
 				$.ajax({
 					url: self.getApp().serviceURL + "/api/v1/tasks",
 					data: JSON.stringify(sub_task),
@@ -323,36 +341,31 @@ define(function (require) {
 
 			});
 
-
-
 			// Find and remove selected table rows
 			$(".delete-row").click(function () {
-				
 				$("table tbody").find('input[name="record"]').each(function () {
 					var thatEl = this;
 					if ($(this).is(":checked")) {
-						let id_task  = this.attributes.id.value;
+						let id_task = this.attributes.id.value;
 						$.ajax({
-							url: self.getApp().serviceURL + '/api/v1/tasks/'+id_task,
+							url: self.getApp().serviceURL + '/api/v1/tasks/' + id_task,
 							method: "PUT",
-							data: JSON.stringify({"active":0}),
+							data: JSON.stringify({ "active": 0 }),
 							headers: {
 							},
 							beforeSend: function () {
 							},
-							success: function (data) {								
+							success: function (data) {
 								$(thatEl).parents("tr").remove();
 							},
 							error: function (xhr, status, error) {
 								self.getApp().notify("xoá công việc không thành công", { type: "danger" });
 							},
 						});
-						
+
 					}
 				});
 			});
-
-
 
 			self.model.on('change:tags', () => {
 				self.renderTags();
@@ -440,31 +453,32 @@ define(function (require) {
 				});
 			}
 		},
-		formartTime :function(selector,field){
+		formartTime: function (selector, field) {
 			var self = this;
 			var time_working = null;
-            if (self.model.get(field) != 0){
+			if (self.model.get(field) != 0) {
 				time_working = moment.unix(self.model.get(field)).format("YYYY-MM-DDTHH:mm:ss");
-			}else{
+			} else {
 				time_working = null
 			}
-			
-            self.$el.find(selector).datetimepicker({
-                defaultDate: time_working,
-                format: "DD/MM/YYYYTHH:mm:ss",
-                icons: {
-                    time: "fa fa-clock"
-                }
-            });
+			if (self.model.get(field)) {
+				self.$el.find(selector).datetimepicker({
+					defaultDate: time_working,
+					format: "DD/MM/YYYYTHH:mm:ss",
+					icons: {
+						time: "fa fa-clock"
+					}
+				});
+			}
 
-            self.$el.find(selector).on('change.datetimepicker', function(e) {
-                if (e && e.date) {
+			self.$el.find(selector).on('change.datetimepicker', function (e) {
+				if (e && e.date) {
 					let dateFomart = moment(e.date).unix()
-                    self.model.set(field, dateFomart)
-                } else {
-                    self.model.set(field, null);
-                }
-            });
+					self.model.set(field, dateFomart)
+				} else {
+					self.model.set(field, null);
+				}
+			});
 		},
 		renderExtraAttributes: function () {
 			const self = this;
