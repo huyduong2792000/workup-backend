@@ -111,12 +111,20 @@ class Tasks(CommonModel):
     description = db.Column(String(255))
     active = db.Column(SmallInteger, default=1)
     
+
+class TaskschedulesTasks(CommonModel):
+    __tablename__ = 'taskschedules_tasks'
+    task_uid = db.Column(UUID(as_uuid=True), ForeignKey('tasks.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task = db.relationship("Tasks")
+    task_schedule_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_schedule.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task_schedule = db.relationship("TaskSchedule")
     
-taskschedules_tasks = db.Table(
-    "taskschedules_tasks",
-    db.Column("task_uid", UUID(as_uuid=True), db.ForeignKey("tasks.id", ondelete="cascade"), primary_key=True),
-    db.Column("task_schedule_uid", UUID(as_uuid=True), db.ForeignKey("task_schedule.id", ondelete="cascade"), primary_key=True)
-)
+    
+# taskschedules_tasks = db.Table(
+#     "taskschedules_tasks",
+#     db.Column("task_uid", UUID(as_uuid=True), db.ForeignKey("tasks.id", ondelete="cascade"), primary_key=True),
+#     db.Column("task_schedule_uid", UUID(as_uuid=True), db.ForeignKey("task_schedule.id", ondelete="cascade"), primary_key=True)
+# )
          
    
 class TaskSchedule(CommonModel):

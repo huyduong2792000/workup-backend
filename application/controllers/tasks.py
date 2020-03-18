@@ -27,7 +27,7 @@ def create_task(request=None, data=None, **kw):
     
 
 
-def filter_many_task(request=None, search_params=None, **kwargs):
+def filter_tasks(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
     if uid is not None:
         if 'filters' in search_params:
@@ -50,36 +50,35 @@ def filter_many_task(request=None, search_params=None, **kwargs):
     
     
 
-def filter_many_mytasks(request=None, search_params=None, **kwargs):
+
+def filter_tasks_employees(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
     if uid is not None:
-        if 'filters' in search_params:
-            filters = search_params["filters"]
-            if "$and" in filters:
-                search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
-            else:
-                search_params["filters"] = {}
-                search_params["filters"]['$and'] = []
-                search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
-        else:
-            search_params["filters"] = {}
-            search_params["filters"]['$and'] = []
-            search_params["filters"]['$and'].append({"active":{"$eq": 1}, "employees":{"$any": uid}})
+        print("--------------------")
+#         if 'filters' in search_params:
+#             filters = search_params["filters"]
+#             if "$and" in filters:
+#                 search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
+#             else:
+#                 search_params["filters"] = {}
+#                 search_params["filters"]['$and'] = []
+#                 search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
+#         else:
+#             search_params["filters"] = {}
+#             search_params["filters"]['$and'] = []
+#             search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"
-        }, status = 520)   
-    
-
-
+        }, status = 520)  
 
     
 apimanager.create_api(
         collection_name='tasks', model=Tasks,
         methods=['GET', 'POST', 'DELETE', 'PUT'],
         url_prefix='/api/v1',
-        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_many_task], POST=[create_task], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[create_task], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
     )
 
@@ -88,6 +87,6 @@ apimanager.create_api(
         collection_name='tasks_employees', model=TasksEmployees,
         methods=['GET', 'POST', 'DELETE', 'PUT'],
         url_prefix='/api/v1',
-        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_many_task], POST=[create_task], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
     )

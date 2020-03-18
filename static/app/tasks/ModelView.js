@@ -205,6 +205,8 @@ define(function (require) {
 			const self = this;
 			var id = this.getApp().getRouter().getParam("id");
 			self.switchUIControlRegister()
+			self.eventTimeWorking("#start_time",'start_time')
+			self.eventTimeWorking("#end_time",'end_time')
 			var list_sub_task = []
 			var sub_employee = this.$el.find('#sub_employee').ref({
 				contex: this,
@@ -274,7 +276,7 @@ define(function (require) {
 					"parent_code": parent_code
 
 				}
-				console.log(sub_task);
+				// console.log(sub_task);
 				
 				$.ajax({
 					url: self.getApp().serviceURL + "/api/v1/tasks",
@@ -349,31 +351,6 @@ define(function (require) {
 				});
 			});
 
-
-
-			var birthday = false;
-			if (self.model.get("birthday") && self.model.get("birthday").indexOf("T")) {
-				birthday = moment(self.model.get("birthday"), "YYYY-MM-DDTHH:mm:ss");
-			} else if (self.model.get("birthday") && self.model.get("birthday").indexOf("-")) {
-				birthday = moment(self.model.get("birthday"), "YYYY-MM-DD");
-			} else if (self.model.get("birthday")) {
-				birthday = moment(self.model.get("birthday"), "DD/MM/YYYY");
-			}
-			self.$el.find('#birthday').datetimepicker({
-				defaultDate: birthday,
-				format: "DD/MM/YYYY",
-				icons: {
-					time: "fa fa-clock"
-				}
-			});
-
-			self.$el.find('#birthday').on('change.datetimepicker', function (e) {
-				if (e && e.date) {
-					self.model.set("birthday", e.date.format("YYYY-MM-DD"))
-				} else {
-					self.model.set("birthday", null);
-				}
-			});
 
 
 			self.model.on('change:tags', () => {
@@ -462,7 +439,32 @@ define(function (require) {
 				});
 			}
 		},
+		eventTimeWorking :function(selector,field){
+			var self = this;
+			var time_working = null;
+            if (self.model.get(field) != 0){
+				time_working = moment.unix(self.model.get(field)).format("YYYY-MM-DDTHH:mm:ss");
+			}else{
+				time_working = null
+			}
+			
+            self.$el.find(selector).datetimepicker({
+                defaultDate: time_working,
+                format: "DD/MM/YYYYTHH:mm:ss",
+                icons: {
+                    time: "fa fa-clock"
+                }
+            });
 
+            self.$el.find(selector).on('change.datetimepicker', function(e) {
+                if (e && e.date) {
+					let dateFomart = moment(e.date).unix()
+                    self.model.set(field, dateFomart)
+                } else {
+                    self.model.set(field, null);
+                }
+            });
+		},
 		renderExtraAttributes: function () {
 			const self = this;
 			var extra_attributes = self.model.get('extra_attributes');
