@@ -19,16 +19,15 @@ define(function (require) {
 			orderBy: [{ field: "start_time_working", direction: "desc" }],
 			fields: [
 				{ field: "day_of_week", label: "Thứ" },
-				{ field: "hour_of_day", label: "Giờ làm" },
+				{ field: "shift_of_day", label: "Giờ làm" },
 				{
 					field: "start_time_working", label: "Ngày bắt đầu", template: function (rowObj) {
-						console.log('rowobject',rowObj)
-						return moment.unix(rowObj.start_time_working).format("DD/MM/YYYY HH:mm:ss");
+						return moment.unix(rowObj.start_time_working).format("DD/MM/YYYY ");
 					}
 				},
 				{
 					field: "end_time_working", label: "Ngày kết thúc", template: function (rowObj) {
-						return moment.unix(rowObj.end_time_working).format("DD/MM/YYYY HH:mm:ss");
+						return moment.unix(rowObj.end_time_working).format("DD/MM/YYYY");
 					}
 				},
 				{

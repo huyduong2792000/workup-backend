@@ -25,7 +25,7 @@
     "day_of_week": {
         "type": ""
     },
-    "hour_of_day": {
+    "shift_of_day": {
         "type": ""
     },
     "start_time_working": {

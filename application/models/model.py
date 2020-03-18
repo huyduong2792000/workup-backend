@@ -131,12 +131,14 @@ class TaskschedulesTasks(CommonModel):
 class TaskSchedule(CommonModel):
     __tablename__ = 'task_schedule'
     day_of_week = db.Column(BigInteger()) # 2^n
-    hour_of_day = db.Column(BigInteger()) #2^n
+    shift_of_day = db.Column(BigInteger()) #2^n
     start_time_working = db.Column(BigInteger(), default = 0) #equal 0 because 0*2^n =0
     end_time_working = db.Column(BigInteger(),default = 0) #equal 0 because 0*2^n =0
+    active = db.Column(SmallInteger, default=1)
     Tasks = db.relationship("Tasks",
                             secondary="taskschedules_tasks",
                             )
+    
 
 # 0:0 job ngay mai co vievj
 # class TodoInfo(CommonModel):

@@ -116,9 +116,7 @@ async def tasks_employees(request):
                 "employee_phone": employee.phone_number,
                 "employee_position": employee.position,
                 "start_time": task.start_time,
-                "end_time": task.end_time,
-                ""
-                
+                "end_time": task.end_time,                
                 }
             
         return json({})
