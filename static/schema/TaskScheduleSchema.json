@@ -43,9 +43,6 @@
         "type": "number",
         "default": 1
     },
-    "create_by": {
-        "type": "string"
-    },
     "Tasks": {
         "type": "list"
     }

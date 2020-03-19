@@ -29,21 +29,20 @@ def filter_taskschedule(request=None, search_params=None, **kwargs):
         if 'filters' in search_params:
             filters = search_params["filters"]
             if "$and" in filters:
-                search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
+                search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
             else:
-                search_params["filters"] = {}
-                search_params["filters"]['$and'] = []
-                search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
+                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"active":{"$eq": 1} } ]
         else:
-            search_params["filters"] = {}
-            search_params["filters"]['$and'] = []
-            search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
+            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}}, {"active":{"$eq": 1} } ]}
 
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"
         }, status = 520)   
+        
+        
 apimanager.create_api(
         collection_name='task_schedule', model=TaskSchedule,
         methods=['GET', 'POST', 'DELETE', 'PUT'],

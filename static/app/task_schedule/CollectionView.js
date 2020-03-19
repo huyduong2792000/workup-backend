@@ -88,7 +88,6 @@ define(function (require) {
 		collectionName: "task_schedule",
 		uiControl: {
 			orderBy: [{ field: "start_time_working", direction: "desc" }],
-<<<<<<< HEAD
 			fields: [
 				{ field: "day_of_week", label: "Thứ" },
 				{ field: "hour_of_day", label: "Giờ làm" },
@@ -115,39 +114,12 @@ define(function (require) {
 					this.getApp().getRouter().navigate(path);
 				}
 			}
-=======
-			// fields: [
-			// 	{ field: "day_of_week", label: "Thứ" },
-			// 	{ field: "shift_of_day", label: "Giờ làm" },
-			// 	{
-			// 		field: "start_time_working", label: "Ngày bắt đầu", template: function (rowObj) {
-			// 			return moment.unix(rowObj.start_time_working).format("DD/MM/YYYY ");
-			// 		}
-			// 	},
-			// 	{
-			// 		field: "end_time_working", label: "Ngày kết thúc", template: function (rowObj) {
-			// 			return moment.unix(rowObj.end_time_working).format("DD/MM/YYYY");
-			// 		}
-			// 	},
-			// 	{
-			// 		field: "created_at", label: "Ngày tạo", template: function (rowObj) {
-			// 			return Helpers.setDatetime(rowObj.created_at);
-			// 		}
-			// 	}
-			// ],
-			// onRowClick: function (event) {
-			// 	if (event.rowId) {
-			// 		var path = this.collectionName + '/model?id=' + event.rowId;
-			// 		this.getApp().getRouter().navigate(path);
-			// 	}
-			// }
->>>>>>> d1c3efc13759cd393e7d980b4bab9d4f171eedcf
 		},
 
 		render: function () {
 			var self = this;
 			// this.applyBindings();
-			console.log('collection',this.collection)
+			// console.log('collection',this.collection)
 			this.collection.fetch({
 				success:function(data){
 					self.renderCollectionItem()

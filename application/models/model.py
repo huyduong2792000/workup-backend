@@ -134,7 +134,6 @@ class TaskSchedule(CommonModel):
     start_time_working = db.Column(BigInteger(), default = 0) #equal 0 because 0*2^n =0
     end_time_working = db.Column(BigInteger(),default = 0) #equal 0 because 0*2^n =0
     active = db.Column(SmallInteger, default=1)
-    create_by = db.Column(UUID(as_uuid=True), ForeignKey('user.id', onupdate='CASCADE', ondelete='SET NULL'), index=True, nullable=True)
     Tasks = db.relationship("Tasks",
                             secondary="taskschedules_tasks",
                             )
