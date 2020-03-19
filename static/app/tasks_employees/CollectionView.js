@@ -37,13 +37,61 @@ define(function (require) {
 
 		render: function () {
 			// this.applyBindings();
-			this.eventRegister();
+			var self = this;
+			self.eventRegister();
+			let url = self.getApp().serviceURL + '/api/v1/tasks_employees'
+			self.filterData(url)
 			return this;
 		},
 		eventRegister: function () {
 			var self = this;
+			var filter_data = self.$el.find("#btn_filter_done");
+			filter_data.on("change", function () {
+				self.$el.find('#btn_filter_inprocess').attr('checked',false);
+				self.$el.find('#btn_filter_pending').attr('checked',false);
+				if (self.$el.find('#btn_filter_done').is(':checked')) {
+					let url = self.getApp().serviceURL + '/api/v1/tasks_employees?status=1'
+					self.filterData(url)
+				}
+				if (!self.$el.find('#btn_filter_done').is(':checked') && !self.$el.find('#btn_filter_inprocess').is(':checked') && !self.$el.find('#btn_filter_pending').is(':checked')) {
+					let url = self.getApp().serviceURL + '/api/v1/tasks_employees'
+					self.filterData(url)
+				}
+
+			});
+			var filter_data = self.$el.find("#btn_filter_inprocess");
+			filter_data.on("change", function () {
+				self.$el.find('#btn_filter_done').attr('checked',false);
+				self.$el.find('#btn_filter_pending').attr('checked',false);
+				if (self.$el.find('#btn_filter_inprocess').is(':checked')) {
+					let url = self.getApp().serviceURL + '/api/v1/tasks_employees?status=2'
+					self.filterData(url)
+				}
+				if (!self.$el.find('#btn_filter_done').is(':checked') && !self.$el.find('#btn_filter_inprocess').is(':checked') && !self.$el.find('#btn_filter_pending').is(':checked')) {
+					let url = self.getApp().serviceURL + '/api/v1/tasks_employees'
+					self.filterData(url)
+				}
+
+			});
+			var filter_data = self.$el.find("#btn_filter_pending");
+			filter_data.on("change", function () {
+				self.$el.find('#btn_filter_inprocess').attr('checked',false);
+				self.$el.find('#btn_filter_done').attr('checked',false);
+				if (self.$el.find('#btn_filter_pending').is(':checked')) {
+					let url = self.getApp().serviceURL + '/api/v1/tasks_employees?status=0'
+					self.filterData(url)
+				}
+				if (!self.$el.find('#btn_filter_done').is(':checked') && !self.$el.find('#btn_filter_inprocess').is(':checked') && !self.$el.find('#btn_filter_pending').is(':checked')) {
+					let url = self.getApp().serviceURL + '/api/v1/tasks_employees'
+					self.filterData(url)
+				}
+
+			});
+		},
+		filterData: function (url) {
+			var self = this;
 			$.ajax({
-				url: self.getApp().serviceURL + '/api/v1/tasks_employees',
+				url: url,
 				method: "GET",
 				contentType: "application/json",
 				// headers: {
@@ -51,15 +99,42 @@ define(function (require) {
 				beforeSend: function () {
 				},
 				success: function (data) {
-
 					self.loadGridData(data);
-
 				},
 				error: function (xhr, status, error) {
-					self.getApp().notify("Lấy subtask k thành công", { type: "danger" });
+					self.getApp().notify("Lấy subtask không thành công", { type: "danger" });
 				},
 			});
 		},
+		// registerEvent: function () {
+		// 	var self = this;
+		// 	self.$el.find('#data-search').keypress(function (e) {
+		// 		if (e.which == '13') {
+		// 			self.setupFilter();
+		// 		}
+		// 	});
+		// 	var filter_data = self.$el.find("#filter-data-by-status");
+		// 	filter_data.on("change", function () {
+		// 		self.setupFilter();
+		// 	});
+		// 	self.getApp().on("import_brand_template_closed", function (event) {
+		// 		self.setupFilter();
+		// 	});
+		// },
+		// setupFilter: function () {
+		// 	var self = this;
+		// 	let search_data = self.$el.find("#data-search").val();
+		// 	let active = self.$el.find("#filter-data-by-status").val();
+		// 	if (search_data != null) {
+
+		// 		if (active != "2") {
+		// 			self.getCollectionElement().data("gonrin").filter({ "$and": [{ "active": { "$eq": active } }, { "$or": [{ "brand_name": { "$like": search_data } }, { "business_type": { "$like": search_data } }, { "brand_id": { "$like": search_data } }] }] });
+		// 		} else {
+		// 			self.getCollectionElement().data("gonrin").filter({ "$and": [{ "$or": [{ "brand_name": { "$like": search_data } }, { "business_type": { "$like": search_data } }, { "brand_id": { "$like": search_data } }] }] });
+		// 		}
+		// 	}
+
+		// }
 		loadGridData: function (dataSource) {
 			var self = this;
 			self.$el.find("#grid").grid({
@@ -120,7 +195,7 @@ define(function (require) {
 				],
 				onRowClick: function (event) {
 					if (event.rowData.id) {
-						var path = 'tasks/model?id=' + event.rowData.task_uid+'&backcol='+self.collectionName;
+						var path = 'tasks/model?id=' + event.rowData.task_uid + '&backcol=' + self.collectionName;
 
 						self.getApp().getRouter().navigate(path);
 					}

@@ -5,7 +5,7 @@ from application.extensions import auth
 import random
 import string
 from application.extensions import apimanager
-from application.models.model import User, Tasks,Employee, TasksEmployees
+from application.models.model import User, Tasks, Employee, TasksEmployees
 from application.controllers import auth_func
 from sqlalchemy import and_, or_
 from hashids import Hashids
@@ -90,42 +90,56 @@ apimanager.create_api(
 #         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
 #     )
 
-
-
+def process_employees_tasks(tasks_employees):
+    list_task = []
+    for task_employee in tasks_employees:
+        task = task_employee.task
+        employee = task_employee.employee
+        
+        obj = {
+            "id": str(task_employee.id),
+            "task_uid": str(task.id),
+            "task_code": task.task_code,
+            "task_name": task.task_name,
+            "employee_uid": str(employee.id),
+            "employee_name": employee.full_name,
+            "employee_phone": employee.phone_number,
+            "employee_position": employee.position,
+            "start_time": task.start_time,
+            "end_time": task.end_time,
+            "status": task.status
+            }
+        list_task.append(obj)
+    return list_task
 
 @app.route('/api/v1/tasks_employees', methods=["GET", "OPTIONS"])
 async def tasks_employees(request):
     error_msg = None
     uid = auth.current_user(request)
     if uid is not None:
-        
         start_time = request.args.get("start_time", None)
         end_time = request.args.get("end_time", None)
-        
+        status = request.args.get("status", None)
         
         user = db.session.query(User).filter(User.id == uid).first()
-        tasks_employees = db.session.query(TasksEmployees).filter(and_(TasksEmployees.employee_uid == user.employee_uid)).all()
-        list_task = []
-        for task_employee in tasks_employees:
-            task = task_employee.task
-            employee = task_employee.employee
-            
-            obj = {
-                "id": str(task_employee.id),
-                "task_uid": str(task.id),
-                "task_code": task.task_code,
-                "task_name": task.task_name,
-                "employee_uid": str(employee.id),
-                "employee_name": employee.full_name,
-                "employee_phone": employee.phone_number,
-                "employee_position": employee.position,
-                "start_time": task.start_time,
-                "end_time": task.end_time,
-                "status": task.status
-                }
-            list_task.append(obj)
-            
-        return json(list_task)
+        
+        if status is not None:
+            tasks_employees = db.session.query(TasksEmployees).join(Tasks).filter(and_(
+                TasksEmployees.task_uid == Tasks.id,
+                Tasks.status == status,
+                TasksEmployees.employee_uid == user.employee_uid
+                )).all()
+            return json(process_employees_tasks(tasks_employees))
+        
+        else:
+            tasks_employees = db.session.query(TasksEmployees).join(Tasks).filter(and_(
+                    TasksEmployees.task_uid == Tasks.id,
+                    TasksEmployees.employee_uid == user.employee_uid
+                    )).all()
+                    
+            return json(process_employees_tasks(tasks_employees))
+        
+        
     else:
         return json("ok")
         return json({
