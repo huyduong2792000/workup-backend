@@ -35,9 +35,11 @@ define(function (require) {
 			},
 		],
 		uiControl: {
+			orderBy: [{ field: "created_at", direction: "desc" }],
+
 			fields: [
 				{ field: "task_name", label: "Tên" },
-				{ field: "priority", label: "Mức độ" },
+				// { field: "priority", label: "Mức độ" },
 				{ field: "status", label: "Trạng thái" },
 				{
 					field: "start_time", label: "Thời gian bắt đầu", template: function (rowObj) {

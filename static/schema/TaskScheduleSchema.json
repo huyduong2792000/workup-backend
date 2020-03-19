@@ -22,6 +22,9 @@
     "update_by": {
         "type": "string"
     },
+    "taskschedule_name": {
+        "type": "string"
+    },
     "day_of_week": {
         "type": ""
     },
@@ -35,6 +38,13 @@
     "end_time_working": {
         "type": "",
         "default": 0
+    },
+    "active": {
+        "type": "number",
+        "default": 1
+    },
+    "create_by": {
+        "type": "string"
     },
     "Tasks": {
         "type": "list"
