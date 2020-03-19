@@ -33,15 +33,13 @@ def filter_tasks(request=None, search_params=None, **kwargs):
         if 'filters' in search_params:
             filters = search_params["filters"]
             if "$and" in filters:
-                search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
+                search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
             else:
-                search_params["filters"] = {}
-                search_params["filters"]['$and'] = []
-                search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
+                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"active":{"$eq": 1} } ]
         else:
-            search_params["filters"] = {}
-            search_params["filters"]['$and'] = []
-            search_params["filters"]['$and'].append({"active":{"$eq": 1}, "created_by":{"$eq": uid}})
+            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}}, {"active":{"$eq": 1} } ]}
+            
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -100,9 +98,13 @@ async def tasks_employees(request):
     error_msg = None
     uid = auth.current_user(request)
     if uid is not None:
-        user = db.session.query(User).filter(User.id == uid).first()
         
-        tasks_employees = db.session.query(TasksEmployees).filter(TasksEmployees.employee_uid == user.employee_uid).all()
+        start_time = request.args.get("start_time", None)
+        end_time = request.args.get("end_time", None)
+        
+        
+        user = db.session.query(User).filter(User.id == uid).first()
+        tasks_employees = db.session.query(TasksEmployees).filter(and_(TasksEmployees.employee_uid == user.employee_uid)).all()
         list_task = []
         for task_employee in tasks_employees:
             task = task_employee.task
@@ -120,7 +122,6 @@ async def tasks_employees(request):
                 "start_time": task.start_time,
                 "end_time": task.end_time,
                 "status": task.status
-                
                 }
             list_task.append(obj)
             

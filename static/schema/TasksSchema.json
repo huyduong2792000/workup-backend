@@ -44,7 +44,8 @@
         "type": "json"
     },
     "priority": {
-        "type": "number"
+        "type": "number",
+        "default": 2
     },
     "attach_file": {
         "type": "string",

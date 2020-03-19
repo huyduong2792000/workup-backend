@@ -98,7 +98,7 @@ class Tasks(CommonModel):
 #     employee_uid = db.Column(UUID(as_uuid=True), ForeignKey('employee.id', onupdate='CASCADE', ondelete='SET NULL'), index=True, nullable=True)
 #     reporter = db.Column(String, ForeignKey('employee.id',ondelete="cascade"), nullable=False)
     tags = db.Column(JSONB())
-    priority = db.Column(SmallInteger, index=True) # {1: highest, 2: high, 3: low, 4: lowest}
+    priority = db.Column(SmallInteger, index=True, default=2) # {1: highest, 2: high, 3: low, 4: lowest}
     attach_file = db.Column(String(255))
     link_issue = db.Column(String(255))
     original_estimate = db.Column(Integer, index=True) # minute unit 

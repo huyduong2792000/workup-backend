@@ -22,7 +22,7 @@ define(function (require) {
 				{ field: "hour_of_day", label: "Giờ làm" },
 				{
 					field: "start_time_working", label: "Ngày bắt đầu", template: function (rowObj) {
-						console.log('rowobject',rowObj)
+						// console.log('rowobject',rowObj)
 						return moment.unix(rowObj.start_time_working).format("DD/MM/YYYY HH:mm:ss");
 					}
 				},

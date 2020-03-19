@@ -165,6 +165,8 @@ define(function (require) {
 						self.$el.find("#view_priority").show();
 						self.$el.find("#view_original_estimate").show();
 						self.$el.find("#view_status").show();
+						self.$el.find("#view_tags").show();
+						
 
 					},
 					error: function () {
