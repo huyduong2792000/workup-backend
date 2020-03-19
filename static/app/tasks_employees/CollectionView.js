@@ -8,7 +8,8 @@ define(function (require) {
 		schema = require('json!schema/TasksEmployeesSchema.json');
 
 	var Helper = require('app/common/Helpers');
-	var TemplateHelper = require("app/common/TemplateHelper");
+	// var TemplateHelper = require("app/common/TemplateHelper");
+	var TimeFilterDialogView = require('app/common/filters/TimeFilterDialogView');
 
 	return Gonrin.CollectionView.extend({
 		template: template,
@@ -45,6 +46,10 @@ define(function (require) {
 		},
 		eventRegister: function () {
 			var self = this;
+			var from_time = null;
+			var to_time =  null;
+			var status = null;
+
 			var filter_data = self.$el.find("#btn_filter_done");
 			filter_data.on("change", function () {
 				self.$el.find('#btn_filter_inprocess').attr('checked',false);
@@ -87,6 +92,18 @@ define(function (require) {
 				}
 
 			});
+
+			self.$el.find("#btn_tasks_filter").unbind('click').bind("click", function () {
+                var timeFilterDialog = new TimeFilterDialogView();
+                timeFilterDialog.dialog();
+                timeFilterDialog.on('filter', (data) => {
+					from_time = data.from_time; 
+					to_time =  data.to_time; 
+                    let url = self.getApp().serviceURL + '/api/v1/tasks_employees?start_time='+from_time+'&end_time='+to_time;
+					self.filterData(url)
+					
+                });
+            });
 		},
 		filterData: function (url) {
 			var self = this;
@@ -106,35 +123,7 @@ define(function (require) {
 				},
 			});
 		},
-		// registerEvent: function () {
-		// 	var self = this;
-		// 	self.$el.find('#data-search').keypress(function (e) {
-		// 		if (e.which == '13') {
-		// 			self.setupFilter();
-		// 		}
-		// 	});
-		// 	var filter_data = self.$el.find("#filter-data-by-status");
-		// 	filter_data.on("change", function () {
-		// 		self.setupFilter();
-		// 	});
-		// 	self.getApp().on("import_brand_template_closed", function (event) {
-		// 		self.setupFilter();
-		// 	});
-		// },
-		// setupFilter: function () {
-		// 	var self = this;
-		// 	let search_data = self.$el.find("#data-search").val();
-		// 	let active = self.$el.find("#filter-data-by-status").val();
-		// 	if (search_data != null) {
-
-		// 		if (active != "2") {
-		// 			self.getCollectionElement().data("gonrin").filter({ "$and": [{ "active": { "$eq": active } }, { "$or": [{ "brand_name": { "$like": search_data } }, { "business_type": { "$like": search_data } }, { "brand_id": { "$like": search_data } }] }] });
-		// 		} else {
-		// 			self.getCollectionElement().data("gonrin").filter({ "$and": [{ "$or": [{ "brand_name": { "$like": search_data } }, { "business_type": { "$like": search_data } }, { "brand_id": { "$like": search_data } }] }] });
-		// 		}
-		// 	}
-
-		// }
+	
 		loadGridData: function (dataSource) {
 			var self = this;
 			self.$el.find("#grid").grid({
