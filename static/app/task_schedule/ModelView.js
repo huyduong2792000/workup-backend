@@ -8,6 +8,8 @@ define(function (require) {
 		schema = require('json!schema/TaskScheduleSchema.json');
 	var TaskSelectView = require('app/tasks/SelectView');
 
+
+
 	return Gonrin.ModelView.extend({
 		template: template,
 		modelSchema: schema,

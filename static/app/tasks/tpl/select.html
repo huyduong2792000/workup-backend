@@ -1,4 +1,20 @@
 <div id="filter" style="width: 100%"></div>
 <!-- <div block-bind="toolbar"></div> -->
-<div id="grid" data-bind='collection:$collection'></div>
-<div class="float-right"  block-bind="toolbar"></div>
+<!-- <div class="row text-light py-3 m-0 px-0" style="background-color: #315294;">
+    <div class="text-center col-md-10 col-10"  >
+        Tên công việc
+    </div>
+    <div  class="text-center col-md-2 col-2 ">
+        <span class="pr-5">Chọn</span>
+    </div>
+</div>  -->
+<div class="row text-light py-1 mx-2 my-0" style="background-color: #315294;" >
+    <div class="text-center col-md-10 col-10" >
+        <span  style="font-size: 16px;">Tên công việc</span>
+    </div>
+    <div  class="col-md-2 col-2 pl-0" >
+        <span  style="font-size: 16px;">Chọn</span>
+    </div>
+</div>  
+<div id="task-select-item" style=" overflow-y: scroll;"></div>
+<div class="float-right" style="margin-bottom: 10px;"  block-bind="toolbar"></div>
