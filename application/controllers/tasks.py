@@ -10,7 +10,8 @@ from application.controllers import auth_func
 from sqlalchemy import and_, or_
 from hashids import Hashids
 from math import floor
-from datetime import datetime
+import datetime
+import time
 
 hashids = Hashids(salt = "make task easy", alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 
@@ -119,7 +120,13 @@ async def tasks_employees(request):
     if uid is not None:
         start_time = request.args.get("start_time", None)
         end_time = request.args.get("end_time", None)
+        
         status = request.args.get("status", None)
+        
+        if start_time is None and end_time is None:
+#             current_date = datetime.today().strftime('%Y-%m-%d')
+            start_of_today = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
+            end_of_today = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(23, 59, 59)).timetuple())
         
         user = db.session.query(User).filter(User.id == uid).first()
         
