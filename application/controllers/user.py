@@ -71,7 +71,6 @@ async def get_current_user(request):
         user_info = to_dict(user_info)
         return json(user_info)
     else:
-        return json("ok")
         return json({
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"

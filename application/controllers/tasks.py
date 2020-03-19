@@ -30,6 +30,7 @@ def create_task(request=None, data=None, **kw):
 
 def filter_tasks(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
+    
     if uid is not None:
         if 'filters' in search_params:
             filters = search_params["filters"]

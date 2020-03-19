@@ -117,7 +117,7 @@ class TaskschedulesTasks(CommonModel):
     task = db.relationship("Tasks")
     task_schedule_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_schedule.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     task_schedule = db.relationship("TaskSchedule")
-    
+
     
 # taskschedules_tasks = db.Table(
 #     "taskschedules_tasks",
@@ -128,13 +128,17 @@ class TaskschedulesTasks(CommonModel):
    
 class TaskSchedule(CommonModel):
     __tablename__ = 'task_schedule'
+    taskschedule_name = db.Column(String())
     day_of_week = db.Column(BigInteger()) # 2^n
-    hour_of_day = db.Column(BigInteger()) #2^n
+    shift_of_day = db.Column(BigInteger()) #2^n
     start_time_working = db.Column(BigInteger(), default = 0) #equal 0 because 0*2^n =0
     end_time_working = db.Column(BigInteger(),default = 0) #equal 0 because 0*2^n =0
+    active = db.Column(SmallInteger, default=1)
+    create_by = db.Column(UUID(as_uuid=True), ForeignKey('user.id', onupdate='CASCADE', ondelete='SET NULL'), index=True, nullable=True)
     Tasks = db.relationship("Tasks",
                             secondary="taskschedules_tasks",
                             )
+    
 
 # 0:0 job ngay mai co vievj
 # class TodoInfo(CommonModel):
