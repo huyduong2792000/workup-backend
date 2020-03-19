@@ -22,9 +22,26 @@ define(function (require) {
 		},
 		render:function(){
 			var self = this;
-			this.$el.html(this.templete_item(this.model.toJSON()));
+			var data_render = this.model.toJSON()
+			self.renderTime(data_render)
+			this.$el.html(this.templete_item(data_render));
 			self.renderSelectTask()
 			return self;
+		},
+		renderTime:function(data_render){
+			var self = this;
+			var result = data_render
+			if ( result['start_time'] != null){
+				result['start_time'] =  moment.unix(self.model.get('start_time')).format("DD/MM/YY");
+			}else{
+				result['start_time'] = ""
+			}
+			if ( result['end_time'] != null){
+				result['end_time'] =  moment.unix(self.model.get('end_time')).format("DD/MM/YY");
+			}else{
+				result['end_time'] = ""
+			}
+			return result
 		},
 		closeDetail:function(){
 			var self = this;
@@ -127,7 +144,6 @@ define(function (require) {
 		renderSelectItem:function(){
 			var self = this
 			self.$el.find("#task-select-item").empty()
-			
 			self.$el.find("#task-select-item").css('height',screen.height-160)
 			self.collection.models.forEach(function(item,index){
 				var item_view = new itemView({model:item,selectedItems:self.uiControl.selectedItems});
