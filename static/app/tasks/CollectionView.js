@@ -56,9 +56,9 @@ define(function (require) {
 					field: "original_estimate", label: "Ước lượng", template: function (rowObj) {
 						let original_estimate = rowObj.original_estimate || null;
 
-						if (original_estimate != null){
+						if (original_estimate != null) {
 							return `<p style="color:blue;">${original_estimate}  minute</p> `;
-						}else{
+						} else {
 							return `<p style="color:red;">Chưa ước lượng</p>`
 						}
 					}
@@ -77,10 +77,10 @@ define(function (require) {
 					field: "active",
 					label: "Trạng thái",
 					template: function (rowObj) {
-						return TemplateHelper.renderStatus(!rowObj.deleted);
+						return TemplateHelper.renderStatus(rowObj.active);
 					}
 				}
-				
+
 				// {
 				// 	field: "created_at", label: "Ngày tạo", template: function (rowObj) {
 				// 		return Helpers.setDatetime(rowObj.created_at);
@@ -96,9 +96,41 @@ define(function (require) {
 		},
 
 		render: function () {
-			this.applyBindings();
-			return this;
+			var self = this;
+			self.applyBindings();
+			self.registerEvent();
+			return self;
+
 		},
+		registerEvent: function () {
+			var self = this;
+			self.$el.find('#data-search').keypress(function (e) {
+				if (e.which == '13') {
+					self.setupFilter();
+				}
+			});
+			var filter_data = self.$el.find("#filter-data-by-status");
+			filter_data.on("change", function () {
+				self.setupFilter();
+			});
+			self.getApp().on("import_brand_template_closed", function (event) {
+				self.setupFilter();
+			});
+		},
+		setupFilter: function () {
+			var self = this;
+			let search_data = self.$el.find("#data-search").val();
+			let active = self.$el.find("#filter-data-by-status").val();
+			if (search_data != null) {
+
+				if (active != "2") {
+					self.getCollectionElement().data("gonrin").filter({ "$and": [{ "active": { "$eq": active } }, { "$or": [{ "task_name": { "$like": search_data } }, { "task_code": { "$like": search_data } }] }] });
+				} else {
+					self.getCollectionElement().data("gonrin").filter({ "$and": [{ "$or": [{ "task_name": { "$like": search_data } }, { "task_code": { "$like": search_data } }] }] });
+				}
+			}
+
+		}
 
 	});
 
