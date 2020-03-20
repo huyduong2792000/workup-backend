@@ -8,7 +8,7 @@ define(function (require) {
 		schema = require('json!schema/TasksSchema.json');
 
 	var Helpers = require('app/common/Helpers');
-
+	var TemplateHelper = require('app/Common/TemplateHelper');
 
 	return Gonrin.CollectionView.extend({
 		template: template,
@@ -72,7 +72,15 @@ define(function (require) {
 					field: "end_time", label: "T/g kết thúc", template: function (rowObj) {
 						return Helpers.utcToLocal(moment.unix(rowObj.end_time).format("YYYY-MM-DD HH:mm:ss"), "YYYY-MM-DD HH:mm:ss");
 					}
+				},
+				{
+					field: "active",
+					label: "Trạng thái",
+					template: function (rowObj) {
+						return TemplateHelper.renderStatus(!rowObj.deleted);
+					}
 				}
+				
 				// {
 				// 	field: "created_at", label: "Ngày tạo", template: function (rowObj) {
 				// 		return Helpers.setDatetime(rowObj.created_at);

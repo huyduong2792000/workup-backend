@@ -100,6 +100,9 @@ define(function (require) {
 					from_time = data.from_time;
 					to_time = data.to_time;
 					let url = self.getApp().serviceURL + '/api/v1/tasks_employees?start_time=' + from_time + '&end_time=' + to_time;
+					self.$el.find('#btn_filter_done').attr('checked', false);
+					self.$el.find('#btn_filter_pending').attr('checked', false);
+					self.$el.find('#btn_filter_inprocess').attr('checked', false);
 					self.filterData(url)
 
 				});
