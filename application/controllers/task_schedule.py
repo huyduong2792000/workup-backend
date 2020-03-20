@@ -10,9 +10,23 @@ from application.controllers import auth_func
 from sqlalchemy import and_, or_
 from math import floor
 from datetime import datetime
+import schedule
+import time
+from threading import Thread
+# def job():
+#     print("I'm working...=============================================================")
 
+# # schedule.every().day.at("09:38").do(job)
+# schedule.every(5).seconds.do(job)
+
+# def run_schedule():
+#     while True:
+#         schedule.run_pending()
+#         pass
+# Thread(target = run_schedule).start()
 
 def create_taskschedule(request=None, data=None, **kw):
+
     uid = auth.current_user(request)
     if uid is not None:
         data['created_by'] = uid
@@ -24,7 +38,6 @@ def create_taskschedule(request=None, data=None, **kw):
     
 def filter_taskschedule(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
-
     if uid is not None:
         if 'filters' in search_params:
             filters = search_params["filters"]
