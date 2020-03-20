@@ -150,6 +150,8 @@ define(function (require) {
 									<div class="col-lg-12 col-sm-12 col-12">
 										<div class="float-left mr-2">Todo: </div>
 										<div class="btn-default float-left pl-1 pr-1">${rowObject.task_name}</div>
+										<div class="float-right text-dark" ><p style="color:blue;">${rowObject.priority}</p></div>
+										
 									</div>
 								</div>`;
 

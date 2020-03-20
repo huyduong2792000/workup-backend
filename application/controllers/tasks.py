@@ -104,6 +104,18 @@ def process_employees_tasks(tasks_employees, my_tasks, user):
         employee = task_employee.employee
         
         user_create_task = db.session.query(User).filter(User.id == task.created_by).first()
+       
+        priority = task.priority
+        
+        if priority == 1:
+            priority = "highest"
+        if priority == 2:
+            priority = "high"
+        if priority == 3:
+            priority = "low"
+        if priority == 4:
+            priority = "lowest"
+                
         obj = {
             "id": str(task_employee.id),
             "task_uid": str(task.id),
@@ -116,6 +128,7 @@ def process_employees_tasks(tasks_employees, my_tasks, user):
             "start_time": task.start_time,
             "end_time": task.end_time,
             "status": task.status,
+            "priority":priority,
             "created_by": str(task.created_by),
             "created_by_name": user_create_task.full_name
             }
@@ -134,6 +147,17 @@ def process_employees_tasks(tasks_employees, my_tasks, user):
                 list_id.append(str(employee.id))
                 list_name.append(employee.full_name)
                 
+            priority = task.priority
+            if priority == 1:
+                priority = "highest"
+            if priority == 2:
+                priority = "high"
+            if priority == 3:
+                priority = "low"
+            if priority == 4:
+                priority = "lowest"
+            
+             
             obj = {
             "id": str(auto_id),
             "task_uid": str(task.id),
@@ -146,6 +170,7 @@ def process_employees_tasks(tasks_employees, my_tasks, user):
             "start_time": task.start_time,
             "end_time": task.end_time,
             "status": task.status,
+            "priority":priority,
             "created_by": str(task.created_by),
             "created_by_name": user.full_name
             }
