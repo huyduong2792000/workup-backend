@@ -47,7 +47,7 @@ define(function (require) {
 
             self.$el.find('#time_filter_from_time').on('change.datetimepicker', function (e) {
                 if (e && e.date) {
-                    self.model.set('from_time', e.date.local().unix() * 1000);
+                    self.model.set('from_time', e.date.local().unix());
                 } else {
                     self.model.set('from_time', null);
                 }
@@ -55,7 +55,7 @@ define(function (require) {
 
             self.$el.find('#time_filter_to_time').on('change.datetimepicker', function (e) {
                 if (e && e.date) {
-                    self.model.set('to_time', e.date.local().unix() * 1000);
+                    self.model.set('to_time', e.date.local().unix());
                 } else {
                     self.model.set('to_time', null);
                 }

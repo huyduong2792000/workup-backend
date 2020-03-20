@@ -8,7 +8,7 @@ define(function (require) {
 		schema = require('json!schema/TasksSchema.json');
 
 	var Helpers = require('app/common/Helpers');
-
+	var TemplateHelper = require('app/Common/TemplateHelper');
 
 	return Gonrin.CollectionView.extend({
 		template: template,
@@ -39,7 +39,7 @@ define(function (require) {
 					}
 				},
 				{
-					field: "status", label: "Trạng thái", template: function (rowObj) {
+					field: "status", label: "Tiến độ công việc", template: function (rowObj) {
 						if (rowObj.status == 0) {
 							return `<div class="btn-outline-warning " style="border-radius: 4px;border: 2px solid #ffc107;  transform: rotate(30deg); font-weight: 300; max-width: 60px;">Pending</div>`;
 						}
@@ -54,24 +54,33 @@ define(function (require) {
 				// { field: "link_issue", label: "Liên kết" },
 				{
 					field: "original_estimate", label: "Ước lượng", template: function (rowObj) {
-						let original_estimate = rowObj.original_estimate | null;
-						if (original_estimate != null){
-							return original_estimate + " minute";
-						}else{
-							return "0 minute"
+						let original_estimate = rowObj.original_estimate || null;
+
+						if (original_estimate != null) {
+							return `<p style="color:blue;">${original_estimate}  minute</p> `;
+						} else {
+							return `<p style="color:red;">Chưa ước lượng</p>`
 						}
 					}
 				},
 				{
 					field: "start_time", label: "T/g bắt đầu", template: function (rowObj) {
-						return Helpers.setDatetime(rowObj.start_time);
+						return Helpers.utcToLocal(moment.unix(rowObj.start_time).format("YYYY-MM-DD HH:mm:ss"), "YYYY-MM-DD HH:mm:ss");
 					}
 				},
 				{
 					field: "end_time", label: "T/g kết thúc", template: function (rowObj) {
-						return Helpers.setDatetime(rowObj.end_time);
+						return Helpers.utcToLocal(moment.unix(rowObj.end_time).format("YYYY-MM-DD HH:mm:ss"), "YYYY-MM-DD HH:mm:ss");
+					}
+				},
+				{
+					field: "active",
+					label: "Trạng thái",
+					template: function (rowObj) {
+						return TemplateHelper.renderStatus(rowObj.active);
 					}
 				}
+
 				// {
 				// 	field: "created_at", label: "Ngày tạo", template: function (rowObj) {
 				// 		return Helpers.setDatetime(rowObj.created_at);
@@ -87,9 +96,41 @@ define(function (require) {
 		},
 
 		render: function () {
-			this.applyBindings();
-			return this;
+			var self = this;
+			self.applyBindings();
+			self.registerEvent();
+			return self;
+
 		},
+		registerEvent: function () {
+			var self = this;
+			self.$el.find('#data-search').keypress(function (e) {
+				if (e.which == '13') {
+					self.setupFilter();
+				}
+			});
+			var filter_data = self.$el.find("#filter-data-by-status");
+			filter_data.on("change", function () {
+				self.setupFilter();
+			});
+			self.getApp().on("import_brand_template_closed", function (event) {
+				self.setupFilter();
+			});
+		},
+		setupFilter: function () {
+			var self = this;
+			let search_data = self.$el.find("#data-search").val();
+			let active = self.$el.find("#filter-data-by-status").val();
+			if (search_data != null) {
+
+				if (active != "2") {
+					self.getCollectionElement().data("gonrin").filter({ "$and": [{ "active": { "$eq": active } }, { "$or": [{ "task_name": { "$like": search_data } }, { "task_code": { "$like": search_data } }] }] });
+				} else {
+					self.getCollectionElement().data("gonrin").filter({ "$and": [{ "$or": [{ "task_name": { "$like": search_data } }, { "task_code": { "$like": search_data } }] }] });
+				}
+			}
+
+		}
 
 	});
 

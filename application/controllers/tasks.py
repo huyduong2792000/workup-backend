@@ -20,6 +20,11 @@ def create_task(request=None, data=None, **kw):
     uid = auth.current_user(request)
     if uid is not None:
         data['created_by'] = uid
+        if data['start_time'] is None:
+            data['start_time']= time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
+        if data['end_time'] is None:
+            data['end_time'] = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(23, 59, 59)).timetuple())
+#         print(data['end_time'] )
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -30,17 +35,16 @@ def create_task(request=None, data=None, **kw):
 
 def filter_tasks(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
-    
     if uid is not None:
         if 'filters' in search_params:
             filters = search_params["filters"]
             if "$and" in filters:
-                search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
                 search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
             else:
-                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"active":{"$eq": 1} } ]
+                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"deleted":{"$eq": False} } ]
         else:
-            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}}, {"active":{"$eq": 1} } ]}
+            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}},{"deleted":{"$eq": False} } ]}
             
     else:
         return json({
@@ -92,12 +96,26 @@ apimanager.create_api(
 #         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
 #     )
 
-def process_employees_tasks(tasks_employees):
+def process_employees_tasks(tasks_employees, my_tasks, user):
     list_task = []
+    list_tasks_has_assignee =[]
     for task_employee in tasks_employees:
         task = task_employee.task
         employee = task_employee.employee
         
+        user_create_task = db.session.query(User).filter(User.id == task.created_by).first()
+       
+        priority = task.priority
+        
+        if priority == 1:
+            priority = "highest"
+        if priority == 2:
+            priority = "high"
+        if priority == 3:
+            priority = "low"
+        if priority == 4:
+            priority = "lowest"
+                
         obj = {
             "id": str(task_employee.id),
             "task_uid": str(task.id),
@@ -109,10 +127,59 @@ def process_employees_tasks(tasks_employees):
             "employee_position": employee.position,
             "start_time": task.start_time,
             "end_time": task.end_time,
-            "status": task.status
+            "status": task.status,
+            "priority":priority,
+            "created_by": str(task.created_by),
+            "created_by_name": user_create_task.full_name
             }
         list_task.append(obj)
+        
+        list_tasks_has_assignee.append(str(task.id))
+    auto_id = 0
+    
+    
+    for task in my_tasks:
+        if str(task.id) not in list_tasks_has_assignee:
+            employees = task.employees;
+            list_name = []
+            list_id = []
+            for employee in employees:
+                list_id.append(str(employee.id))
+                list_name.append(employee.full_name)
+                
+            priority = task.priority
+            if priority == 1:
+                priority = "highest"
+            if priority == 2:
+                priority = "high"
+            if priority == 3:
+                priority = "low"
+            if priority == 4:
+                priority = "lowest"
+            
+             
+            obj = {
+            "id": str(auto_id),
+            "task_uid": str(task.id),
+            "task_code": task.task_code,
+            "task_name": task.task_name,
+            "employee_uid": list_id,
+            "employee_name": list_name,
+            "employee_phone": None,
+            "employee_position": None,
+            "start_time": task.start_time,
+            "end_time": task.end_time,
+            "status": task.status,
+            "priority":priority,
+            "created_by": str(task.created_by),
+            "created_by_name": user.full_name
+            }
+            auto_id+=1
+            list_tasks_has_assignee.append(str(task.id))
+            
+        list_task.append(obj)
     return list_task
+
 
 @app.route('/api/v1/tasks_employees', methods=["GET", "OPTIONS"])
 async def tasks_employees(request):
@@ -126,30 +193,49 @@ async def tasks_employees(request):
         
         if start_time is None and end_time is None:
 #             current_date = datetime.today().strftime('%Y-%m-%d')
-            start_of_today = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
-            end_of_today = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(23, 59, 59)).timetuple())
+            start_time = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
+            end_time = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(23, 59, 59)).timetuple())
+        
         
         user = db.session.query(User).filter(User.id == uid).first()
         
         if status is not None:
             tasks_employees = db.session.query(TasksEmployees).join(Tasks).filter(and_(
-                TasksEmployees.task_uid == Tasks.id,
-                Tasks.status == status,
-                TasksEmployees.employee_uid == user.employee_uid
-                )).all()
-            return json(process_employees_tasks(tasks_employees))
+                    TasksEmployees.task_uid == Tasks.id,
+                    Tasks.status == status,
+                    Tasks.start_time >= start_time,
+                    Tasks.end_time <= end_time,
+                    TasksEmployees.employee_uid == user.employee_uid
+                    )).all()
+                
+            my_tasks = db.session.query(Tasks).filter(and_(
+                    Tasks.created_by == uid,
+                    Tasks.start_time >= start_time,
+                    Tasks.end_time <= end_time,
+                    Tasks.status == status,
+                    )).all()
+                
+             
+            return json(process_employees_tasks(tasks_employees, my_tasks, user))
         
         else:
             tasks_employees = db.session.query(TasksEmployees).join(Tasks).filter(and_(
                     TasksEmployees.task_uid == Tasks.id,
-                    TasksEmployees.employee_uid == user.employee_uid
+                    TasksEmployees.employee_uid == user.employee_uid,
+                    Tasks.start_time >= start_time,
+                    Tasks.end_time <= end_time,
+                    )).all()
+            my_tasks = db.session.query(Tasks).filter(and_(
+                    Tasks.created_by == uid,
+                    Tasks.start_time >= start_time,
+                    Tasks.end_time <= end_time,
                     )).all()
                     
-            return json(process_employees_tasks(tasks_employees))
+            return json(process_employees_tasks(tasks_employees, my_tasks, user))
         
         
     else:
-        return json("ok")
+
         return json({
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"

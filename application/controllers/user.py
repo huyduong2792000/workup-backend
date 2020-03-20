@@ -134,13 +134,14 @@ def valid_employe(request=None, data=None, **kw):
     confirm_password = data.get('confirm_password')
     position =  data.get('position')
     if data.get('id') is None:
-        if email != None and id_identifier != None and password != None and password==confirm_password and position != None:
+        if email != None and id_identifier != None and position != None:
             check_employee = Employee.query.filter(or_(Employee.email == email, Employee.id_identifier == id_identifier)).first()
             if check_employee is None:
-                request.args['password'] = data['password']
-                request.args['confirm_password'] = data['confirm_password']
-                del data['confirm_password']
-                del data['password']
+                pass
+#                 request.args['password'] = data['password']
+#                 request.args['confirm_password'] = data['confirm_password']
+#                 del data['confirm_password']
+#                 del data['password']
                 
             else:
                 return json({"error_code": "INSERT_ERROR", "error_message": "Nhân viên đã tồn tại, vui lòng kiểm tra lại!"}, status=520)   
@@ -155,8 +156,9 @@ def valid_employe(request=None, data=None, **kw):
         
 def user_register(request=None, Model=None, result=None, **kw):
     param = request.json
-    password = request.args['password']
-    confirm_password= request.args['confirm_password']
+#     password = request.args['password']
+    password = "123456"
+#     confirm_password= request.args['confirm_password']
     
     role_admin = Role.query.filter(Role.role_name == "admin").first()
     role_user = Role.query.filter(Role.role_name == "user").first()
