@@ -39,7 +39,7 @@ define(function (require) {
 					}
 				},
 				{
-					field: "status", label: "Trạng thái", template: function (rowObj) {
+					field: "status", label: "Tiến độ công việc", template: function (rowObj) {
 						if (rowObj.status == 0) {
 							return `<div class="btn-outline-warning " style="border-radius: 4px;border: 2px solid #ffc107;  transform: rotate(30deg); font-weight: 300; max-width: 60px;">Pending</div>`;
 						}

@@ -39,12 +39,12 @@ def filter_tasks(request=None, search_params=None, **kwargs):
         if 'filters' in search_params:
             filters = search_params["filters"]
             if "$and" in filters:
-#                 search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
                 search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
             else:
-                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"active":{"$eq": 1} } ]
+                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"deleted":{"$eq": False} } ]
         else:
-            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}}, {"active":{"$eq": 1} } ]}
+            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}},{"deleted":{"$eq": False} } ]}
             
     else:
         return json({

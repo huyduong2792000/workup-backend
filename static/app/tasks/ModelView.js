@@ -32,6 +32,17 @@ define(function (require) {
 					value: 0
 				},
 				{
+					field: "active",
+					uicontrol: "combobox",
+					textField: "text",
+					valueField: "value",
+					dataSource: [
+						{ "value": 1, "text": "Actice" },
+						{ "value": 0, "text": "Deactive" },
+					],
+					value: 0
+				},
+				{
 					field: "priority",
 					uicontrol: "combobox",
 					textField: "text",
@@ -121,7 +132,7 @@ define(function (require) {
 				},
 				command: function () {
 					var self = this;
-					self.model.set('active', 0);
+					self.model.set('deleted', true);
 
 					self.model.save(null, {
 						success: function (model, respose, options) {
@@ -166,6 +177,8 @@ define(function (require) {
 						self.$el.find("#view_original_estimate").show();
 						self.$el.find("#view_status").show();
 						self.$el.find("#view_tags").show();
+						self.$el.find("#view_active").show();
+						
 						
 
 					},
