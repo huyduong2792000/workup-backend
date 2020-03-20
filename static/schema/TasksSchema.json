@@ -59,10 +59,12 @@
         "type": "number"
     },
     "start_time": {
-        "type": ""
+        "type": "",
+        "required": true
     },
     "end_time": {
-        "type": ""
+        "type": "",
+        "required": true
     },
     "status": {
         "type": "number",

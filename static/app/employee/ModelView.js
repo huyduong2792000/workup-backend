@@ -175,23 +175,36 @@ define(function (require) {
 				}else{
 					return true;
 				}
-			} else {
-				let password = self.$el.find('#password').val();
-				let confirm_password = self.$el.find('#confirm_password').val();
-				if (password.length > 5) {
-					if (password == confirm_password) {
-						self.model.set('password', password);
-						self.model.set('confirm_password', password);
-						return true;
-					} else {
-						self.getApp().notify("xác nhận mật khẩu không trùng khớp!", { type: "warning" })
-						return false
-					}
-				} else {
-					self.getApp().notify("mật khẩu phải dài hơn 6 ký tự!!", { type: "warning" })
-					return false
+			} else{
+				let full_name = self.model.get('full_name');
+				let email = self.model.get('email');
+				let phone_number = self.model.get('phone_number');
+				let id_identifier = self.model.get('id_identifier');
+								
+				if(full_name == null || email == null || phone_number == null || id_identifier == null){
+					self.getApp().notify("Tên, tài khoản, số điện thoại và số cmnd không được bỏ trống!", { type: "warning" })
+					return false;
+				}else{
+					return true;
 				}
 			}
+			// else {
+			// 	let password = self.$el.find('#password').val();
+			// 	let confirm_password = self.$el.find('#confirm_password').val();
+			// 	if (password.length > 5) {
+			// 		if (password == confirm_password) {
+			// 			self.model.set('password', password);
+			// 			self.model.set('confirm_password', password);
+			// 			return true;
+			// 		} else {
+			// 			self.getApp().notify("xác nhận mật khẩu không trùng khớp!", { type: "warning" })
+			// 			return false
+			// 		}
+			// 	} else {
+			// 		self.getApp().notify("mật khẩu phải dài hơn 6 ký tự!!", { type: "warning" })
+			// 		return false
+			// 	}
+			// }
 
 		},
 	});

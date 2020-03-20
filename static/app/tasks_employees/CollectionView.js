@@ -125,6 +125,7 @@ define(function (require) {
 		},
 	
 		loadGridData: function (dataSource) {
+			let total_tasks = dataSource.length
 			var self = this;
 			self.$el.find("#grid").grid({
 				primaryField: "id",
@@ -135,7 +136,7 @@ define(function (require) {
 				fields: [
 					{
 						field: "id",
-						label: "Công việc ngày hôm nay",
+						label: "Công việc ngày hôm nay: " +total_tasks+ " việc",
 						template: function (rowObject) {
 
 							var html = `<div style="overflow-x: hidden; background-color: #fff; padding: 5px 5px; position: relative;">
@@ -160,6 +161,12 @@ define(function (require) {
 									<div class="btn-default float-left pl-1 pr-1">${Helper.utcToLocal(moment.unix(rowObject.end_time).format("YYYY-MM-DDTHH:mm:ss"), "HH:mm")}</div>
 								</div>
 							</div>`;
+							html += `<div class="row">
+							<div class="col-lg-12 col-sm-12 col-12">
+								<div class="float-left mr-2">Created_by: </div>
+								<div class="btn-default float-left pl-1 pr-1">${rowObject.created_by_name}</div>
+								</div></div>
+								`;
 							html += `<div class="row">
 							<div class="col-lg-12 col-sm-12 col-12">
 								<div class="float-left mr-2">Assignee: </div>
@@ -189,6 +196,20 @@ define(function (require) {
 						self.getApp().getRouter().navigate(path);
 					}
 				},
+
+				events: {
+                    // "rowclick": function(e){
+                    // 	console.log(e);
+                    // },
+                    // "rowdblclick": function (event) {
+                    //     var self = this;
+                    //     if (event.rowData.id) {
+					// 		var path = 'tasks/model?id=' + event.rowData.task_uid + '&backcol=' + self.collectionName;
+	
+					// 		self.getApp().getRouter().navigate(path);
+					// 	}
+                    // },
+                },
 				onRendered: function () {
 					loader.hide();
 				},

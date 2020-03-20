@@ -459,14 +459,14 @@ define(function (require) {
 			var self = this;
 			var time_working = null;
 			if (self.model.get(field) != 0) {
-				time_working = moment.unix(self.model.get(field)).format("YYYY-MM-DDTHH:mm:ss");
+				time_working = moment.unix(self.model.get(field)).format("YYYY-MM-DD HH:mm:ss");
 			} else {
 				time_working = null
 			}
 			if (self.model.get(field)) {
 				self.$el.find(selector).datetimepicker({
 					defaultDate: time_working,
-					format: "DD/MM/YYYYTHH:mm:ss",
+					format: "DD/MM/YYYY HH:mm:ss",
 					icons: {
 						time: "fa fa-clock"
 					}

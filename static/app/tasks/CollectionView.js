@@ -54,22 +54,23 @@ define(function (require) {
 				// { field: "link_issue", label: "Liên kết" },
 				{
 					field: "original_estimate", label: "Ước lượng", template: function (rowObj) {
-						let original_estimate = rowObj.original_estimate | null;
+						let original_estimate = rowObj.original_estimate || null;
+
 						if (original_estimate != null){
-							return original_estimate + " minute";
+							return `<p style="color:blue;">${original_estimate}  minute</p> `;
 						}else{
-							return "0 minute"
+							return `<p style="color:red;">Chưa ước lượng</p>`
 						}
 					}
 				},
 				{
 					field: "start_time", label: "T/g bắt đầu", template: function (rowObj) {
-						return Helpers.setDatetime(rowObj.start_time);
+						return Helpers.utcToLocal(moment.unix(rowObj.start_time).format("YYYY-MM-DD HH:mm:ss"), "YYYY-MM-DD HH:mm:ss");
 					}
 				},
 				{
 					field: "end_time", label: "T/g kết thúc", template: function (rowObj) {
-						return Helpers.setDatetime(rowObj.end_time);
+						return Helpers.utcToLocal(moment.unix(rowObj.end_time).format("YYYY-MM-DD HH:mm:ss"), "YYYY-MM-DD HH:mm:ss");
 					}
 				}
 				// {

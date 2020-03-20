@@ -102,8 +102,8 @@ class Tasks(CommonModel):
     attach_file = db.Column(String(255))
     link_issue = db.Column(String(255))
     original_estimate = db.Column(Integer, index=True) # minute unit 
-    start_time = db.Column(BigInteger())
-    end_time = db.Column(BigInteger())
+    start_time = db.Column(BigInteger(), index=True, nullable=False)
+    end_time = db.Column(BigInteger(), index=True, nullable=False)
     status = db.Column(SmallInteger, index=True, default=0) # {0: todo, "2: processing ", "1: done"}
     rating = db.Column(SmallInteger)
     comments = db.Column(JSONB())
