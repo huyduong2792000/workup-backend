@@ -83,7 +83,7 @@ define(function (require) {
 						},
 						command: function () {
 							var self = this;
-							self.model.set({'active':0})
+							self.model.set({'delete':true})
 							self.model.save(null, {
 								success: function (model, respose, options) {
 									self.getApp().notify("Xoá dữ liệu thành công", { type: "info" });
