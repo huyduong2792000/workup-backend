@@ -1,3 +1,8 @@
+<style>
+    #nav_list_pag_grid::-webkit-scrollbar {
+        display: none;
+    }
+</style>
 <div id="filter" style="width: 100%"></div>
 <div block-bind="toolbar"></div>
 <div class="row">
@@ -5,4 +10,19 @@
         <div style="background-color: #315294 ; padding: 5px; margin-top: 5px; color: #fff; ">Lịch đã lên</div>
         <div id="collection-item"></div>
    </div>
+</div>
+<div id="pag_grid" class="d-flex justify-content-end" >
+    <div class="page-item" style=" list-style: none;">
+        <a class="page-link" id="previous" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    </div>
+    <ul id="nav_list_pag_grid " class="pl-0" 
+    style="display: flex; list-style: none; max-width: 100px; overflow-x: scroll;-ms-overflow-style: none;">
+    </ul>
+    <div class="page-item" style=" list-style: none;">
+        <a class="page-link" id="next" aria-label="Previous">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    </div>
 </div>

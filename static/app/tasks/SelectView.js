@@ -68,7 +68,6 @@ define(function (require) {
 			if (index_check != -1){
 				self.$el.find('#select_task').prop('checked',true)
 			}
-			console.log('index_check',index_check)
 		},
 		showDetail:function(){
 			var self = this;
@@ -104,34 +103,21 @@ define(function (require) {
 				}
 			},
 		],
-		uiControl: {
-			orderBy: [{ field: "created_at", direction: "desc" }],
-
-			// fields: [
-			// 	{ field: "task_name", label: "Tên" },
-			// 	// { field: "priority", label: "Mức độ" },
-			// 	{ field: "status", label: "Trạng thái" },
-			// 	{
-			// 		field: "start_time", label: "Thời gian bắt đầu", template: function (rowObj) {
-			// 			return Helpers.setDatetime(rowObj.start_time);
-			// 		}
-			// 	},
-			// 	{
-			// 		field: "end_time", label: "Thời gian kết thúc", template: function (rowObj) {
-			// 			return Helpers.setDatetime(rowObj.end_time);
-			// 		}
-			// 	},
-			// ],
-			// onRowClick: function (event) {
-			// 	this.uiControl.selectedItems = event.selectedItems;
-			// },
-		},
+		// uiControl: {
+		// 	orderBy: [{ field: "created_at", direction: "desc" }],
+		// },
 		render: function () {
 			// this.applyBindings();
+			if(this.collection.url == this.urlPrefix+ this.collectionName){
+				var url = `/api/v1/tasks?page=1&results_per_page=1&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+				this.collection.url = url
+			}
 			var self = this;
 			this.collection.fetch({
 				success:function(data){
+					console.log('collection',self.collection)
 					self.renderSelectItem()
+					self.renderPagination()
 				},
 				error:function(){
 					self.getApp().notify(" Lấy dữ liệu không thành công!", { type: "danger" })
@@ -141,10 +127,63 @@ define(function (require) {
 			
 			return this;
 		},
+		renderPagination:function(){
+			var self = this;
+			self.$el.find('#pag_grid ul').empty()
+			self.$el.find("#next").off('click')
+			self.$el.find("#previous").off('click')
+			for (var i = 0 ;i< Math.min(self.collection.totalPages); i++){
+				var html = `
+					<li class="page-item ">
+						<a class="page-link link-call-server" id="nav_item_pag_grid_1" href="javascript:void(0)"";>${i+1}</a>     
+					</li>`
+				self.$el.find('#pag_grid ul').append(html)
+			}
+			
+			self.$el.find(".link-call-server").each(function(index,value){ 
+				if(index+1 == self.collection.page){
+					$(this).addClass('bg-primary text-light')
+					var offset_parent = $('#pag_grid ul').offset().left +  10
+					var offset_child = $(this).offset().left
+					$('#pag_grid ul').animate({
+						scrollLeft: offset_child - offset_parent
+					}, 500);
+				}
+				$(this).click(function(){
+					var page = index+1
+					
+					self.$el.find("#next").click(function(){
+						page = Math.min(self.collection.page +1,self.collection.totalPages)
+					})
+					// $(this).css("marginLeft","10px")
+					var url = `/api/v1/tasks?page=${page}&results_per_page=1&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+					self.collection.url = url
+					self.render()
+					return
+				})
+			})
+			self.$el.find("#previous").on('click',function(){
+				console.log('click')
+				var page = Math.max(self.collection.page -1,1)
+				var url = `/api/v1/tasks?page=${page}&results_per_page=1&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+					self.collection.url = url
+					// $(this).off('click')
+					self.render()
+			})
+			self.$el.find("#next").on('click',function(){
+				console.log('click')
+				var page = Math.min(self.collection.page +1,self.collection.totalPages)
+				var url = `/api/v1/tasks?page=${page}&results_per_page=1&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+					self.collection.url = url
+					// $(this).off('click')
+					self.render()
+			})
+		},
 		renderSelectItem:function(){
 			var self = this
+			console.log(screen.height)
 			self.$el.find("#task-select-item").empty()
-			self.$el.find("#task-select-item").css('height',screen.height-160)
+			self.$el.find("#task-select-item").css('height',screen.height-5*screen.height/19)
 			self.collection.models.forEach(function(item,index){
 				var item_view = new itemView({model:item,selectedItems:self.uiControl.selectedItems});
 				self.$el.find("#task-select-item").append(item_view.render().el);

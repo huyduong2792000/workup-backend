@@ -86,54 +86,83 @@ define(function (require) {
 		modelSchema: schema,
 		urlPrefix: "/api/v1/",
 		collectionName: "task_schedule",
-		uiControl: {
-			orderBy: [{ field: "start_time_working", direction: "desc" }],
-			fields: [
-				{ field: "day_of_week", label: "Thứ" },
-				{ field: "hour_of_day", label: "Giờ làm" },
-				{
-					field: "start_time_working", label: "Ngày bắt đầu", template: function (rowObj) {
-						// console.log('rowobject',rowObj)
-						return moment.unix(rowObj.start_time_working).format("DD/MM/YYYY HH:mm:ss");
-					}
-				},
-				{
-					field: "end_time_working", label: "Ngày kết thúc", template: function (rowObj) {
-						return moment.unix(rowObj.end_time_working).format("DD/MM/YYYY HH:mm:ss");
-					}
-				},
-				{
-					field: "created_at", label: "Ngày tạo", template: function (rowObj) {
-						return Helpers.setDatetime(rowObj.created_at);
-					}
-				}
-			],
-			onRowClick: function (event) {
-				if (event.rowId) {
-					var path = this.collectionName + '/model?id=' + event.rowId;
-					this.getApp().getRouter().navigate(path);
-				}
-			}
-		},
 
 		render: function () {
 			var self = this;
 			// this.applyBindings();
-			// console.log('collection',this.collection)
+			if(this.collection.url == this.urlPrefix+ this.collectionName){
+				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+				this.collection.url = url
+			}
 			this.collection.fetch({
 				success:function(data){
+					
 					self.renderCollectionItem()
+					self.renderPagination()
+					
 				},
 				error:function(){
 					self.getApp().notify(" Lấy dữ liệu không thành công!", { type: "danger" })
 				}
 				
 			})
+			// return this;
+		},
+		renderPagination:function(){
+			var self = this;
+			self.$el.find('#pag_grid ul').empty()
+			self.$el.find("#next").off('click')
+			self.$el.find("#previous").off('click')
+			for (var i = 0 ;i< Math.min(self.collection.totalPages); i++){
+				var html = `
+					<li class="page-item ">
+						<a class="page-link link-call-server" id="nav_item_pag_grid_1" href="javascript:void(0)"";>${i+1}</a>     
+					</li>`
+				self.$el.find('#pag_grid ul').append(html)
+			}
 			
-			return this;
+			self.$el.find(".link-call-server").each(function(index,value){ 
+				if(index+1 == self.collection.page){
+					$(this).addClass('bg-primary text-light')
+					var offset_parent = $('#pag_grid ul').offset().left +  10
+					var offset_child = $(this).offset().left
+					$('#pag_grid ul').animate({
+						scrollLeft: offset_child - offset_parent
+					}, 500);
+				}
+				$(this).click(function(){
+					var page = index+1
+					
+					self.$el.find("#next").click(function(){
+						page = Math.min(self.collection.page +1,self.collection.totalPages)
+					})
+					// $(this).css("marginLeft","10px")
+					var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+					self.collection.url = url
+					self.render()
+					return
+				})
+			})
+			self.$el.find("#previous").on('click',function(){
+				console.log('click')
+				var page = Math.max(self.collection.page -1,1)
+				var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+					self.collection.url = url
+					// $(this).off('click')
+					self.render()
+			})
+			self.$el.find("#next").on('click',function(){
+				console.log('click')
+				var page = Math.min(self.collection.page +1,self.collection.totalPages)
+				var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+					self.collection.url = url
+					// $(this).off('click')
+					self.render()
+			})
 		},
 		renderCollectionItem:function(){
 			var self = this
+			self.$el.find("#collection-item").empty()
 			self.collection.models.forEach(function(item,index){
 				var item_view = new itemView({model:item,collectionName:self.collectionName});
 				self.$el.find("#collection-item").append(item_view.render().el);

@@ -39,6 +39,7 @@ def create_taskschedule(request=None, data=None, **kw):
 def filter_taskschedule(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
     if uid is not None:
+        print('search_params=====================',search_params)
         if 'filters' in search_params:
             filters = search_params["filters"]
             if "$and" in filters:
