@@ -47,13 +47,13 @@ define(function (require) {
 		eventRegister: function () {
 			var self = this;
 			var from_time = null;
-			var to_time =  null;
+			var to_time = null;
 			var status = null;
 
 			var filter_data = self.$el.find("#btn_filter_done");
 			filter_data.on("change", function () {
-				self.$el.find('#btn_filter_inprocess').attr('checked',false);
-				self.$el.find('#btn_filter_pending').attr('checked',false);
+				self.$el.find('#btn_filter_inprocess').attr('checked', false);
+				self.$el.find('#btn_filter_pending').attr('checked', false);
 				if (self.$el.find('#btn_filter_done').is(':checked')) {
 					let url = self.getApp().serviceURL + '/api/v1/tasks_employees?status=1'
 					self.filterData(url)
@@ -66,8 +66,8 @@ define(function (require) {
 			});
 			var filter_data = self.$el.find("#btn_filter_inprocess");
 			filter_data.on("change", function () {
-				self.$el.find('#btn_filter_done').attr('checked',false);
-				self.$el.find('#btn_filter_pending').attr('checked',false);
+				self.$el.find('#btn_filter_done').attr('checked', false);
+				self.$el.find('#btn_filter_pending').attr('checked', false);
 				if (self.$el.find('#btn_filter_inprocess').is(':checked')) {
 					let url = self.getApp().serviceURL + '/api/v1/tasks_employees?status=2'
 					self.filterData(url)
@@ -80,8 +80,8 @@ define(function (require) {
 			});
 			var filter_data = self.$el.find("#btn_filter_pending");
 			filter_data.on("change", function () {
-				self.$el.find('#btn_filter_inprocess').attr('checked',false);
-				self.$el.find('#btn_filter_done').attr('checked',false);
+				self.$el.find('#btn_filter_inprocess').attr('checked', false);
+				self.$el.find('#btn_filter_done').attr('checked', false);
 				if (self.$el.find('#btn_filter_pending').is(':checked')) {
 					let url = self.getApp().serviceURL + '/api/v1/tasks_employees?status=0'
 					self.filterData(url)
@@ -94,16 +94,16 @@ define(function (require) {
 			});
 
 			self.$el.find("#btn_tasks_filter").unbind('click').bind("click", function () {
-                var timeFilterDialog = new TimeFilterDialogView();
-                timeFilterDialog.dialog();
-                timeFilterDialog.on('filter', (data) => {
-					from_time = data.from_time; 
-					to_time =  data.to_time; 
-                    let url = self.getApp().serviceURL + '/api/v1/tasks_employees?start_time='+from_time+'&end_time='+to_time;
+				var timeFilterDialog = new TimeFilterDialogView();
+				timeFilterDialog.dialog();
+				timeFilterDialog.on('filter', (data) => {
+					from_time = data.from_time;
+					to_time = data.to_time;
+					let url = self.getApp().serviceURL + '/api/v1/tasks_employees?start_time=' + from_time + '&end_time=' + to_time;
 					self.filterData(url)
-					
-                });
-            });
+
+				});
+			});
 		},
 		filterData: function (url) {
 			var self = this;
@@ -123,7 +123,7 @@ define(function (require) {
 				},
 			});
 		},
-	
+
 		loadGridData: function (dataSource) {
 			let total_tasks = dataSource.length
 			var self = this;
@@ -136,19 +136,19 @@ define(function (require) {
 				fields: [
 					{
 						field: "id",
-						label: "Công việc ngày hôm nay: " +total_tasks+ " việc",
+						label: "Công việc ngày hôm nay: " + total_tasks + " việc",
 						template: function (rowObject) {
 
 							var html = `<div style="overflow-x: hidden; background-color: #fff; padding: 5px 5px; position: relative;">
 								<div class="row title">
 									<div class="col-lg-12 col-sm-12 col-12">
-										<div class="float-left">Code: <span style="color: #17a2b8;">${rowObject.task_code ? rowObject.task_code : ''}</span></div>
+										<div class="float-left">Mã cv: <span style="color: #17a2b8;">${rowObject.task_code ? rowObject.task_code : ''}</span></div>
 										<div class="float-right text-dark">${Helper.utcToLocal(moment.unix(rowObject.start_time).format("YYYY-MM-DDTHH:mm:ss"), "YYYY-MM-DD")}</div>
 									</div>
 								</div>`;
 							html += `<div class="row">
 									<div class="col-lg-12 col-sm-12 col-12">
-										<div class="float-left mr-2">Todo: </div>
+										<div class="float-left mr-2">Công việc: </div>
 										<div class="btn-default float-left pl-1 pr-1">${rowObject.task_name}</div>
 										<div class="float-right text-dark" ><p style="color:blue;">${rowObject.priority}</p></div>
 										
@@ -157,31 +157,36 @@ define(function (require) {
 
 							html += `<div class="row">
 								<div class="col-lg-12 col-sm-12 col-12">
-									<div class="float-left mr-2">Start: </div>
+									<div class="float-left mr-2">Bắt đầu: </div>
 									<div class="btn-default float-left pl-1 pr-1">${Helper.utcToLocal(moment.unix(rowObject.start_time).format("YYYY-MM-DDTHH:mm:ss"), "HH:mm")}</div>
-									<div class="float-left mr-2">&#160;&#160;End: </div>
+									<div class="float-left mr-2">&#160;&#160; Kết thúc: </div>
 									<div class="btn-default float-left pl-1 pr-1">${Helper.utcToLocal(moment.unix(rowObject.end_time).format("YYYY-MM-DDTHH:mm:ss"), "HH:mm")}</div>
 								</div>
 							</div>`;
 							html += `<div class="row">
 							<div class="col-lg-12 col-sm-12 col-12">
-								<div class="float-left mr-2">Created_by: </div>
+								<div class="float-left mr-2">Người tạo: </div>
 								<div class="btn-default float-left pl-1 pr-1">${rowObject.created_by_name}</div>
 								</div></div>
 								`;
 							html += `<div class="row">
 							<div class="col-lg-12 col-sm-12 col-12">
-								<div class="float-left mr-2">Assignee: </div>
+								<div class="float-left mr-2">Người nhận: </div>
 								<div class="btn-default float-left pl-1 pr-1">${rowObject.employee_name}</div>
-								<div class="float-left mr-2">&#160;&#160;Phone: </div>
-								<div class="btn-default float-left pl-1 pr-1">${rowObject.employee_phone}</div>
+								</div></div>
 								`;
+							html += `<div class="row">
+								<div class="col-lg-12 col-sm-12 col-12">
+									
+									<div class="float-left mr-2">Điện thoại: </div>
+									<div class="btn-default float-left pl-1 pr-1">${rowObject.employee_phone}</div>
+									`;
 							if (rowObject.status && rowObject.status == 1) {
-								html += `<div class="btn-outline-success float-right pl-2 pr-2 pt-1 pb-1" style="border-radius: 4px;border: 2px solid #28a745; position: absolute; right: 20px; top: -17px; transform: rotate(30deg); font-weight: 600;">Done</div>`;
+								html += `<div class="btn-outline-success float-right pl-2 pr-2 pt-1 pb-1" style="border-radius: 4px;border: 2px solid #28a745; position: absolute; right: 20px; top: -17px; transform: rotate(30deg); font-weight: 600;">Đã xong</div>`;
 							} else if (rowObject.status == 0) {
-								html += `<div class="btn-outline-warning float-right pl-1 pr-1" style="border-radius: 4px;border: 2px solid #ffc107; position: absolute; right: 20px; top: -17px; transform: rotate(30deg); font-weight: 600;">Pending</div>`;
+								html += `<div class="btn-outline-warning float-right pl-1 pr-1" style="border-radius: 4px;border: 2px solid #ffc107; position: absolute; right: 20px; top: -17px; transform: rotate(30deg); font-weight: 600;">Đang đợi</div>`;
 							} else if (rowObject.status === 2) {
-								html += `<div class="btn-outline-danger float-right pl-2 pr-2 pt-1 pb-1" style="border-radius: 4px;border: 2px solid #dc3545; position: absolute; right: 20px; top: -17px; transform: rotate(30deg); font-weight: 600;">In process</div>`;
+								html += `<div class="btn-outline-danger float-right pl-2 pr-2 pt-1 pb-1" style="border-radius: 4px;border: 2px solid #dc3545; position: absolute; right: 20px; top: -17px; transform: rotate(30deg); font-weight: 600;">Đang xử lý</div>`;
 							}
 							html += `</div></div>`;
 							html += `</div>
@@ -200,18 +205,18 @@ define(function (require) {
 				},
 
 				events: {
-                    // "rowclick": function(e){
-                    // 	console.log(e);
-                    // },
-                    // "rowdblclick": function (event) {
-                    //     var self = this;
-                    //     if (event.rowData.id) {
+					// "rowclick": function(e){
+					// 	console.log(e);
+					// },
+					// "rowdblclick": function (event) {
+					//     var self = this;
+					//     if (event.rowData.id) {
 					// 		var path = 'tasks/model?id=' + event.rowData.task_uid + '&backcol=' + self.collectionName;
-	
+
 					// 		self.getApp().getRouter().navigate(path);
 					// 	}
-                    // },
-                },
+					// },
+				},
 				onRendered: function () {
 					loader.hide();
 				},
