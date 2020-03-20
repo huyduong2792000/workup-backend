@@ -5,13 +5,25 @@
 	.active-day-of-week,.active-shift-of-day{
 		background-color:#315294
 	}
+	.control-label{
+		height: 27px;
+		line-height: 27px;
+	}
+
 </style>
 <div class="margin-bottom-10" block-bind="toolbar"></div>
-<div block-bind="content">
-	<div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left p-0">
-
+<div block-bind="content" >
+	<div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left px-0" >
+		<div class="row mb-0 mt-1">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-12 d-flex ">
+				<div>Kích hoạt &nbsp;&nbsp;</div>
+				<div>
+					<input class="form-control" type="text" data-bind="value:active" />
+				</div>
+			</div>
+		</div>
 		<div class="row ">
-			<div class="col-lg-6 col-md-12 col-sm-12 col-12 pt-2 float-left">
+			<div class="col-lg-6 col-md-12 col-sm-12 col-12 pt-0 float-left">
 				<div>Thời gian bắt đầu</div>
 				<div class="input-group date" id="start_time_working" data-target-input="nearest">
 					<input type="text" class="form-control datetimepicker-input" data-target="#start_time_working" />
@@ -61,30 +73,12 @@
 				<div style="border:1px solid #007bff" class="day_of_week">Chủ nhật</div>
 			</div>
 		</div>
-		<!-- <div class="row">
-			
-			<div class="col-lg-12 col-md-12 col-sm-12 col-12 ">
-				<div>Chọn ca làm việc</div>
-			</div>
-		</div>
-		<div class="row px-3">
-		<div class="col-lg-12 col-md-12 col-sm-12  float-left">
-			<div class="col-md-4 col-lg-1 col-4 text-center p-1 ">
-				<div style="border:1px solid#007bff " class="shift_of_day">Sáng</div>
-			</div>
-			<div class="col-md-4 col-lg-1 col-4 text-center p-1 ">
-				<div style="border:1px solid#007bff " class="shift_of_day">Chiều</div>
-			</div>
-			<div class="col-md-4 col-lg-1 col-4 text-center p-1 ">
-				<div style="border:1px solid#007bff " class="shift_of_day">Tối</div>
-			</div>
-		</div>
-		</div> -->
+
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left">
 				<div>Chọn công việc</div>
-				<div>
-					<input class="form-control" type="text" data-bind="list:Tasks" />
+				<div id="task" style="min-height: 200px;">
+					<input class="form-control" type="text"  data-bind="list:Tasks" />
 				</div>
 			</div>
 		</div>

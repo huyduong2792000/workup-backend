@@ -30,12 +30,30 @@ define(function (require) {
 			var result = data
 			result["day_of_week"] = self.formatDayOfWeek(result["day_of_week"])
 			result["shift_of_day"] = self.formatShiftOfDay(result['shift_of_day'])
+			result['Tasks'] = self.formatTasksName(result['Tasks'])
+			result['active'] = self.formatActive(result['active'])
 			result['start_time_working'] = moment.unix(result['start_time_working']).format("DD/MM/YYYY ");
 			result['end_time_working'] = moment.unix(result['end_time_working']).format("DD/MM/YYYY ");
 			result['create_at'] = Helpers.setDatetime(result['create_at']);
+
 			return result
 		},
-
+		formatActive:function(active){
+			var self = this;
+			if(active == 1){
+				return `<span style="color:green">Đã kích hoạt</span>`
+			}else{
+				return `<span style="color:#9e8d0c">Chưa kích hoạt</span>`
+			}
+		},
+		formatTasksName:function(tasks){
+			var result = "";
+			tasks.forEach(function(task,index){
+				var task_name = task.task_name
+				result += task_name + " ,"
+			})
+			return result
+		},
 		formatShiftOfDay:function(shift_of_day){
 			var self = this;
 			var shifts = {0:"sáng",1:"chiều",2:"tối"};
@@ -91,8 +109,10 @@ define(function (require) {
 			var self = this;
 			// this.applyBindings();
 			if(this.collection.url == this.urlPrefix+ this.collectionName){
-				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
-				this.collection.url = url
+				let now_timestamp = parseInt(Date.now()/1000)
+				var url = `/api/v1/task_schedule?page=1&results_per_page=10&
+				q={"filters":{"$and": [{ "start_time_working": { "$lte": ${now_timestamp} }},{ "end_time_working": { "$gt": ${now_timestamp} }}]},"order_by": [{"field": "active", "direction": "desc"}]}`
+				self.collection.url = url
 			}
 			this.collection.fetch({
 				success:function(data){
@@ -106,7 +126,40 @@ define(function (require) {
 				}
 				
 			})
+			self.$el.find("#filter-data-by-status").off('change')
+			var filter_data = self.$el.find("#filter-data-by-status");
+			filter_data.on("change", function () {
+				self.setupFilter();
+			});
 			// return this;
+		},
+		setupFilter: function () {
+			var self = this;
+			
+			let active = self.$el.find("#filter-data-by-status").val();
+			let now_timestamp = parseInt(Date.now()/1000)
+
+			if (active == "0") {
+				var url = `/api/v1/task_schedule?page=1&results_per_page=10&
+				q={"filters":{"$and": [{ "start_time_working": { "$lte": ${now_timestamp} }},{ "end_time_working": { "$gt": ${now_timestamp} }}]},"order_by": [{"field": "active", "direction": "desc"}]}`
+				self.collection.url = url
+				self.render()
+			} else if (active == "1") {
+				var start = new Date();
+				start.setHours(0,0,0,0);
+				start.setDate(start.getDate() + 1)
+				now_timestamp = Date.parse(start)/1000
+				var url = `/api/v1/task_schedule?page=1&results_per_page=10&
+				q={"filters":{"$and": [{ "start_time_working": { "$lte": ${now_timestamp} }},{ "end_time_working": { "$gt": ${now_timestamp} }}]},"order_by": [{"field": "active", "direction": "desc"}]}`
+				self.collection.url = url
+				self.render()
+			} else if(active == "2"){
+				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q={"order_by": [{"field": "active", "direction": "desc"}]}`
+				self.collection.url = url
+				self.render()
+			}
+			// }
+
 		},
 		renderPagination:function(){
 			var self = this;
@@ -137,24 +190,24 @@ define(function (require) {
 						page = Math.min(self.collection.page +1,self.collection.totalPages)
 					})
 					// $(this).css("marginLeft","10px")
-					var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+					var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q={"order_by": [{"field": "active", "direction": "desc"}]}`
 					self.collection.url = url
 					self.render()
 					return
 				})
 			})
 			self.$el.find("#previous").on('click',function(){
-				console.log('click')
+				// console.log('click')
 				var page = Math.max(self.collection.page -1,1)
-				var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+				var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q={"order_by": [{"field": "active", "direction": "desc"}]}`
 					self.collection.url = url
 					// $(this).off('click')
 					self.render()
 			})
 			self.$el.find("#next").on('click',function(){
-				console.log('click')
+				// console.log('click')
 				var page = Math.min(self.collection.page +1,self.collection.totalPages)
-				var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+				var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q={"order_by": [{"field": "active", "direction": "desc"}]}`
 					self.collection.url = url
 					// $(this).off('click')
 					self.render()

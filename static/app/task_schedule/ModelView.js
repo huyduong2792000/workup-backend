@@ -17,7 +17,15 @@ define(function (require) {
 		collectionName: "task_schedule",
 		uiControl: {
 			fields: [
-				
+				{
+					field: "active",
+					uicontrol: "checkbox",
+					checkedField: "key",
+					valueField: "value",
+					cssClassField: "cssClass",
+					dataSource: [{"value": 1,"key": true},
+								{"value": 0,"key": false}],
+				},
 				{
 					field: "Tasks",
 					uicontrol: "ref",

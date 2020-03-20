@@ -109,13 +109,13 @@ define(function (require) {
 		render: function () {
 			// this.applyBindings();
 			if(this.collection.url == this.urlPrefix+ this.collectionName){
-				var url = `/api/v1/tasks?page=1&results_per_page=1&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+				var url = `/api/v1/tasks?page=1&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
 				this.collection.url = url
 			}
 			var self = this;
 			this.collection.fetch({
 				success:function(data){
-					console.log('collection',self.collection)
+					// console.log('collection',self.collection)
 					self.renderSelectItem()
 					self.renderPagination()
 				},
@@ -156,24 +156,24 @@ define(function (require) {
 						page = Math.min(self.collection.page +1,self.collection.totalPages)
 					})
 					// $(this).css("marginLeft","10px")
-					var url = `/api/v1/tasks?page=${page}&results_per_page=1&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+					var url = `/api/v1/tasks?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
 					self.collection.url = url
 					self.render()
 					return
 				})
 			})
 			self.$el.find("#previous").on('click',function(){
-				console.log('click')
+				// console.log('click')
 				var page = Math.max(self.collection.page -1,1)
-				var url = `/api/v1/tasks?page=${page}&results_per_page=1&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+				var url = `/api/v1/tasks?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
 					self.collection.url = url
 					// $(this).off('click')
 					self.render()
 			})
 			self.$el.find("#next").on('click',function(){
-				console.log('click')
+				// console.log('click')
 				var page = Math.min(self.collection.page +1,self.collection.totalPages)
-				var url = `/api/v1/tasks?page=${page}&results_per_page=1&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+				var url = `/api/v1/tasks?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
 					self.collection.url = url
 					// $(this).off('click')
 					self.render()
@@ -181,7 +181,7 @@ define(function (require) {
 		},
 		renderSelectItem:function(){
 			var self = this
-			console.log(screen.height)
+			// console.log(screen.height)
 			self.$el.find("#task-select-item").empty()
 			self.$el.find("#task-select-item").css('height',screen.height-5*screen.height/19)
 			self.collection.models.forEach(function(item,index){
