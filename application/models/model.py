@@ -130,14 +130,23 @@ class TaskSchedule(CommonModel):
     __tablename__ = 'task_schedule'
     taskschedule_name = db.Column(String())
     day_of_week = db.Column(BigInteger()) # 2^n
-    shift_of_day = db.Column(BigInteger()) #2^n
+    # shift_of_day = db.Column(BigInteger()) #2^n
     start_time_working = db.Column(BigInteger(), default = 0) #equal 0 because 0*2^n =0
     end_time_working = db.Column(BigInteger(),default = 0) #equal 0 because 0*2^n =0
     active = db.Column(SmallInteger, default=1)
     Tasks = db.relationship("Tasks",
                             secondary="taskschedules_tasks",
                             )
-    
+class Worker(CommonModel):
+    __tablename__ = 'worker'
+    task_name = db.Column(String())
+    parent_code = db.Column(String(255), nullable = True)
+    task_code = db.Column(String(32), unique=False, nullable=False)
+    task_uid = db.Column(UUID(as_uuid=True))
+    employee_uid = db.Column(UUID(as_uuid=True))
+    employee_name = db.Column(String())
+
+
 
 # 0:0 job ngay mai co vievj
 # class TodoInfo(CommonModel):

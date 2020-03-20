@@ -78,18 +78,20 @@ define(function (require) {
 						type: "button",
 						buttonClass: "btn-danger btn-sm",
 						label: "TRANSLATE:DELETE",
-						// visible: function(){
-						// 	return this.getApp().getRouter().getParam("id") !== null;
-						// },
+						visible: function(){
+							return this.getApp().getRouter().getParam("id") !== null;
+						},
 						command: function () {
 							var self = this;
-							self.model.destroy({
-								success: function (model, response) {
-									self.getApp().notify('Xoá dữ liệu thành công');
-									self.getApp().getRouter().navigate(self.collectionName + "/collection");
+							self.model.set({'delete':true})
+							self.model.save(null, {
+								success: function (model, respose, options) {
+									self.getApp().notify("Xoá dữ liệu thành công", { type: "info" });
+									var path = self.collectionName + '/collection';
+									self.getApp().getRouter().navigate(path);
 								},
 								error: function (model, xhr, options) {
-									self.getApp().notify('Xoá dữ liệu không thành công!');
+									self.getApp().notify('Xoá dữ liệu không thành công!!', { type: "warning" });
 
 								}
 							});
@@ -124,7 +126,7 @@ define(function (require) {
 			self.eventTimeWorking("#start_time_working",'start_time_working')
 			self.eventTimeWorking("#end_time_working",'end_time_working')
 			self.eventDayOfWeek()
-			self.eventShiftOfDay()
+			// self.eventShiftOfDay()
 		},
 
 		eventDayOfWeek:function(){
