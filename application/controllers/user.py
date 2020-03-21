@@ -10,17 +10,6 @@ from application.controllers import auth_func
 from sqlalchemy import and_, or_
 from gatco_restapi.helpers import to_dict
 
-    
-@app.route("/user_test")
-
-async def user_test(request):
-    # role_admin = Role.query.filter(Role.role_name == "admin").first()
-
-    # user = db.session.query(User).filter(User.user_name == 'admin').first()
-    # user.roles = [role_admin]
-    # db.session.add(user)
-    # db.session.commit()
-    return text("user_test api")
 
 @app.route("/login", methods=["POST", "GET"])
 async def user_login(request):
