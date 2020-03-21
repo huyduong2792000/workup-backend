@@ -76,11 +76,12 @@ define(function (require) {
             "icon": "<i class='fa fa-cogs'></i>",
             "type": "category",
             "visible": function () {                
-                // return this.checkUserHasRole("admin");
-                var user = gonrinApp().currentUser;
-                roles = user.roles;
+                if (this.checkUserHasRole("admin")||this.checkUserHasRole("leader")){
+                    return true
+                }else{
+                    return false;
+                }
                 
-                return true;
             },
             "entries": [
                 {
@@ -91,7 +92,11 @@ define(function (require) {
                     "$ref": "app/employee/CollectionView",
                     "icon": "<i class='fa fa-user-tie'></i>",
                     "visible": function () {
-                        return true;
+                        if (this.checkUserHasRole("admin")||this.checkUserHasRole("leader")){
+                            return true
+                        }else{
+                            return false;
+                        }
                     }
                 },
                 {
@@ -116,7 +121,13 @@ define(function (require) {
                     "$ref": "app/role/CollectionView",
                     "icon": "<i class='fa fa-award'></i>",
                     "visible": function () {
-                        return true;
+                        if (this.checkUserHasRole("admin")){
+                            console.log(this.checkUserHasRole("admin"));
+                            
+                            return true
+                        }else{
+                            return false;
+                        }
                     }
                 },
                 {

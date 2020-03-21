@@ -10,6 +10,27 @@ from application.controllers import auth_func
 from sqlalchemy import and_, or_
 from gatco_restapi.helpers import to_dict
 
+ 
+def response_userinfo(user, **kw):
+    if user is not None:
+        user_info = to_dict(user)
+        exclude_attr = ["password", "salt", "created_at", "created_by", "updated_at", "updated_by",\
+                         "deleted_by", "deleted_at", "deleted","facebook_access_token","phone_country_prefix",\
+                         "phone_national_number","last_login_at","current_login_at",\
+                         "last_login_ip","current_login_ip","login_count"]
+        
+        for attr in exclude_attr:
+            if attr in user_info:
+                del(user_info[attr])
+        
+        #permision
+        roles = [{"id":str(role.id),"role_name":role.role_name} for role in user.roles]
+       
+        roleids = [role.id for role in user.roles]
+        user_info['roles'] = roles
+        return user_info
+    return None
+
 
 @app.route("/login", methods=["POST", "GET"])
 async def user_login(request):
@@ -26,7 +47,7 @@ async def user_login(request):
             except:
                 pass
             auth.login_user(request, user)
-            result = to_dict(user)
+            result = response_userinfo(user)
             
             # print('result==========',result)
             return json(result)
@@ -56,8 +77,8 @@ async def get_current_user(request):
     error_msg = None
     uid = auth.current_user(request)
     if uid is not None:
-        user_info = db.session.query(User).filter(User.id == uid).first()
-        user_info = to_dict(user_info)
+        user = db.session.query(User).filter(User.id == uid).first()
+        user_info = response_userinfo(user)
         return json(user_info)
     else:
         return json({
@@ -173,7 +194,6 @@ def user_register(request=None, Model=None, result=None, **kw):
    
 def update_user(request=None, Model=None, result=None, **kw):
     param = request.json
-   
     role_admin = Role.query.filter(Role.role_name == "admin").first()
     role_user = Role.query.filter(Role.role_name == "user").first()
     role_employee = Role.query.filter(Role.role_name == "employee").first()
