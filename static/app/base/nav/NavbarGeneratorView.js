@@ -177,6 +177,7 @@ define(function (require) {
             });
 
             $('#sidebarCollapse').on('click', function () {
+                $('#right_sidebar').removeClass('active');
                 $('#sidebar').addClass('active');
                 $('.overlay').fadeIn();
                 $('.collapse.in').toggleClass('in');

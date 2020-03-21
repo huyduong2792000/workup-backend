@@ -168,7 +168,7 @@ require([
             }
             this.profileArea = new ProfileAreaView({ el: $('body').find('#profile-area') });
             this.profileArea.render();
-            self.router.navigate("index");
+            self.router.navigate("tasks_employees/collection");
             // this.renderTheme(self.currentUser.config_data);
         },
 

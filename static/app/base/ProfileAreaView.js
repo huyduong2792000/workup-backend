@@ -23,7 +23,8 @@ define(function (require) {
 			});
 
 			self.$el.find("#profile_nav").unbind("click").bind("click", function(event) {
-				$('#right_sidebar').addClass('active');
+				$('#sidebar').removeClass('active');
+				$('#right_sidebar').toggleClass('active');
 				$('.overlay').fadeIn();
 				$('.collapse.in').toggleClass('in');
 				$('a[aria-expanded=true]').attr('aria-expanded', 'false');
