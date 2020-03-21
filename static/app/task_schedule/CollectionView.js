@@ -41,9 +41,9 @@ define(function (require) {
 		formatActive:function(active){
 			var self = this;
 			if(active == 1){
-				return `<span style="color:green">Đã kích hoạt</span>`
+				return `<div class="btn-outline-success float-right pl-2 pr-2 pt-1 pb-1" style="border-radius: 4px;border: 2px solid #28a745; position: absolute; right: 20px; top: -17px; transform: rotate(30deg); font-weight: 600;">Active</div>`
 			}else{
-				return `<span style="color:#9e8d0c">Chưa kích hoạt</span>`
+				return `<div class="btn-outline-danger float-right pl-2 pr-2 pt-1 pb-1" style="border-radius: 4px;border: 2px solid #dc3545; position: absolute; right: 20px; top: -17px; transform: rotate(30deg); font-weight: 600;">Deactive</div>`
 			}
 		},
 		formatTasksName:function(tasks){
