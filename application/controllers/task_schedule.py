@@ -25,7 +25,6 @@ def createWorker():
     start_day_timestamp = datetime.timestamp(start_day)
     
     end_day_timestamp = datetime.timestamp(end_day)
-    
     task_schedules = db.session.query(TaskSchedule).filter(and_(TaskSchedule.active==1,TaskSchedule.deleted == False\
                                                                 ,TaskSchedule.start_time_working <= start_day_timestamp,TaskSchedule.end_time_working >= start_day_timestamp)).all()
     for task_schedule in task_schedules:
