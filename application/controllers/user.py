@@ -77,7 +77,7 @@ async def get_current_user(request):
     error_msg = None
     uid = auth.current_user(request)
     if uid is not None:
-        user = db.session.query(User).filter(User.id == uid).first()
+        user = db.session.query(User).filter(User.id == uid).first()        
         user_info = response_userinfo(user)
         return json(user_info)
     else:
