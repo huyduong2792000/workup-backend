@@ -32,6 +32,7 @@ def createWorker():
             for task in task_schedule.Tasks:
                 new_task = Tasks()
                 new_task.status = 0
+                new_task.loop =0
                 new_task.created_by = task_schedule.created_by
                 new_task.task_code = task.task_code
                 new_task.task_name = task.task_name
