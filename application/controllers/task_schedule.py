@@ -23,9 +23,11 @@ def createWorker():
     end_day = datetime(year=now.year, month=now.month,day=now.day,
                         hour=23,minute=59,second=59,microsecond=999)
     start_day_timestamp = datetime.timestamp(start_day)
+    
     end_day_timestamp = datetime.timestamp(end_day)
+    
     task_schedules = db.session.query(TaskSchedule).filter(and_(TaskSchedule.active==1,TaskSchedule.deleted == False\
-    ,TaskSchedule.start_time_working <= start_day_timestamp,TaskSchedule.end_time_working >= start_day_timestamp)).all()
+                                                                ,TaskSchedule.start_time_working <= start_day_timestamp,TaskSchedule.end_time_working >= start_day_timestamp)).all()
     for task_schedule in task_schedules:
         list_day_of_week = getListDayOfWeek(task_schedule.day_of_week)
         dayindex_today = getDayindexToday()
