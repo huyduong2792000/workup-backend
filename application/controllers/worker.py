@@ -70,7 +70,7 @@ def getDayindexToday():
     return dayindex_today
 
 def runSchedule():
-    schedule.every().day.at("00:01").do(createWorker)
+    schedule.every().day.at("21:40").do(createWorker)
     asyncio.set_event_loop(asyncio.new_event_loop())
     while True:
         schedule.run_pending()
