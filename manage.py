@@ -17,8 +17,11 @@ from application.database import db
 
 from application.extensions import auth
 from application.models.model import User, Role
-
 import math
+
+from application.controllers.task_schedule import runSchedule
+from threading import Thread
+
 
 # Constants.
 manager = Manager()
@@ -26,6 +29,7 @@ manager = Manager()
 
 @manager.command
 def run():
+    Thread(target = runSchedule).start()
     """ Starts server on port 8000. """
     run_app(host="0.0.0.0", port=8678)
     
