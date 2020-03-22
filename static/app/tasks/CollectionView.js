@@ -16,7 +16,7 @@ define(function (require) {
 		urlPrefix: "/api/v1/",
 		collectionName: "tasks",
 		uiControl: {
-			orderBy: [{ field: "created_at", direction: "desc" }],
+			orderBy: [{ field: "created_at", direction: "desc" }, { field: "priority", direction: "desc" }],
 
 			fields: [
 				{ field: "task_code", label: "Mã công việc" },
@@ -79,13 +79,13 @@ define(function (require) {
 					template: function (rowObj) {
 						return TemplateHelper.renderStatus(rowObj.active);
 					}
-				}
+				},
 
-				// {
-				// 	field: "created_at", label: "Ngày tạo", template: function (rowObj) {
-				// 		return Helpers.setDatetime(rowObj.created_at);
-				// 	}
-				// }
+				{
+					field: "created_at", label: "Ngày tạo", template: function (rowObj) {
+						return Helpers.setDatetime(rowObj.created_at);
+					}
+				}
 			],
 			onRowClick: function (event) {
 				if (event.rowId) {
