@@ -84,9 +84,9 @@
         "type": "number",
         "default": 1
     },
-    "loop": {
-        "type": "number",
-        "default": 1
+    "task_many_times": {
+        "type": "boolean",
+        "default": true
     },
     "employees": {
         "type": "list"

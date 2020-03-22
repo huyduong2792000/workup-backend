@@ -110,7 +110,7 @@ define(function (require) {
 			var self = this
 			// this.applyBindings();
 			if(this.collection.page == null){
-				self.uiControl.filters = {"$and": [{ "loop": {"$eq":1}}]}
+				self.uiControl.filters = {"$and": [{ "task_many_times": {"$eq":true}}]}
 				var url = `/api/v1/tasks?page=1&results_per_page=10&q=${self.setupUrl()}`
 				self.collection.url = url
 			}
