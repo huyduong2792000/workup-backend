@@ -12,7 +12,6 @@ from math import floor
 from datetime import datetime
 import schedule
 import time
-from threading import Thread
 import asyncio
 from application import config
 
@@ -46,7 +45,8 @@ def createWorker():
                 new_task.attach_file = task.attach_file
                 new_task.link_issue = task.link_issue
                 new_task.original_estimate = task.original_estimate
-
+                new_task.description = task.description
+                new_task.tags = task.tags
                 new_task.start_time = start_day_timestamp
                 new_task.end_time = end_day_timestamp
                 db.session.add(new_task)
@@ -82,7 +82,6 @@ def runSchedule():
     while True:
         schedule.run_pending()
         time.sleep(1)
-Thread(target = runSchedule).start()
 
 
 def create_taskschedule(request=None, data=None, **kw):

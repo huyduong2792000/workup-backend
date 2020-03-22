@@ -109,7 +109,7 @@ class Tasks(CommonModel):
     comments = db.Column(JSONB())
     description = db.Column(String(255))
     active = db.Column(SmallInteger, default=1)
-    loop = db.Column(SmallInteger,default=1)
+    task_many_times  = db.Column(Boolean,default=True)
 
 class TaskschedulesTasks(CommonModel):
     __tablename__ = 'taskschedules_tasks'
