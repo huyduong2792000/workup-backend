@@ -15,7 +15,7 @@ import time
 import asyncio
 from application import config
 
-def createWorker():
+def createTasks():
     now = datetime.now()
     start_day = datetime(year=now.year, month=now.month,day=now.day,
                         hour=0,minute=0,second=0,microsecond=0)
@@ -76,8 +76,8 @@ def getDayindexToday():
     return dayindex_today
 
 def runSchedule():
-    schedule.every().day.at(config.Config.TIME_CRON_JOB).do(createWorker)
-    # schedule.every(2).seconds.do(createWorker)
+    schedule.every().day.at(config.Config.TIME_CRON_JOB).do(createTasks)
+    # schedule.every(2).seconds.do(createTasks)
     asyncio.set_event_loop(asyncio.new_event_loop())
     while True:
         schedule.run_pending()
