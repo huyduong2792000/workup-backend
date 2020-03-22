@@ -148,7 +148,6 @@ require([
         },
         postLogin: function (data) {
             var self = this;
-            console.log('process post login')
             self.currentUser = new Gonrin.User(data);
             $('body').html(layout);
             $.each($('.release-version'), function () {
@@ -168,7 +167,7 @@ require([
             }
             this.profileArea = new ProfileAreaView({ el: $('body').find('#profile-area') });
             this.profileArea.render();
-            self.router.navigate("tasks_employees/collection");
+            // self.router.navigate("tasks_employees/collection");
             // this.renderTheme(self.currentUser.config_data);
         },
 

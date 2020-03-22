@@ -13,17 +13,72 @@ from datetime import datetime
 import schedule
 import time
 from threading import Thread
-# def job():
-#     print("I'm working...=============================================================")
+import asyncio
+from application import config
 
-# # schedule.every().day.at("09:38").do(job)
-# schedule.every(5).seconds.do(job)
+def createWorker():
+    now = datetime.now()
+    start_day = datetime(year=now.year, month=now.month,day=now.day,
+                        hour=0,minute=0,second=0,microsecond=0)
+    start_day_timestamp = datetime.timestamp(start_day)
+    
+    task_schedules = db.session.query(TaskSchedule).filter(and_(TaskSchedule.active==1,TaskSchedule.deleted == False\
+    ,TaskSchedule.start_time_working <= start_day_timestamp,TaskSchedule.end_time_working >= start_day_timestamp)).all()
+    for task_schedule in task_schedules:
+        list_day_of_week = getListDayOfWeek(task_schedule.day_of_week)
+        dayindex_today = getDayindexToday()
+        check = CheckIndexTodayInList(dayindex_today,list_day_of_week)
+        if (check is True):
+            for task in task_schedule.Tasks:
+                new_task = Tasks()
+                new_task.status = 0
+                new_task.created_by = task_schedule.created_by
+                new_task.task_code = task.task_code
+                new_task.task_name = task.task_name
+                new_task.task_name_unsigned = task.task_name_unsigned
+                new_task.parent_code = task.parent_code
+                new_task.employees = task.employees
+                new_task.priority = task.priority
+                new_task.attach_file = task.attach_file
+                new_task.link_issue = task.link_issue
+                new_task.original_estimate = task.original_estimate
+                new_task.start_time = task.start_time
+                new_task.end_time = task.end_time
+                db.session.add(new_task)
+        else:
+            pass
+    db.session.commit()
 
-# def run_schedule():
-#     while True:
-#         schedule.run_pending()
-#         pass
-# Thread(target = run_schedule).start()
+def CheckIndexTodayInList(dayindex_today,list_day_of_week):
+    try:
+        list_day_of_week.index(dayindex_today)
+        return True
+    except:
+        return False
+
+def getListDayOfWeek(day_of_week):
+    list_day_of_week = []
+    for i in range(0,7):
+        if 2 **i & day_of_week:
+            list_day_of_week.append(i)
+    return list_day_of_week
+
+def getDayindexToday():
+    today = datetime.today()
+    dayindex_today = int(today.strftime("%w")) - 1
+    if (dayindex_today == -1):
+        dayindex_today = 6
+    return dayindex_today
+
+def runSchedule():
+    schedule.every().day.at(config.Config.TIME_CRON_JOB).do(createWorker)
+    # schedule.every(2).seconds.do(createWorker)
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+Thread(target = runSchedule).start()
+
 
 def create_taskschedule(request=None, data=None, **kw):
 
@@ -39,7 +94,6 @@ def create_taskschedule(request=None, data=None, **kw):
 def filter_taskschedule(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
     if uid is not None:
-        print('search_params=====================',search_params)
         if 'filters' in search_params:
             filters = search_params["filters"]
             if "$and" in filters:
