@@ -103,16 +103,17 @@ define(function (require) {
 				}
 			},
 		],
-		// uiControl: {
-		// 	orderBy: [{ field: "created_at", direction: "desc" }],
-		// },
+		uiControl: {
+			orderBy: [{ field: "created_at", direction: "desc" }],
+		},
 		render: function () {
+			var self = this
 			// this.applyBindings();
-			if(this.collection.url == this.urlPrefix+ this.collectionName){
-				var url = `/api/v1/tasks?page=1&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
-				this.collection.url = url
+			if(this.collection.page == null){
+				self.uiControl.filters = {"$and": [{ "loop": {"$eq":1}}]}
+				var url = `/api/v1/tasks?page=1&results_per_page=10&q=${self.setupUrl()}`
+				self.collection.url = url
 			}
-			var self = this;
 			this.collection.fetch({
 				success:function(data){
 					// console.log('collection',self.collection)
@@ -126,6 +127,14 @@ define(function (require) {
 			})
 			
 			return this;
+		},
+		setupUrl:function(){
+			var self = this
+			let filters = self.uiControl.filters||{}
+			// console.log(filters)
+			let order_by = self.uiControl.orderBy||{ field: "created_at", direction: "desc" }
+			let url = {"filters":filters,"order_by":order_by}
+			return JSON.stringify(url)
 		},
 		renderPagination:function(){
 			var self = this;
@@ -156,26 +165,22 @@ define(function (require) {
 						page = Math.min(self.collection.page +1,self.collection.totalPages)
 					})
 					// $(this).css("marginLeft","10px")
-					var url = `/api/v1/tasks?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+					var url = `/api/v1/tasks?page=${page}&results_per_page=10&q=${self.setupUrl()}`
 					self.collection.url = url
 					self.render()
 					return
 				})
 			})
 			self.$el.find("#previous").on('click',function(){
-				// console.log('click')
 				var page = Math.max(self.collection.page -1,1)
-				var url = `/api/v1/tasks?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+				var url = `/api/v1/tasks?page=${page}&results_per_page=10&q=${self.setupUrl()}`
 					self.collection.url = url
-					// $(this).off('click')
 					self.render()
 			})
 			self.$el.find("#next").on('click',function(){
-				// console.log('click')
 				var page = Math.min(self.collection.page +1,self.collection.totalPages)
-				var url = `/api/v1/tasks?page=${page}&results_per_page=10&q={"order_by": [{"field": "created_at", "direction": "desc"}]}`
+				var url = `/api/v1/tasks?page=${page}&results_per_page=10&q=${self.setupUrl()}`
 					self.collection.url = url
-					// $(this).off('click')
 					self.render()
 			})
 		},

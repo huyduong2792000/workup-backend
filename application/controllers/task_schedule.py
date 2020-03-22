@@ -20,8 +20,10 @@ def createWorker():
     now = datetime.now()
     start_day = datetime(year=now.year, month=now.month,day=now.day,
                         hour=0,minute=0,second=0,microsecond=0)
+    end_day = datetime(year=now.year, month=now.month,day=now.day,
+                        hour=23,minute=59,second=59,microsecond=999)
     start_day_timestamp = datetime.timestamp(start_day)
-    
+    end_day_timestamp = datetime.timestamp(end_day)
     task_schedules = db.session.query(TaskSchedule).filter(and_(TaskSchedule.active==1,TaskSchedule.deleted == False\
     ,TaskSchedule.start_time_working <= start_day_timestamp,TaskSchedule.end_time_working >= start_day_timestamp)).all()
     for task_schedule in task_schedules:
@@ -43,8 +45,9 @@ def createWorker():
                 new_task.attach_file = task.attach_file
                 new_task.link_issue = task.link_issue
                 new_task.original_estimate = task.original_estimate
-                new_task.start_time = task.start_time
-                new_task.end_time = task.end_time
+
+                new_task.start_time = start_day_timestamp
+                new_task.end_time = end_day_timestamp
                 db.session.add(new_task)
         else:
             pass
