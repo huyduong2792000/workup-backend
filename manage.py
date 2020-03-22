@@ -34,7 +34,7 @@ def run():
     run_app(host="0.0.0.0", port=8678)
     
 @manager.command
-def generate_schema(path = "static/js/schema", exclude = None, prettyprint = True):
+def generate_schema(path = "static/schema", exclude = None, prettyprint = True):
     """ Generate javascript schema"""
     exclude_list = None
     if path is None:
