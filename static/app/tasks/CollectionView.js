@@ -19,22 +19,22 @@ define(function (require) {
 			orderBy: [{ field: "created_at", direction: "desc" }, { field: "priority", direction: "desc" }],
 
 			fields: [
-				{ field: "task_code", label: "Mã công việc" },
+				// { field: "task_code", label: "Mã công việc" },
 				{ field: "task_name", label: "Tên công việc" },
-				{ field: "tags", label: "Tags" },
+				// { field: "tags", label: "Tags" },
 				{
 					field: "priority", label: "Mực độ", template: function (rowObj) {
 						if (rowObj.priority == 1) {
-							return "highest";
+							return `<p style="color:red;">highest</p>`;
 						}
 						if (rowObj.priority == 2) {
-							return "high";
+							return `<p style="color:#f25d00;">high</p>`;
 						}
 						if (rowObj.priority == 3) {
-							return "low";
+							return `<p style="color:#000000;">low</p>`;
 						}
 						if (rowObj.priority == 4) {
-							return "lowest";
+							return `<p style="color:#cda58d;">lowest</p>`;
 						}
 					}
 				},
@@ -51,18 +51,18 @@ define(function (require) {
 						}
 					}
 				},
-				// { field: "link_issue", label: "Liên kết" },
-				{
-					field: "original_estimate", label: "Ước lượng", template: function (rowObj) {
-						let original_estimate = rowObj.original_estimate || null;
+				{ field: "employees", label: "Người nhận", textField:"full_name" },
+				// {
+				// 	field: "original_estimate", label: "Ước lượng", template: function (rowObj) {
+				// 		let original_estimate = rowObj.original_estimate || null;
 
-						if (original_estimate != null) {
-							return `<p style="color:blue;">${original_estimate}  minute</p> `;
-						} else {
-							return `<p style="color:red;">Chưa ước lượng</p>`
-						}
-					}
-				},
+				// 		if (original_estimate != null) {
+				// 			return `<p style="color:blue;">${original_estimate}  minute</p> `;
+				// 		} else {
+				// 			return `<p style="color:red;">Chưa ước lượng</p>`
+				// 		}
+				// 	}
+				// },
 				{
 					field: "start_time", label: "T/g bắt đầu", template: function (rowObj) {
 						return Helpers.utcToLocal(moment.unix(rowObj.start_time).format("YYYY-MM-DD HH:mm:ss"), "YYYY-MM-DD HH:mm:ss");
@@ -81,11 +81,11 @@ define(function (require) {
 					}
 				},
 
-				{
-					field: "created_at", label: "Ngày tạo", template: function (rowObj) {
-						return Helpers.setDatetime(rowObj.created_at);
-					}
-				}
+				// {
+				// 	field: "created_at", label: "Ngày tạo", template: function (rowObj) {
+				// 		return Helpers.setDatetime(rowObj.created_at);
+				// 	}
+				// }
 			],
 			onRowClick: function (event) {
 				if (event.rowId) {
