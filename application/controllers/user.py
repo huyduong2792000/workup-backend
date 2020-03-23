@@ -22,7 +22,6 @@ def response_userinfo(user, **kw):
         for attr in exclude_attr:
             if attr in user_info:
                 del(user_info[attr])
-        
         #permision
         roles = [{"id":str(role.id),"role_name":role.role_name} for role in user.roles]
        

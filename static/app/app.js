@@ -104,6 +104,7 @@ require([
             loader.show();
             this.getRouter().registerAppRoute();
             this.getCurrentUser();
+            
             // $.ajax({
             //     url: self.serviceURL + "/api/v1/ranking/count_people_per_rank",
             //     data: null,
@@ -130,7 +131,7 @@ require([
             var self = this;
             console.log('process get current user')
             $.ajax({
-                url: self.serviceURL + '/current-user',
+                url: self.serviceURL  + '/current-user',
                 type:'GET',
                 success: function (data) {
                     loader.hide();
@@ -167,14 +168,14 @@ require([
             }
             this.profileArea = new ProfileAreaView({ el: $('body').find('#profile-area') });
             this.profileArea.render();
-            // self.router.navigate("tasks_employees/collection");
+            self.router.navigate("index");
             // this.renderTheme(self.currentUser.config_data);
         },
 
         reloadCurrentUser: function (callbackFunc) {
             var self = this;
             $.ajax({
-                url: self.serviceURL + '/current-user',
+                url: self.getApp().serviceURL  + '/current-user',
                 dataType: "json",
                 success: function (data) {
                     self.currentUser = new Gonrin.User(data);
@@ -214,7 +215,7 @@ require([
                             success: function (response) {
                                 loader.hide();
                                 if (response) {
-                                    var saveConfigApi = self.serviceURL + "/api/v1/configuration/save";
+                                    var saveConfigApi = self.getApp().serviceURL  + "/api/v1/configuration/save";
                                     var appData = {
                                         app_key: response.appkey,
                                         app_secret: response.appsecret
