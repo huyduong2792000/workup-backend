@@ -17,15 +17,7 @@ define(function (require) {
 		collectionName: "task_schedule",
 		uiControl: {
 			fields: [
-				{
-					field: "active",
-					uicontrol: "checkbox",
-					checkedField: "key",
-					valueField: "value",
-					cssClassField: "cssClass",
-					dataSource: [{"value": 1,"key": true},
-								{"value": 0,"key": false}],
-				},
+
 				{
 					field: "Tasks",
 					uicontrol: "ref",
@@ -91,7 +83,7 @@ define(function (require) {
 						},
 						command: function () {
 							var self = this;
-							self.model.set({'delete':true})
+							self.model.set({'deleted':true})
 							self.model.save(null, {
 								success: function (model, respose, options) {
 									self.getApp().notify("Xoá dữ liệu thành công", { type: "info" });
@@ -134,9 +126,21 @@ define(function (require) {
 			self.eventTimeWorking("#start_time_working",'start_time_working')
 			self.eventTimeWorking("#end_time_working",'end_time_working')
 			self.eventDayOfWeek()
-			// self.eventShiftOfDay()
+			self.eventActive()
 		},
-
+		eventActive:function(){
+			var self = this;
+			if(self.model.get('active') == 1){
+				self.$el.find('#active_switch').prop('checked',true)
+			}
+			self.$el.find('#active_switch').click(function(){
+				if (self.$el.find('#active_switch').prop("checked") == true){
+					self.model.set({'active':1})
+				}else{
+					self.model.set({'active':0})
+				}
+			})
+		},
 		eventDayOfWeek:function(){
 			var self = this;
 			var day_of_week = self.model.get('day_of_week') || 0;
@@ -150,6 +154,12 @@ define(function (require) {
 				$(this).click(function(){
 					$(this).toggleClass('text-light active-day-of-week')
 					if($(this).hasClass('active-day-of-week')){
+						// let day_plus = 24 * 60 * 60;
+						// let end_time_working = self.model.get('end_time_working')
+						// end_time_working += day_plus
+						// self.model.set({end_time_working:end_time_working})
+						// self.eventTimeWorking("#end_time_working",'end_time_working')
+
 						day_of_week += Math.pow(2,index)
 					}else{
 						day_of_week -= Math.pow(2,index)
@@ -201,14 +211,14 @@ define(function (require) {
 			var self = this;
 			var time_working = null;
             if (self.model.get(field) != 0){
-				time_working = moment.unix(self.model.get(field)).format("YYYY-MM-DD");
+				time_working = moment.unix(self.model.get(field)).format("YYYY-MM-DD HH:mm:ss");
 			}else{
 				time_working = null
 			}
-			
-            self.$el.find(selector).datetimepicker({
+
+			self.$el.find(selector).datetimepicker({
                 defaultDate: time_working,
-                format: "DD/MM/YYYY",
+                format: "DD-MM-YYYY HH:mm:ss",
                 icons: {
                     time: "fa fa-clock"
                 }
@@ -219,7 +229,9 @@ define(function (require) {
 					var dateFomart = moment(e.date).unix()
 					self.model.set(field, dateFomart)
 					self.clearDayOfWeek()
+					self.eventDayOfWeek()
 					self.calculateDayOfWeek()
+					// self.fillDayOfWeek()
                 } else {
                     self.model.set(field, null);
 				}
@@ -239,27 +251,40 @@ define(function (require) {
 			start_time_working = new Date(start_time_working*1000)
 			end_time_working = new Date(end_time_working*1000)
 			const oneDay = 24 * 60 * 60 * 1000;
-			const diffDays = Math.round(Math.abs((start_time_working - end_time_working) / oneDay));
-			if(diffDays>7){
+			const diffDays = (end_time_working-start_time_working) / oneDay;
+			if(diffDays < 0){
+				self.$el.find('#start_time_working').addClass('invalid')
+				self.$el.find('#end_time_working').addClass('invalid')
+				self.$el.find('.invalid-feedback').show()
+			}else if(diffDays >= 7){
+				self.$el.find('#start_time_working').removeClass('invalid')
+				self.$el.find('#end_time_working').removeClass('invalid')
+				self.$el.find('.invalid-feedback').hide()
 				self.fillDayOfWeek()
-				return
-			}
-			
-			if(index_start_timeworking <= index_end_time_working){
-				for(var index = index_start_timeworking; index<=index_end_time_working; index++ ){
-					day_of_week += Math.pow(2,index)
-				}
+				// self.eventDayOfWeek()
+				
 			}else{
-				index_start_timeworking = (list_day_of_week.length - index_start_timeworking)*-1
-				for(var index = index_start_timeworking; index<=index_end_time_working; index++ ){
-					day_of_week += Math.pow(2,index>=0?index:index+list_day_of_week.length)
+				self.$el.find('#start_time_working').removeClass('invalid')
+				self.$el.find('#end_time_working').removeClass('invalid')
+				self.$el.find('.invalid-feedback').hide()
+				if(index_start_timeworking <= index_end_time_working){
+					for(var index = index_start_timeworking; index<=index_end_time_working; index++ ){
+						day_of_week += Math.pow(2,index)
+					}
+					self.model.set({day_of_week:day_of_week})
+	
+				}else{
+					index_start_timeworking = (list_day_of_week.length - index_start_timeworking)*-1
+					for(var index = index_start_timeworking; index<=index_end_time_working; index++ ){
+						day_of_week += Math.pow(2,index>=0?index:index+list_day_of_week.length)
+					}
+					self.model.set({day_of_week:day_of_week})
+					
 				}
+				self.eventDayOfWeek()
+
 			}
 			
-			self.model.set({day_of_week:day_of_week})
-			
-			self.eventDayOfWeek()
-
 		},
 
 		findIndexTimeWorking:function(time_working){
@@ -278,16 +303,9 @@ define(function (require) {
 			var day_of_week = 0;
 			self.$el.find(".day_of_week").each(function(index,value){
 				$(this).addClass('text-light active-day-of-week')
-				if($(this).hasClass('active-day-of-week')){
-					day_of_week += Math.pow(2,index)
-				}else{
-					day_of_week -= Math.pow(2,index)
-
-					day_of_week = Math.max(0,day_of_week)
-				}
-				self.model.set({'day_of_week':day_of_week})
-		
 			})
+			self.model.set({'day_of_week':127})
+			// self.eventDayOfWeek()
 		},
 		clearDayOfWeek:function(){
 			var self = this
@@ -296,18 +314,23 @@ define(function (require) {
 				$(this).removeClass('text-light active-day-of-week')
 				
 			})
-			self.model.set({'day_of_week':day_of_week})
+			self.model.set({'day_of_week':0})
+			// self.eventDayOfWeek()
 		},
 		validated: function () {
 			let self = this;
 			let start_time_working = self.model.get("start_time_working")
 			let end_time_working = self.model.get("end_time_working")
-			if (start_time_working == 0 || end_time_working == 0){
-				self.getApp().notify("Thời gian bắt đầu, thời gian kết thúc không được bỏ trống!", { type: "warning" })
+			let tasks = self.model.get('Tasks')
+			if(tasks.length == 0){
+				self.getApp().notify("Công việc ko được bỏ trống", { type: "danger" })
 				return false
-			}else{
-				return true
 			}
+			if (start_time_working == 0 || end_time_working == 0){
+				self.getApp().notify("Thời gian bắt đầu, thời gian kết thúc không được bỏ trống!", { type: "danger" })
+				return false
+			}
+			return true
 
 		},
 	});
