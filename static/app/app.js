@@ -90,6 +90,7 @@ require([
 
     var app = new Gonrin.Application({
         serviceURL: host + tenant_id,
+        // serviceURL: host + tenant_id + '/team',
         // serviceURL: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port : ''),
         staticURL: static_url,
         // ZaloAppID: null,
