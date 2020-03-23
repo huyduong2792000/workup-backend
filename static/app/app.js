@@ -132,7 +132,7 @@ require([
             console.log('process get current user')
             $.ajax({
                 url: self.serviceURL  + '/current-user',
-                // url: self.serviceURL+'/team/'  + '/current-user',
+                // url: self.serviceURL+'/team'  + '/current-user',
                 type:'GET',
                 success: function (data) {
                     loader.hide();
