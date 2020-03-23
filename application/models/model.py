@@ -83,7 +83,14 @@ class Employee(CommonModel):
     end_time = db.Column(BigInteger(), index=True)
     user = db.relationship("User", cascade="all, delete-orphan", lazy='dynamic')
   
-
+class TaskInfo(CommonModel):
+    __tablename__ = 'task_info'
+    code = db.Column(String(255))
+    name = db.Column(String)
+    unsigned_name = db.Column(String)
+    description = db.Column(String)
+    original_estimate = db.Column(Integer, index=True) # minute unit 
+    
 
 class Tasks(CommonModel):
     __tablename__='tasks'
@@ -94,9 +101,8 @@ class Tasks(CommonModel):
     parent_code = db.Column(String(255), nullable = True)
     employees = db.relationship("Employee",
                             secondary="tasks_employees")
-#     employee = db.relationship("Employee")
-#     employee_uid = db.Column(UUID(as_uuid=True), ForeignKey('employee.id', onupdate='CASCADE', ondelete='SET NULL'), index=True, nullable=True)
-#     reporter = db.Column(String, ForeignKey('employee.id',ondelete="cascade"), nullable=False)
+#     task_info_id = db.Column(UUID(as_uuid=True), ForeignKey("task_info.id"), nullable=True)
+#     task_info = db.relationship("TaskInfo")
     tags = db.Column(JSONB())
     priority = db.Column(SmallInteger, index=True, default=2) # {1: highest, 2: high, 3: low, 4: lowest}
     attach_file = db.Column(String(255))

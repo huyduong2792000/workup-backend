@@ -15,8 +15,8 @@ define(function (require) {
             "icon": "<i class='fa fa-columns'></i>"
         },
         {
-            "text": "Danh mục",
-            "icon": "<i class='fa fa-list'></i>",
+            "text": "Việc làm",
+            "icon": "<i class='fa fa-list-alt'></i>",
             "type": "category",
             "visible": true,
             "entries": [
@@ -26,18 +26,18 @@ define(function (require) {
                     "collectionName": "tasks_employees",
                     "route": "tasks_employees/collection",
                     "$ref": "app/tasks_employees/CollectionView",
-                    "icon": "<i class='fa fa-sitemap'></i>",
+                    "icon": "<i class='fa fa-layer-group'></i>",
                     "visible": function () {
                         return true;
                     }
                 },
                 {
-                    "text": "Quản lý công việc",
+                    "text": "Tạo và phần công",
                     "type": "view",
                     "collectionName": "tasks",
                     "route": "tasks/collection",
                     "$ref": "app/tasks/CollectionView",
-                    "icon": "<i class='fa fa-cog'></i>",
+                    "icon": "<i class='fa fa-boxes'></i>",
                     "visible": function () {
                         return true;
                     }
@@ -67,6 +67,35 @@ define(function (require) {
                     "$ref": "app/task_schedule/ModelView",
                     "visible": false
                 },
+                
+            ]
+        },
+        {
+            "text": "Danh mục",
+            "icon": "<i class='fa fa-list'></i>",
+            "type": "category",
+            "visible": true,
+            "entries": [
+               
+                {
+                    "text": "Công việc",
+                    "type": "view",
+                    "collectionName": "tasks",
+                    "route": "tasks/collection",
+                    "$ref": "app/tasks/CollectionView",
+                    "icon": "<i class='fa fa-cog'></i>",
+                    "visible": function () {
+                        return true;
+                    }
+                },
+                {
+                    "type": "view",
+                    "collectionName": "tasks",
+                    "route": "tasks/model(/:id)",
+                    "$ref": "app/tasks/ModelView",
+                    "visible": false
+                },
+                
                 
             ]
         },
