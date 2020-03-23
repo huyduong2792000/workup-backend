@@ -9,6 +9,8 @@ define(function (require) {
 
 	var Helpers = require('app/common/Helpers');
 	var templete_item_collection = require('text!./tpl/item_collection.html');
+	var TimeFilterDialogView = require('app/common/filters/TimeFilterDialogView');
+
 	var itemView = Gonrin.View.extend({
 		// tagName:'tr',
 
@@ -32,8 +34,8 @@ define(function (require) {
 			result["shift_of_day"] = self.formatShiftOfDay(result['shift_of_day'])
 			result['Tasks'] = self.formatTasksName(result['Tasks'])
 			result['active'] = self.formatActive(result['active'])
-			result['start_time_working'] = moment.unix(result['start_time_working']).format("DD/MM/YYYY ");
-			result['end_time_working'] = moment.unix(result['end_time_working']).format("DD/MM/YYYY ");
+			result['start_time_working'] = moment.unix(result['start_time_working']).format("DD/MM/YYYY HH:MM");
+			result['end_time_working'] = moment.unix(result['end_time_working']).format("DD/MM/YYYY HH:MM");
 			result['create_at'] = Helpers.setDatetime(result['create_at']);
 
 			return result
@@ -52,6 +54,8 @@ define(function (require) {
 				var task_name = task.task_name
 				result += task_name + " ,"
 			})
+			result = result.slice(0,result.length-2)
+
 			return result
 		},
 		formatShiftOfDay:function(shift_of_day){
@@ -71,7 +75,8 @@ define(function (require) {
 			var list_index_of_day_select = self.getIndexHasBeenSelect(day_of_week)
 			list_index_of_day_select.forEach(function(value,index){
 				result +=" " + days[value] + ", "
-			})
+			})			
+			result = result.slice(0,result.length-2)
 			return result
 		},
 		
@@ -111,7 +116,10 @@ define(function (require) {
 			var self = this;
 			// this.applyBindings();
 			if(this.collection.page == null){
-				let timestamp_filter = parseInt(Date.now()/1000)
+				let start_today = new Date();
+				start_today.setHours(0,0,0,0);
+				start_today.setDate(start_today.getDate() + 1)
+				let	timestamp_filter = Date.parse(start_today)/1000
 				self.uiControl.filters = {"$and": [{ "start_time_working": { "$lte":timestamp_filter}},{ "end_time_working": { "$gt": timestamp_filter}}]}
 				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
 				self.collection.url = url
@@ -136,10 +144,13 @@ define(function (require) {
 			var self = this;
 			
 			let active = self.$el.find("#filter-data-by-status").val();
-			let timestamp_filter = parseInt(Date.now()/1000)
+			let start_today = new Date();
+				start_today.setHours(0,0,0,0);
+				start_today.setDate(start_today.getDate() + 1)
+			let	timestamp_filter = Date.parse(start_today)/1000
 
 			if (active == "0") {
-				self.uiControl.filters = {"$and": [{ "start_time_working": { "$lte":timestamp_filter}},{ "end_time_working": { "$gt": timestamp_filter}}]}
+				self.uiControl.filters = {"$and": [{ "start_time_working": { "$lte":timestamp_filter}},{ "end_time_working": { "$gte": timestamp_filter}}]}
 				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
 				self.collection.url = url
 				self.render()
@@ -150,7 +161,7 @@ define(function (require) {
 				start_tomorrow.setDate(start_tomorrow.getDate() + 1)
 				timestamp_filter = Date.parse(start_tomorrow)/1000
 
-				self.uiControl.filters = {"$and": [{ "start_time_working": { "$lte": timestamp_filter }},{ "end_time_working": { "$gt": timestamp_filter}}]}
+				self.uiControl.filters = {"$and": [{ "start_time_working": { "$lte": timestamp_filter }},{ "end_time_working": { "$gte": timestamp_filter}}]}
 				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
 				self.collection.url = url
 				self.render()
@@ -160,6 +171,18 @@ define(function (require) {
 				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
 				self.collection.url = url
 				self.render()
+			} else if(active="3"){
+				var timeFilterDialog = new TimeFilterDialogView();
+				timeFilterDialog.dialog();
+				timeFilterDialog.on('filter', (data) => {
+					console.log('data',data)
+					let from_time = data.from_time;
+					let to_time = data.to_time;
+					self.uiControl.filters = {"$and": [{ "start_time_working": { "$gte": from_time }},{ "end_time_working": { "$lte": to_time}}]}
+					var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
+					self.collection.url = url
+					self.render()
+				});
 			}
 		},
 		setupUrl:function(){
