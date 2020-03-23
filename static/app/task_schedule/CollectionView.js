@@ -123,6 +123,7 @@ define(function (require) {
 				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
 				self.collection.url = url
 			}
+			self.collection.url = self.getApp().serviceURL + self.collection.url
 			this.collection.fetch({
 				success:function(data){
 					self.renderCollectionItem()
