@@ -106,22 +106,27 @@ define(function (require) {
 		uiControl: {
 			orderBy: [{ field: "created_at", direction: "desc" }],
 		},
+		events:{
+			'keyup #filter':'renderFilter'
+		},
 		render: function () {
 			var self = this
 			// this.applyBindings();
 			if(this.collection.page == null){
 				var url = self.setupUrl()
-				console.log(url)
 				self.collection.url = url
 			}
 			this.collection.fetch({
 				success:function(data){
 					// console.log('collection',self.collection)
-					self.renderSelectItem()
+					self.renderSelectItem(self.collection.models)
 					self.renderPagination()
+					// self.$el.find('#filter').keyup(function(e){
+					// 	self.renderFilter(e.target.value)
+					// })
 				},
 				error:function(){
-					self.getApp().notify(" Lấy dữ liệu không thành công!", { type: "danger" })
+					// self.getApp().notify(" Lấy dữ liệu không thành công!", { type: "danger" })
 				}
 				
 			})
@@ -165,7 +170,7 @@ define(function (require) {
 						page = Math.min(self.collection.page +1,self.collection.totalPages)
 					})
 					// $(this).css("marginLeft","10px")
-					var url = `/api/v1/tasks?page=${page}&results_per_page=10&q=${self.setupUrl()}`
+					var url = self.setupUrl(page)
 					self.collection.url = url
 					self.render()
 					return
@@ -184,12 +189,37 @@ define(function (require) {
 					self.render()
 			})
 		},
-		renderSelectItem:function(){
-			var self = this
+		renderFilter:function(e){
+			var self = this;
+			var searchvalue = e.target.value
+			searchvalue = Helpers.replaceToAscii(searchvalue)
+			if(searchvalue == ""){
+				self.uiControl.filters = {}
+				var url = self.setupUrl()
+				self.collection.url = url 
+				self.render()
+			}
+			var filtered = _.filter(self.collection.models,function(task){
+				var unsigned_name = task.get('unsigned_name') || ''
+				return unsigned_name.toLowerCase().includes(searchvalue.toLowerCase());
+			});
+			
+			if(filtered.length == 0){
+				self.uiControl.filters = {"$and": [{ "unsigned_name": { "$likeI": searchvalue.toLowerCase() } }]}
+				var url = self.setupUrl()
+				self.collection.url = url 
+				self.render()
+			}else{
+				self.renderSelectItem(filtered)
+			}
+		},
+		renderSelectItem:function(data){
+			var self = this;
 			// console.log(screen.height)
 			self.$el.find("#task-select-item").empty()
 			self.$el.find("#task-select-item").css('height',screen.height-5*screen.height/19)
-			self.collection.models.forEach(function(item,index){
+			// self.$el.find("#task-select-item").css('height',"200px")
+			data.forEach(function(item,index){
 				var item_view = new itemView({model:item,selectedItems:self.uiControl.selectedItems});
 				self.$el.find("#task-select-item").append(item_view.render().el);
 			})

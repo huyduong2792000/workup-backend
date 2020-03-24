@@ -87,7 +87,7 @@ class TaskInfo(CommonModel):
     __tablename__ = 'task_info'
     code = db.Column(String(255))
     name = db.Column(String)
-    unsigned_name = db.Column(String)
+    unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
     # original_estimate = db.Column(Integer, index=True) # minute unit 
     tags = db.Column(JSONB())
@@ -98,7 +98,7 @@ class Tasks(CommonModel):
     __tablename__='tasks'
     task_code = db.Column(String(32), index=True, unique=False, nullable=False)
     task_name = db.Column(String(255), nullable=False)
-    task_name_unsigned = db.Column(String(255), nullable=True) # tên không dấu phục vụ truy vấn dữ liệu lớn
+    unsigned_name = db.Column(String(255), nullable=True, index=True) # tên không dấu phục vụ truy vấn dữ liệu lớn
 #     sub_task = db.Column(Boolean, default=False) # Nếu là subtask thì bắt buộc phải có parent mới cho lưu vào
     parent_code = db.Column(String(255), nullable = True)
     employees = db.relationship("Employee",
