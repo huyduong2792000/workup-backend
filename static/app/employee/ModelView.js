@@ -6,6 +6,7 @@ define(function (require) {
 
 	var template = require('text!./tpl/model.html'),
 		schema = require('json!schema/EmployeeSchema.json');
+	var Helpers = require('app/common/Helpers');
 
 
 	return Gonrin.ModelView.extend({
@@ -157,37 +158,81 @@ define(function (require) {
             // });
 
 
-        },
-
-		validated: function () {
-			let self = this;
-			let id = self.model.get('id');
-
-			if (id) {
-				let full_name = self.model.get('full_name');
-				let email = self.model.get('email');
-				let phone_number = self.model.get('phone_number');
-				let id_identifier = self.model.get('id_identifier');
-								
-				if(full_name == null || email == null || phone_number == null || id_identifier == null){
-					self.getApp().notify("Tên, tài khoản, số điện thoại và số cmnd không được bỏ trống!", { type: "warning" })
-					return false;
-				}else{
-					return true;
-				}
-			} else{
-				let full_name = self.model.get('full_name');
-				let email = self.model.get('email');
-				let phone_number = self.model.get('phone_number');
-				let id_identifier = self.model.get('id_identifier');
-								
-				if(full_name == null || email == null || phone_number == null || id_identifier == null){
-					self.getApp().notify("Tên, tài khoản, số điện thoại và số cmnd không được bỏ trống!", { type: "warning" })
-					return false;
-				}else{
-					return true;
-				}
+		},
+		renderValidate:function(check,field_validate,field_invalid){
+			var self = this
+			if(check == false){
+				self.$el.find(field_validate).addClass('invalid')
+				self.$el.find(field_invalid).show()
+			}else{
+				self.$el.find(field_validate).removeClass('invalid')
+				self.$el.find(field_invalid).hide()
 			}
+		},
+		validateEmail:function() {
+			var self = this;
+			let email = self.model.get('email');
+			var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			var check = re.test(String(email).toLowerCase())
+			self.renderValidate(check,'#email','#email-invalid-feedback')
+			return check;
+		},
+		validatePhone:function(){
+			var self = this
+			var phone_number = self.model.get('phone_number');
+			var check = Helpers.validatePhone(phone_number)
+			self.renderValidate(check,'#phone_number','#phone_number-invalid-feedback')
+			return check;
+		},
+		validateIdentifier:function(){
+			var self = this;
+			var id_identifier = self.model.get('id_identifier');
+			var re = /^\d+$/;
+			var check = re.test(id_identifier);
+			self.renderValidate(check,'#id_identifier','#id_identifier-invalid-feedback')
+			return check;
+		},
+		validateFullname:function(){
+			var self = this;
+			var full_name = self.model.get('full_name');
+			var check = (full_name!=null?true:false)
+			self.renderValidate(check,'#full_name','#full_name-invalid-feedback')
+			return check;
+		},
+		validated: function () {
+			var self = this;
+			var id = self.model.get('id');
+			let check_fullname = self.validateFullname()
+			let check_email = self.validateEmail()
+			let check_identifier = self.validateIdentifier()
+			let check_phone = self.validatePhone()
+			if(check_fullname&&check_email&&check_identifier&&check_phone){
+				return true
+			}else{
+				return false
+			}
+			// if (id) {
+				
+								
+			// 	if(full_name == null || email == null || phone_number == null || id_identifier == null){
+			// 		self.getApp().notify("Tên, tài khoản, số điện thoại và số cmnd không được bỏ trống!", { type: "warning" })
+			// 		return false;
+			// 	}else{
+			// 		return true;
+			// 	}
+			// } else{
+			// 	let full_name = self.model.get('full_name');
+			// 	let email = self.model.get('email');
+			// 	let phone_number = self.model.get('phone_number');
+			// 	let id_identifier = self.model.get('id_identifier');
+								
+			// 	if(full_name == null || email == null || phone_number == null || id_identifier == null){
+			// 		self.getApp().notify("Tên, tài khoản, số điện thoại và số cmnd không được bỏ trống!", { type: "warning" })
+			// 		return false;
+			// 	}else{
+			// 		return true;
+			// 	}
+			// }
 			// else {
 			// 	let password = self.$el.find('#password').val();
 			// 	let confirm_password = self.$el.find('#confirm_password').val();

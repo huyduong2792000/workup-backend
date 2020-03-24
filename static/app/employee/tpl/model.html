@@ -1,3 +1,9 @@
+<style>
+	.invalid{
+		border-color:  #dc3545
+	}
+
+</style>
 <div block-bind="content" style="padding: 20px 15px;">
 	<div class="card">
 		<div class="card-body">
@@ -20,23 +26,28 @@
 				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
 					<div>Tên nhân viên*</div>
 					<div>
-						<input class="form-control" type="text" data-bind="value:full_name" />
+						<input id="full_name" class="form-control" type="text" data-bind="value:full_name" />
 					</div>
+					<div id="full_name-invalid-feedback" class="invalid-feedback">Tên không được để trống</div>
+
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
 					<div>Email*</div>
 					<div>
-						<input class="form-control" type="text" data-bind="value:email" />
+						<input id="email" class="form-control" type="text" data-bind="value:email" />
 					</div>
+					<div id="email-invalid-feedback" class="invalid-feedback">email không hợp lệ</div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
 					<div>Số điện thoại*</div>
 					<div class="input-group">
-						<input class="form-control" type="text" id="contact_phone" data-bind="value:phone_number" />
+						<input class="form-control" type="text" id="phone_number" data-bind="value:phone_number" />
 						<!-- <div class="input-group-append" title="Click to copy">
 						<span class="input-group-text" id="copy_phone"><span class="fa fa-copy"></span></span>
 					</div> -->
 					</div>
+					<div id="phone_number-invalid-feedback" class="invalid-feedback">số điện thoại không hợp lệ</div>
+
 				</div>
 
 
@@ -50,6 +61,8 @@
 							<span class="input-group-text" id="id_identifier"><span class="fa fa-copy"></span></span>
 						</div>
 					</div>
+					<div id="id_identifier-invalid-feedback" class="invalid-feedback">số cmnd không hợp lệ</div>
+
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
 					<div>Ngày sinh</div>
