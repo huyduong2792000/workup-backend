@@ -1,0 +1,36 @@
+<style>
+        .format_search {
+            width: 20%; float:right;
+        }
+        @media only screen and (max-width: 600px) {
+            .format_search {
+                width: 40%; float:right;
+            }
+        }
+    </style>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body table-responsive table-hover">
+                <div id="filter"></div>
+                <div class="d-flex">
+                    <div block-bind="toolbar"></div>
+                    
+                    <div class="offset-md-8" style="">
+                        <input type="search" name="search" class="form-control" placeholder="Search &amp; enter" id="data-search" />
+                    </div>
+                    <div class="ml-auto" style="padding-right: 10px;">
+                        <select class="custom-select b-0" id="filter-data-by-status">
+                            <option value="2">All</option>
+                            <option value="1">Active</option>
+                            <option value="0">Deactive</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div id="grid" data-bind='collection:$collection'></div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+{
+    "id": {
+        "type": "string",
+        "primary": true
+    },
+    "created_at": {
+        "type": "datetime"
+    },
+    "updated_at": {
+        "type": "datetime"
+    },
+    "deleted": {
+        "type": "boolean",
+        "default": false
+    },
+    "deleted_at": {
+        "type": "datetime"
+    },
+    "created_by": {
+        "type": "string"
+    },
+    "update_by": {
+        "type": "string"
+    },
+    "task_code": {
+        "type": "string",
+        "required": true,
+        "length": 255
+    },
+    "task_name": {
+        "type": "string",
+        "required": true
+    },
+    "unsigned_name": {
+        "type": "string"
+    },
+    "description": {
+        "type": "string"
+    },
+    "active": {
+        "type": "number",
+        "default": 1
+    },
+    "original_estimate": {
+        "type": "number"
+    }
+}

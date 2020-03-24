@@ -85,11 +85,12 @@ class Employee(CommonModel):
   
 class TaskInfo(CommonModel):
     __tablename__ = 'task_info'
-    code = db.Column(String(255))
-    name = db.Column(String)
+    task_code = db.Column(String(255), index=True, unique=False, nullable=False)
+    task_name = db.Column(String, nullable=False)
     unsigned_name = db.Column(String)
     description = db.Column(String)
-    original_estimate = db.Column(Integer, index=True) # minute unit 
+    active = db.Column(SmallInteger, default=1)
+    original_estimate = db.Column(Integer) # minute unit 
     
 
 class Tasks(CommonModel):
@@ -101,13 +102,13 @@ class Tasks(CommonModel):
     parent_code = db.Column(String(255), nullable = True)
     employees = db.relationship("Employee",
                             secondary="tasks_employees")
-#     task_info_id = db.Column(UUID(as_uuid=True), ForeignKey("task_info.id"), nullable=True)
-#     task_info = db.relationship("TaskInfo")
+    task_info_id = db.Column(UUID(as_uuid=True), ForeignKey("task_info.id"), nullable=True)
+    task_info = db.relationship("TaskInfo")
     tags = db.Column(JSONB())
     priority = db.Column(SmallInteger, index=True, default=2) # {1: highest, 2: high, 3: low, 4: lowest}
     attach_file = db.Column(String(255))
     link_issue = db.Column(String(255))
-    original_estimate = db.Column(Integer, index=True) # minute unit 
+    original_estimate = db.Column(Integer) # minute unit 
     start_time = db.Column(BigInteger(), index=True, nullable=False)
     end_time = db.Column(BigInteger(), index=True, nullable=False)
     status = db.Column(SmallInteger, index=True, default=0) # {0: todo, "2: processing ", "1: done"}

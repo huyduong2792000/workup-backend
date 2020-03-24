@@ -40,6 +40,9 @@
         "type": "string",
         "length": 255
     },
+    "task_info_id": {
+        "type": "string"
+    },
     "tags": {
         "type": "json"
     },
@@ -90,5 +93,8 @@
     },
     "employees": {
         "type": "list"
+    },
+    "task_info": {
+        "type": "dict"
     }
 }

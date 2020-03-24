@@ -5,7 +5,7 @@ from application.extensions import auth
 import random
 import string
 from application.extensions import apimanager
-from application.models.model import User, Tasks, Employee, TasksEmployees
+from application.models.model import User, Tasks, Employee, TasksEmployees, TaskInfo
 from application.controllers import auth_func
 from sqlalchemy import and_, or_
 from hashids import Hashids
@@ -88,13 +88,13 @@ apimanager.create_api(
     )
 
 
-# apimanager.create_api(
-#         collection_name='tasks_employees', model=TasksEmployees,
-#         methods=['GET', 'POST', 'DELETE', 'PUT'],
-#         url_prefix='/api/v1',
-#         preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks_employees], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
-#         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
-#     )
+apimanager.create_api(
+        collection_name='task_info', model=TaskInfo,
+        methods=['GET', 'POST', 'DELETE', 'PUT'],
+        url_prefix='/api/v1',
+        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+        postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
+    )
 
 def process_employees_tasks(tasks_employees, my_tasks, user):
     list_task = []
