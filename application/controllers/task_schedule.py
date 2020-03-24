@@ -36,15 +36,14 @@ def createTasks():
                 new_task.status = 0
                 new_task.task_many_times = False
                 new_task.created_by = task_schedule.created_by
-                new_task.task_code = task.task_code
-                new_task.task_name = task.task_name
-                new_task.task_name_unsigned = task.task_name_unsigned
-                new_task.parent_code = task.parent_code
-                new_task.employees = task.employees
-                new_task.priority = task.priority
-                new_task.attach_file = task.attach_file
-                new_task.link_issue = task.link_issue
-                new_task.original_estimate = task.original_estimate
+                new_task.task_code = task.code
+                new_task.task_name = task.name
+                new_task.unsigned_name = task.unsigned_name
+                # new_task.parent_code = task.parent_code
+                # new_task.priority = task.priority
+                # new_task.attach_file = task.attach_file
+                # new_task.link_issue = task.link_issue
+                # new_task.original_estimate = task.original_estimate
                 new_task.description = task.description
                 new_task.tags = task.tags
                 new_task.start_time = start_day_timestamp
@@ -76,8 +75,8 @@ def getDayindexToday():
     return dayindex_today
 
 def runSchedule():
-    schedule.every().day.at(config.Config.TIME_CRON_JOB).do(createTasks)
-    # schedule.every(2).seconds.do(createTasks)
+    # schedule.every().day.at(config.Config.TIME_CRON_JOB).do(createTasks)
+    schedule.every(2).seconds.do(createTasks)
     asyncio.set_event_loop(asyncio.new_event_loop())
     while True:
         schedule.run_pending()

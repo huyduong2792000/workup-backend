@@ -21,7 +21,7 @@ define(function (require) {
 			fields: [
 				// { field: "task_code", label: "Mã công việc" },
 				{ field: "task_name", label: "Tên công việc" },
-				// { field: "tags", label: "Tags" },
+				{ field: "tags", label: "Tags" },
 				{
 					field: "priority", label: "Mực độ", template: function (rowObj) {
 						if (rowObj.priority == 1) {
@@ -35,19 +35,6 @@ define(function (require) {
 						}
 						if (rowObj.priority == 4) {
 							return `<p style="color:#cda58d;">lowest</p>`;
-						}
-					}
-				},
-				{
-					field: "status", label: "Tiến độ công việc", template: function (rowObj) {
-						if (rowObj.status == 0) {
-							return `<div class="btn-outline-warning " style="border-radius: 4px;border: 2px solid #ffc107;  transform: rotate(30deg); font-weight: 300; max-width: 60px;">Pending</div>`;
-						}
-						if (rowObj.status == 1) {
-							return `<div class="btn-outline-success " style="border-radius: 4px;border: 2px solid #28a745;  transform: rotate(30deg); font-weight: 300; max-width: 60px;">Done</div>`;
-						}
-						if (rowObj.status == 2) {
-							return `<div class="btn-outline-danger" style="border-radius: 4px;border: 2px solid #dc3545;  transform: rotate(30deg); font-weight: 300; max-width: 60px;">Process</div>`;
 						}
 					}
 				},
