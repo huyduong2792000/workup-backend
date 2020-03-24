@@ -22,24 +22,18 @@
     "update_by": {
         "type": "string"
     },
-    "code": {
+    "task_uid": {
         "type": "string",
-        "length": 255
+        "primary": true
     },
-    "name": {
-        "type": "string"
+    "task_schedule_uid": {
+        "type": "string",
+        "primary": true
     },
-    "unsigned_name": {
-        "type": "string"
+    "task": {
+        "type": "dict"
     },
-    "description": {
-        "type": "string"
-    },
-    "tags": {
-        "type": "json"
-    },
-    "active": {
-        "type": "number",
-        "default": 1
+    "task_schedule": {
+        "type": "dict"
     }
 }

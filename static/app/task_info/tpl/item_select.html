@@ -1,0 +1,41 @@
+<style>
+    .compact{
+        cursor: pointer;
+    }
+    .compact:hover{
+        background-color: rgba(217, 237, 245, 0.952);
+    }
+</style>
+<div class="row compact py-0 mx-2 my-0" style=" border-bottom: 1px solid #00bcd4; " >
+    <div class="text-center col-md-10 col-10" id="task_name_field">
+        <span  style="font-size: 18px;"><%= name %></span>
+        <br> 
+        <span class="text-muted p-0 m-0" style="font-size: 10px;"> ấn để hiện thêm chi tiết</span>
+    </div>
+    <div  class="col-md-2 col-2" style=" display: flex; align-items: center;">
+        <input  type="checkbox" id = "select_task">
+    </div>
+</div>
+<div id="detail" class="detail mx-3 py-0" style="display: none; border-bottom:1px solid #01fb0d;">
+    <div class="row my-0">
+        <div class="col-lg-12 col-sm-12 col-12">
+            <div class="float-left mr-2">Mã công việc: </div>
+            <div class="btn-default float-left pl-1 pr-1"><%= code %></div>
+        </div>
+    </div>
+    <div class="row mb-1 mt-1">
+        <div class="col-lg-12 col-sm-12 col-12">
+            <div class="float-left mr-2">Tên: </div>
+            <div class="btn-default float-left pl-1 pr-1"><%= name %></div>
+        </div>
+    </div>
+    
+    <!-- <div class="row mt-1 mb-1">
+        <div class="col-lg-12 col-sm-12 col-12">
+            <div class="float-left mr-2">bắt đầu: </div>
+            <div class="btn-default float-left pl-1 pr-1"><%= start_time %></div>
+            <div class="float-left mr-2">&#160;&#160;kết thúc: </div>
+            <div class="btn-default float-left pl-1 pr-1"><%= end_time %></div>
+        </div>
+    </div> -->
+</div>

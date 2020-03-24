@@ -102,11 +102,12 @@ def filter_taskschedule(request=None, search_params=None, **kwargs):
             filters = search_params["filters"]
             if "$and" in filters:
                 # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
                 search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
             else:
-                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}]
+                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"deleted":{"$eq": False} } ]
         else:
-            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}} ]}
+            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}},{"deleted":{"$eq": False}}]}
 
     else:
         return json({

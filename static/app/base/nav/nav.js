@@ -80,9 +80,9 @@ define(function (require) {
                 {
                     "text": "Công việc",
                     "type": "view",
-                    "collectionName": "tasks",
-                    "route": "tasks/collection",
-                    "$ref": "app/tasks/CollectionView",
+                    "collectionName": "task_info",
+                    "route": "task_info/collection",
+                    "$ref": "app/task_info/CollectionView",
                     "icon": "<i class='fa fa-cog'></i>",
                     "visible": function () {
                         return true;
@@ -90,9 +90,9 @@ define(function (require) {
                 },
                 {
                     "type": "view",
-                    "collectionName": "tasks",
-                    "route": "tasks/model(/:id)",
-                    "$ref": "app/tasks/ModelView",
+                    "collectionName": "task_info",
+                    "route": "task_info/model(/:id)",
+                    "$ref": "app/task_info/ModelView",
                     "visible": false
                 },
                 
