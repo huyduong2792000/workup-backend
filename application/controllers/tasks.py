@@ -100,7 +100,7 @@ apimanager.create_api(
         collection_name='tasks', model=Tasks,
         methods=['GET', 'POST', 'DELETE', 'PUT'],
         url_prefix='/api/v1',
-        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[create_task], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[create_task], PUT_SINGLE=[auth_func,create_task], DELETE_SINGLE=[auth_func]),
         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
     )
 
