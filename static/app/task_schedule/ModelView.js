@@ -6,7 +6,7 @@ define(function (require) {
 
 	var template = require('text!./tpl/model.html'),
 		schema = require('json!schema/TaskScheduleSchema.json');
-	var TaskSelectView = require('app/tasks/SelectView');
+	var TaskInfoSelectView = require('app/task_info/SelectView');
 
 
 
@@ -21,11 +21,11 @@ define(function (require) {
 				{
 					field: "Tasks",
 					uicontrol: "ref",
-					textField: "task_name",
+					textField: "name",
 					selectionMode: "multiple",
 					foreignRemoteField: "id",
 					size: "large",
-					dataSource: TaskSelectView
+					dataSource: TaskInfoSelectView
 				},
 				
 			]

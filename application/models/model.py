@@ -83,15 +83,16 @@ class Employee(CommonModel):
     end_time = db.Column(BigInteger(), index=True)
     user = db.relationship("User", cascade="all, delete-orphan", lazy='dynamic')
   
+
 class TaskInfo(CommonModel):
-    __tablename__ = 'task_info'
-    task_code = db.Column(String(255), index=True, unique=False, nullable=False)
-    task_name = db.Column(String, nullable=False)
-    unsigned_name = db.Column(String)
+    _tablename_ = 'task_info'
+    code = db.Column(String(255))
+    name = db.Column(String)
+    unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
+    # original_estimate = db.Column(Integer, index=True) # minute unit 
+    tags = db.Column(JSONB())
     active = db.Column(SmallInteger, default=1)
-    original_estimate = db.Column(Integer) # minute unit 
-    
 
 class Tasks(CommonModel):
     __tablename__='tasks'
@@ -118,10 +119,10 @@ class Tasks(CommonModel):
     active = db.Column(SmallInteger, default=1)
     task_many_times  = db.Column(Boolean,default=True)
 
-class TaskschedulesTasks(CommonModel):
-    __tablename__ = 'taskschedules_tasks'
-    task_uid = db.Column(UUID(as_uuid=True), ForeignKey('tasks.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
-    task = db.relationship("Tasks")
+class TaskschedulesTaskinfo(CommonModel):
+    __tablename__ = 'taskschedules_taskinfo'
+    task_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_info.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task = db.relationship("TaskInfo")
     task_schedule_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_schedule.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     task_schedule = db.relationship("TaskSchedule")
 
@@ -141,8 +142,8 @@ class TaskSchedule(CommonModel):
     start_time_working = db.Column(BigInteger(), default = 0) #equal 0 because 0*2^n =0
     end_time_working = db.Column(BigInteger(),default = 0) #equal 0 because 0*2^n =0
     active = db.Column(SmallInteger, default=1)
-    Tasks = db.relationship("Tasks",
-                            secondary="taskschedules_tasks",
+    Tasks = db.relationship("TaskInfo",
+                            secondary="taskschedules_taskinfo",
                             )
 class Worker(CommonModel):
     __tablename__ = 'worker'

@@ -50,8 +50,8 @@ define(function (require) {
 		formatTasksName:function(tasks){
 			var result = "";
 			tasks.forEach(function(task,index){
-				var task_name = task.task_name
-				result += task_name + " ,"
+				var name = task.name
+				result += name + " ,"
 			})
 			result = result.slice(0,result.length-2)
 
@@ -109,7 +109,7 @@ define(function (require) {
 		urlPrefix: "/api/v1/",
 		collectionName: "task_schedule",
 		uiControl: {
-			orderBy: [{ field: "active", direction: "desc" }],
+			orderBy: [{ field: "active", direction: "desc" },{ field: "created_at", direction: "desc" }],
 		},
 		render: function () {
 			var self = this;
@@ -120,7 +120,7 @@ define(function (require) {
 				start_today.setDate(start_today.getDate() + 1)
 				let	timestamp_filter = Date.parse(start_today)/1000
 				self.uiControl.filters = {"$and": [{ "start_time_working": { "$lte":timestamp_filter}},{ "end_time_working": { "$gt": timestamp_filter}}]}
-				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
+				var url = self.setupUrl()
 				self.collection.url = url
 			}
 			self.collection.url = self.getApp().serviceURL + self.collection.url
@@ -151,7 +151,7 @@ define(function (require) {
 
 			if (active == "0") {
 				self.uiControl.filters = {"$and": [{ "start_time_working": { "$lte":timestamp_filter}},{ "end_time_working": { "$gte": timestamp_filter}}]}
-				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
+				var url = self.setupUrl()
 				self.collection.url = url
 				self.render()
 
@@ -162,13 +162,13 @@ define(function (require) {
 				timestamp_filter = Date.parse(start_tomorrow)/1000
 
 				self.uiControl.filters = {"$and": [{ "start_time_working": { "$lte": timestamp_filter }},{ "end_time_working": { "$gte": timestamp_filter}}]}
-				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
+				var url = self.setupUrl()
 				self.collection.url = url
 				self.render()
 
 			} else if(active == "2"){
 				self.uiControl.filters ={}
-				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
+				var url = self.setupUrl()
 				self.collection.url = url
 				self.render()
 			} else if(active="3"){
@@ -179,19 +179,19 @@ define(function (require) {
 					let from_time = data.from_time;
 					let to_time = data.to_time;
 					self.uiControl.filters = {"$and": [{ "start_time_working": { "$gte": from_time }},{ "end_time_working": { "$lte": to_time}}]}
-					var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
+					var url = self.setupUrl()
 					self.collection.url = url
 					self.render()
 				});
 			}
 		},
-		setupUrl:function(){
+		setupUrl:function(page=1){
 			var self = this
 			let filters = self.uiControl.filters||{}
-			// console.log(filters)
-			let order_by = self.uiControl.orderBy||{ field: "created_at", direction: "desc" }
-			let url = {"filters":filters,"order_by":order_by}
-			return JSON.stringify(url)
+			let order_by = self.uiControl.orderBy||{}
+			let query = {"filters":filters,"order_by":order_by}
+			var url =  self.urlPrefix+ self.collectionName + `?page=${page}&results_per_page=10&q=${JSON.stringify(query)}`
+			return url
 		},
 		renderPagination:function(){
 			var self = this;
@@ -221,7 +221,7 @@ define(function (require) {
 					self.$el.find("#next").click(function(){
 						page = Math.min(self.collection.page +1,self.collection.totalPages)
 					})
-					var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q=${self.setupUrl()}`
+					var url = self.setupUrl(page)
 					self.collection.url = url
 					self.render()
 					return
@@ -230,13 +230,13 @@ define(function (require) {
 			self.$el.find("#previous").on('click',function(){
 				let page = Math.max(self.collection.page -1,1)
 				
-				var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q=${self.setupUrl()}`
+				var url = self.setupUrl(page)
 					self.collection.url = url
 					self.render()
 			})
 			self.$el.find("#next").on('click',function(){
 				var page = Math.min(self.collection.page +1,self.collection.totalPages)
-				var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q=${self.setupUrl()}`
+				var url = self.setupUrl(page)
 					self.collection.url = url
 					self.render()
 			})

@@ -5,7 +5,7 @@ define(function (require) {
 		Gonrin = require('gonrin');
 
 	var template = require('text!./tpl/model.html'),
-		schema = require('json!schema/TasksSchema.json');
+		schema = require('json!schema/TaskInfoSchema.json');
 	var Helpers = require('app/common/Helpers');
 	var EmployeeSelectView = require('app/employee/SelectView');
 	var SubEmployeeSelectView = require('app/employee/SelectView');
@@ -64,7 +64,8 @@ define(function (require) {
 					// if (!self.validate()) {
 					// 	return;
 					// }
-
+					console.log(self.model);
+					
 					self.model.save(null, {
 						success: function (model, respose, options) {
 							self.getApp().notify({ message: "Thành công." }, { type: "success" });
@@ -143,7 +144,7 @@ define(function (require) {
 			} else {
 
 				self.applyBindings();
-				self.model.set('task_code', self.getUniqueID())
+				self.model.set('code', self.getUniqueID())
 				self.eventRegister();
 			}
 

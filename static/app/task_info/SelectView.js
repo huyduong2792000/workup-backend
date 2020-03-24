@@ -5,9 +5,9 @@ define(function (require) {
 		Gonrin = require('gonrin');
 
 	var template = require('text!./tpl/select.html'),
-		schema = require('json!schema/TasksSchema.json');
+		schema = require('json!schema/TaskInfoSchema.json');
 	var Helpers = require('app/common/Helpers');
-	var templete_item_select = require('text!app/tasks/tpl/item_select.html');
+	var templete_item_select = require('text!app/task_info/tpl/item_select.html');
 
 	var itemView = Gonrin.View.extend({
 		tagName:'div',

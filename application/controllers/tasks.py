@@ -88,13 +88,13 @@ apimanager.create_api(
     )
 
 
-apimanager.create_api(
-        collection_name='task_info', model=TaskInfo,
-        methods=['GET', 'POST', 'DELETE', 'PUT'],
-        url_prefix='/api/v1',
-        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
-        postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
-    )
+# apimanager.create_api(
+#         collection_name='task_info', model=TaskInfo,
+#         methods=['GET', 'POST', 'DELETE', 'PUT'],
+#         url_prefix='/api/v1',
+#         preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+#         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
+#     )
 
 def process_employees_tasks(tasks_employees, my_tasks, user):
     list_task = []
