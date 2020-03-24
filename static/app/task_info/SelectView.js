@@ -80,7 +80,7 @@ define(function (require) {
 		template: template,
 		modelSchema: schema,
 		urlPrefix: "/api/v1/",
-		collectionName: "tasks",
+		collectionName: "task_info",
 		textField: "task_name",
 		tools: [
 			{

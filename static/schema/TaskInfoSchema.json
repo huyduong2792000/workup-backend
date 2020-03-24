@@ -22,11 +22,11 @@
     "update_by": {
         "type": "string"
     },
-    "code": {
+    "task_code": {
         "type": "string",
         "length": 255
     },
-    "name": {
+    "task_name": {
         "type": "string"
     },
     "unsigned_name": {

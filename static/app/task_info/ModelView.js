@@ -144,7 +144,7 @@ define(function (require) {
 			} else {
 
 				self.applyBindings();
-				self.model.set('code', self.getUniqueID())
+				self.model.set('task_code', self.getUniqueID())
 				self.eventRegister();
 			}
 

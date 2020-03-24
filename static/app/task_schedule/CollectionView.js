@@ -50,11 +50,10 @@ define(function (require) {
 		formatTasksName:function(tasks){
 			var result = "";
 			tasks.forEach(function(task,index){
-				var name = task.name
-				result += name + " ,"
+				var task_name = task.task_name
+				result += task_name + " ,"
 			})
 			result = result.slice(0,result.length-2)
-
 			return result
 		},
 		formatShiftOfDay:function(shift_of_day){

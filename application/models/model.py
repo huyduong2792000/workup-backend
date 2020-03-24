@@ -85,9 +85,9 @@ class Employee(CommonModel):
   
 
 class TaskInfo(CommonModel):
-    _tablename_ = 'task_info'
-    code = db.Column(String(255))
-    name = db.Column(String)
+    __tablename__ = 'task_info'
+    task_code = db.Column(String(255))
+    task_name = db.Column(String)
     unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
     # original_estimate = db.Column(Integer, index=True) # minute unit 
@@ -103,7 +103,7 @@ class Tasks(CommonModel):
     parent_code = db.Column(String(255), nullable = True)
     employees = db.relationship("Employee",
                             secondary="tasks_employees")
-    task_info_id = db.Column(UUID(as_uuid=True), ForeignKey("task_info.id"), nullable=True)
+    task_info_uid = db.Column(UUID(as_uuid=True), ForeignKey("task_info.id"), nullable=True)
     task_info = db.relationship("TaskInfo")
     tags = db.Column(JSONB())
     priority = db.Column(SmallInteger, index=True, default=2) # {1: highest, 2: high, 3: low, 4: lowest}

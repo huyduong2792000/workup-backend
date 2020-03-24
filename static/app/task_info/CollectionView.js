@@ -19,26 +19,12 @@ define(function (require) {
 			orderBy: [{ field: "created_at", direction: "desc" }],
 
 			fields: [
-				// { field: "task_code", label: "Mã công việc" },
+				{ field: "task_code", label: "Mã công việc" },
 				{ field: "task_name", label: "Tên công việc" },
-				{ field: "tags", label: "Tags" },
-				{
-					field: "priority", label: "Mực độ", template: function (rowObj) {
-						if (rowObj.priority == 1) {
-							return `<p style="color:red;">highest</p>`;
-						}
-						if (rowObj.priority == 2) {
-							return `<p style="color:#f25d00;">high</p>`;
-						}
-						if (rowObj.priority == 3) {
-							return `<p style="color:#000000;">low</p>`;
-						}
-						if (rowObj.priority == 4) {
-							return `<p style="color:#cda58d;">lowest</p>`;
-						}
-					}
-				},
-			
+				// { field: "tags", label: "Tags" },
+				{ field: "description", label: "Mô tả" },
+				// { field: "original_estimate", label: "Thời gian ước tính(phút)" },
+
 				{
 					field: "active",
 					label: "Trạng thái",

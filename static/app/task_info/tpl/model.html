@@ -26,10 +26,6 @@
 		text-align: left;
 	}
 
-	.view_default {
-		display: none
-	}
-	
 </style>
 <div block-bind="content" style="padding: 20px 15px;">
 	<div class="card">
@@ -45,24 +41,24 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
-					<label class="text-uppercase">Mã công việc</label>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
+					<label class="text-uppercase">Mã công việc </label>
 					<div class="input-group">
-						<input class="form-control" type="text" id="code" data-bind="value:code" readonly />
+						<input class="form-control" type="text" id="task_code" data-bind="value:task_code" readonly />
 						<div class="input-group-append" title="Click to copy">
-							<span class="input-group-text" id="copy_code"><span class="fa fa-copy"></span></span>
+							<span class="input-group-text" id="copy_task_code"><span class="fa fa-copy"></span></span>
 						</div>
 					</div>
 				</div>
 
-				<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left">
 					<label class="text-uppercase">Công việc *</label>
 					<div>
-						<input class="form-control" type="text" id="name" data-bind="value:name" />
+						<input class="form-control" type="text" id="task_name" data-bind="value:task_name"/>
 					</div>
 				</div>
 				
-				<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left view_default" >
+				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left" >
 					<div class="text-uppercase">Trạng thái</div>
 					<div>
 						<input class="form-control" type="text" data-bind="value:active" />
@@ -71,7 +67,7 @@
 
 			</div>
 			<div class="row">
-				<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left view_default" id="view_description">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left" id="view_description">
 					<div class="text-uppercase">Mô tả</div>
 					<div>
 						<textarea name="" id="" cols="30" rows="3" data-bind="value:description" style="min-height: 80px;
@@ -80,7 +76,7 @@
 						margin-top: 5px;"></textarea>
 					</div>
 				</div>
-				<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-rigth view_default" id="view_tags">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-rigth" id="view_tags">
 					<div class="text-uppercase" style="line-height: 26px; float: left;" class="text-uppercase">Gắn thẻ / Tags</div>
 					<div id="tags_space" style="width: 100%; min-height: 80px;
 												border: 1px solid #ccc;

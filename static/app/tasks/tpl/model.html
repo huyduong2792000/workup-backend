@@ -54,12 +54,14 @@
 						</div>
 					</div>
 				</div>
-
+				
 				<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
 					<label class="text-uppercase">Công việc *</label>
-					<div>
-						<input class="form-control" type="text" id="task_name" data-bind="value:task_name" />
+					<div class="input-group" style="display: flex; align-items: center;">
+						<input class="form-control" type="text" id="task_name" data-bind="value:task_name" style="width:300px"/>
+						<button class="btn btn-ssm btn-info ml-2" id="btn_add_task_info"><span class="fa fa-plus"></span> Thêm</button>
 					</div>
+					
 				</div>
 				<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
 					<div class="text-uppercase">Người nhận</div>
@@ -177,7 +179,6 @@
 								<div class="col-lg-3 col-md-3 col-sm-12 col-12 float-left">
 									<div class="text-uppercase">Người thực hiện</div>
 									<div class="input-group">
-
 										<input type="text" class="form-control" id="sub_employee" placeholder="Người thực hiện">
 									</div>
 								</div>
@@ -188,7 +189,7 @@
 								</div> -->
 								<div class="col-lg-2 col-md-2 col-sm-12 col-12 float-left" style="padding:2%">
 
-									<button class="btn btn-ssm btn-info ml-2 add-row" id="add-row"><span class="fa fa-plus"></span> Thêm</button>
+									<button class="btn btn-ssm btn-info ml-2 add-row" id="add-row"><span class="fa fa-plus"></span> Xác nhận chia nhỏ</button>
 								</div>
 							</div>
 						</form>

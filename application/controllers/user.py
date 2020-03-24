@@ -240,21 +240,17 @@ apimanager.create_api(collection_name='employee', model=Employee,
 
 @app.route('/filter_employee', methods=["GET", "OPTIONS"])
 def filter_employee(request):
-    search_text = request.args.get("q", None)
-    if search_text is not None:
-        employees = db.session.query(Employee).filter(or_(Employee.full_name.like('%'+search_text+'%'), Employee.email.like('%'+search_text+'%'))).all()
-        data_resp = []
-        for employee in employees:
-            employee = employee.__dict__
-            obj = {"id": str(employee['id']),
-                   "full_name": employee['full_name'],
-                   "email": employee['email']
-                   }
-            data_resp.append(obj)
-#         print(data_resp)
-        return json(data_resp)
+    employees = db.session.query(Employee).all()
+    data_resp = []
+    for employee in employees:
+        employee = employee.__dict__
+        obj = {"id": str(employee['id']),
+               "full_name": employee['full_name'],
+               "email": employee['email']
+               }
+        data_resp.append(obj)
+    return json(data_resp)
     
-    else: return json([])
     
     
     

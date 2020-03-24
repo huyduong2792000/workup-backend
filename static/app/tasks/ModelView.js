@@ -178,8 +178,8 @@ define(function (require) {
 						self.$el.find("#view_status").show();
 						self.$el.find("#view_tags").show();
 						self.$el.find("#view_active").show();
-						
-						
+
+
 
 					},
 					error: function () {
@@ -416,6 +416,79 @@ define(function (require) {
 				}
 
 			});
+
+			var options = {
+				url: self.getApp().serviceURL + '/api/v1/task_many_time',
+
+				getValue: "task_name",
+
+				template: {
+					type: "description",
+					fields: {
+						description: "task_code"
+					}
+				},
+
+				list: {
+					match: {
+						enabled: true
+					},
+					onSelectItemEvent: function () {
+						var value = $("#task_name").getSelectedItemData().id; //get the id associated with the selected value
+						if (value != null) {
+							self.model.set('task_info_uid', value);
+						}
+
+					}
+				},
+
+				theme: "plate-dark"
+			};
+			self.$el.find("#task_name").easyAutocomplete(options);
+
+
+			self.model.on("change:task_name", function (event) {
+				// console.log(options);
+
+			});
+			self.$el.find("#btn_add_task_info").click(function () {
+				let task_info_uid = self.model.get('task_info_uid');
+				let task_name = self.model.get('task_name');
+				// if (this.checkUserHasRole("admin")) {
+				if (task_info_uid == null) {
+					let task_info = {
+						"task_code": self.getUniqueID(),
+						"task_name": task_name
+					}
+					if (task_name != null) {
+						$.ajax({
+							url: self.getApp().serviceURL + "/api/v1/task_info",
+							data: JSON.stringify(task_info),
+							method: "POST",
+							contentType: "application/json",
+							headers: {
+							},
+							beforeSend: function () {
+							},
+							success: function (data) {
+								self.model.set('task_info_uid', data['id']);
+								self.getApp().notify("Thêm thông tin công việc thành công");
+							},
+							error: function (xhr, status, error) {
+								self.getApp().notify("Thêm thông tin công việc không thành công", { type: "danger" });
+							},
+						});
+					} else {
+						self.getApp().notify({ message: "Tên công việc không đc bỏ trống!" }, { type: "warning" });
+					}
+				} else {
+					self.getApp().notify({ message: "Thông công việc đã tồn tại!" }, { type: "warning" });
+				}
+				// } else {
+				// 	self.getApp().notify({ message: "Chỉ có Quản trị mới được phép thêm thông tin công việc!" }, { type: "warning" });
+				// }
+			});
+
 		},
 		get_sub_tasks: function () {
 			var self = this;

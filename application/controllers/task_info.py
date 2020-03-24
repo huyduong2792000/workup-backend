@@ -30,7 +30,7 @@ def create_taskinfo(request=None, data=None, **kw):
     uid = auth.current_user(request)
     if uid is not None:
         data['created_by'] = uid
-        data['unsigned_name'] = no_accent_vietnamese(data['name'])
+        data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -62,3 +62,16 @@ apimanager.create_api(collection_name='task_info', model=TaskInfo,
     preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,filter_taskinfo], POST=[auth_func,create_taskinfo], PUT_SINGLE=[auth_func,create_taskinfo], DELETE_SINGLE=[auth_func]),
     postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
     )
+
+@app.route('/api/v1/task_many_time', methods=["GET", "OPTIONS"])
+def filter_employee(request):
+    tasks_info = db.session.query(TaskInfo).all()
+    data_resp = []
+    for task in tasks_info:
+        task = task.__dict__
+        obj = {"id": str(task['id']),
+               "task_code": task['task_code'],
+               "task_name": task['task_name']
+               }
+        data_resp.append(obj)
+    return json(data_resp)
