@@ -81,7 +81,7 @@ define(function (require) {
 		modelSchema: schema,
 		urlPrefix: "/api/v1/",
 		collectionName: "task_info",
-		textField: "name",
+		textField: "task_name",
 		tools: [
 			{
 				name: "close",

@@ -19,8 +19,8 @@ define(function (require) {
 			orderBy: [{ field: "created_at", direction: "desc" }],
 
 			fields: [
-				{ field: "code", label: "Mã công việc" },
-				{ field: "name", label: "Tên công việc" },
+				{ field: "task_code", label: "Mã công việc" },
+				{ field: "task_name", label: "Tên công việc" },
 				// { field: "tags", label: "Tags" },
 				{ field: "description", label: "Mô tả" },
 				// { field: "original_estimate", label: "Thời gian ước tính(phút)" },

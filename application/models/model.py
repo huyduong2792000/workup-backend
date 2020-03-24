@@ -85,8 +85,8 @@ class Employee(CommonModel):
   
 class TaskInfo(CommonModel):
     __tablename__ = 'task_info'
-    code = db.Column(String(255))
-    name = db.Column(String)
+    task_code = db.Column(String(255))
+    task_name = db.Column(String)
     unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
     # original_estimate = db.Column(Integer, index=True) # minute unit 

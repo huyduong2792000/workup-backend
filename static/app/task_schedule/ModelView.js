@@ -21,7 +21,7 @@ define(function (require) {
 				{
 					field: "Tasks",
 					uicontrol: "ref",
-					textField: "name",
+					textField: "task_name",
 					selectionMode: "multiple",
 					foreignRemoteField: "id",
 					size: "large",

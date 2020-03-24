@@ -30,7 +30,7 @@ def create_taskinfo(request=None, data=None, **kw):
     uid = auth.current_user(request)
     if uid is not None:
         data['created_by'] = uid
-        data['unsigned_name'] = no_accent_vietnamese(data['name'])
+        data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
