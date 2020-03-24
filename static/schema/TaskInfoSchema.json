@@ -22,6 +22,7 @@
     "update_by": {
         "type": "string"
     },
+<<<<<<< HEAD
     "task_code": {
         "type": "string",
         "required": true,
@@ -30,6 +31,14 @@
     "task_name": {
         "type": "string",
         "required": true
+=======
+    "code": {
+        "type": "string",
+        "length": 255
+    },
+    "name": {
+        "type": "string"
+>>>>>>> 2c78dc90b4adc770639d77428af6f297b7e98234
     },
     "unsigned_name": {
         "type": "string"
@@ -37,10 +46,13 @@
     "description": {
         "type": "string"
     },
+<<<<<<< HEAD
     "active": {
         "type": "number",
         "default": 1
     },
+=======
+>>>>>>> 2c78dc90b4adc770639d77428af6f297b7e98234
     "original_estimate": {
         "type": "number"
     }

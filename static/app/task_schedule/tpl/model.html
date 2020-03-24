@@ -14,87 +14,90 @@
 	}
 
 </style>
-<div class="margin-bottom-10" block-bind="toolbar"></div>
-<div block-bind="content" >
-	<div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left px-0" >
-		<div class="row mb-0 mt-1">
-			<div class="col-lg-12 col-md-12 col-sm-12 col-12 d-flex ">
-				<label class=" float-left padding-lr-0 text-gray text-uppercase mb-1" style="line-height: 24px;">
-					Kích hoạt&#160;
-				</label>
-				<div class="float-left padding-lr-0">
-					<label class="switch">
-						<input type="checkbox" class="form-control" id="active_switch">
-						<span class="slider round"></span>
-					</label>
-				</div>
-			</div>
-		</div>
-		<div class="row ">
-			<div class="col-lg-6 col-md-12 col-sm-12 col-12 pt-0 float-left">
-				<div>Từ ngày</div>
-				<div class="input-group date "  data-target-input="nearest ">
-					<input id="start_time_working" type="text" class=" form-control datetimepicker-input" data-target="#start_time_working" />
-					<div class="input-group-append" data-target="#start_time_working" data-toggle="datetimepicker">
-						<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+<div block-bind="content" style="padding: 20px 15px;">
+	<div class="card">
+		<div class="card-body">
+			<div class="margin-bottom-10" block-bind="toolbar"></div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left px-0" >
+					<div class="row mb-0 mt-2">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-12 d-flex ">
+							<!-- <label class=" float-left "> -->
+							<div class="text-uppercase">Kích hoạt&#160;</div>
+							<!-- </label> -->
+							<div class="float-left padding-lr-0">
+								<label class="switch">
+									<input type="checkbox" class="form-control" id="active_switch">
+									<span class="slider round"></span>
+								</label>
+							</div>
+						</div>
 					</div>
-				</div> 
-				<div class="invalid-feedback">Ngày bắt đầu nhỏ hơn ngày kết thúc</div>
-			</div>
-			<div class="col-lg-6 col-md-12 col-sm-12 col-12 pt-0 float-left">
-				<div>Đến ngày</div>
-				<div class="input-group date"  data-target-input="nearest">
-					<input id="end_time_working"  type="text" class="form-control datetimepicker-input" data-target="#end_time_working" />
-					<div class="input-group-append" data-target="#end_time_working" data-toggle="datetimepicker">
-						<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+					<div class="row ">
+						<div class="col-lg-6 col-md-12 col-sm-12 col-12 pt-0 float-left">
+							<div class="text-uppercase">Từ ngày</div>
+							<div class="input-group date "  data-target-input="nearest ">
+								<input id="start_time_working" type="text" class=" form-control datetimepicker-input" data-target="#start_time_working" />
+								<div class="input-group-append" data-target="#start_time_working" data-toggle="datetimepicker">
+									<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+								</div>
+							</div> 
+							<div class="invalid-feedback">Ngày bắt đầu phải nhỏ hơn ngày kết thúc</div>
+						</div>
+						<div class="col-lg-6 col-md-12 col-sm-12 col-12 pt-0 float-left">
+							<div class="text-uppercase">Đến ngày</div>
+							<div class="input-group date"  data-target-input="nearest">
+								<input id="end_time_working"  type="text" class="form-control datetimepicker-input" data-target="#end_time_working" />
+								<div class="input-group-append" data-target="#end_time_working" data-toggle="datetimepicker">
+									<div class="input-group-text"><i class="fa fa-calendar"></i></div>
+								</div>
+							</div> 
+							<div class="invalid-feedback">Ngày bắt đầu phải nhỏ hơn ngày kết thúc</div>
+
+						</div>
+
+
 					</div>
-				</div> 
-				<div class="invalid-feedback">Ngày bắt đầu nhỏ hơn ngày kết thúc</div>
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-12 ">
+							<div class="text-uppercase">Chọn thứ</div>
+						</div>
+					</div>
+					<div class="row px-3">
+						
+						<div class="col-md-6 col-lg-1 col-6 text-center p-1">
+							<div style="border:1px solid#007bff " class="day_of_week">Thứ 2</div>
+						</div>
+						<div class="col-md-6 col-lg-1 col-6 text-center p-1">
+							<div style="border:1px solid #007bff " class="day_of_week">Thứ 3</div>
+						</div>
+						<div class="col-md-6 col-lg-1 col-6 text-center p-1">
+							<div style="border:1px solid #007bff" class="day_of_week">Thứ 4</div>
+						</div>
+						<div class="col-md-6 col-lg-1 col-6 text-center p-1">
+							<div style="border:1px solid #007bff" class="day_of_week">Thứ 5</div>
+						</div>
+						<div class="col-md-6 col-lg-1 col-6 text-center p-1">
+							<div style="border:1px solid #007bff" class="day_of_week">Thứ 6</div>
+						</div>
+						<div class="col-md-6 col-lg-1 col-6 text-center p-1">
+							<div style="border:1px solid #007bff" class="day_of_week">Thứ 7</div>
+						</div>
+						<div class="col-md-12 col-lg-1 col-12 text-center p-1 ">
+							<div style="border:1px solid #007bff" class="day_of_week">Chủ nhật</div>
+						</div>
+					</div>
 
-			</div>
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left">
+							<div class="text-uppercase">Chọn công việc</div>
+							<div id="task" style="min-height: 200px;">
+								<input class="form-control" type="text"  data-bind="list:Tasks" />
+							</div>
+						</div>
+					</div>
 
 
-		</div>
-		<div class="row">
-			<div class="col-lg-12 col-md-12 col-sm-12 col-12 ">
-				<div>Chọn thứ</div>
-			</div>
-		</div>
-		<div class="row px-3">
-			
-			<div class="col-md-6 col-lg-1 col-6 text-center p-1">
-				<div style="border:1px solid#007bff " class="day_of_week">Thứ 2</div>
-			</div>
-			<div class="col-md-6 col-lg-1 col-6 text-center p-1">
-				<div style="border:1px solid #007bff " class="day_of_week">Thứ 3</div>
-			</div>
-			<div class="col-md-6 col-lg-1 col-6 text-center p-1">
-				<div style="border:1px solid #007bff" class="day_of_week">Thứ 4</div>
-			</div>
-			<div class="col-md-6 col-lg-1 col-6 text-center p-1">
-				<div style="border:1px solid #007bff" class="day_of_week">Thứ 5</div>
-			</div>
-			<div class="col-md-6 col-lg-1 col-6 text-center p-1">
-				<div style="border:1px solid #007bff" class="day_of_week">Thứ 6</div>
-			</div>
-			<div class="col-md-6 col-lg-1 col-6 text-center p-1">
-				<div style="border:1px solid #007bff" class="day_of_week">Thứ 7</div>
-			</div>
-			<div class="col-md-12 col-lg-1 col-12 text-center p-1 ">
-				<div style="border:1px solid #007bff" class="day_of_week">Chủ nhật</div>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-lg-12 col-md-12 col-sm-12 col-12 float-left">
-				<div>Chọn công việc</div>
-				<div id="task" style="min-height: 200px;">
-					<input class="form-control" type="text"  data-bind="list:Tasks" />
 				</div>
-			</div>
 		</div>
-
-
 	</div>
-
 </div>

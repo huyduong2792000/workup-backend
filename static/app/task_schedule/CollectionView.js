@@ -12,7 +12,6 @@ define(function (require) {
 	var TimeFilterDialogView = require('app/common/filters/TimeFilterDialogView');
 
 	var itemView = Gonrin.View.extend({
-		// tagName:'tr',
 
 		templete_item: _.template(templete_item_collection),
 		initialize:function(options){
@@ -124,6 +123,7 @@ define(function (require) {
 				var url = `/api/v1/task_schedule?page=1&results_per_page=10&q=${self.setupUrl()}`
 				self.collection.url = url
 			}
+			self.collection.url = self.getApp().serviceURL + self.collection.url
 			this.collection.fetch({
 				success:function(data){
 					self.renderCollectionItem()
@@ -235,21 +235,25 @@ define(function (require) {
 					self.render()
 			})
 			self.$el.find("#next").on('click',function(){
-				// console.log('click')
 				var page = Math.min(self.collection.page +1,self.collection.totalPages)
 				var url = `/api/v1/task_schedule?page=${page}&results_per_page=10&q=${self.setupUrl()}`
 					self.collection.url = url
-					// $(this).off('click')
 					self.render()
 			})
 		},
 		renderCollectionItem:function(){
 			var self = this
 			self.$el.find("#collection-item").empty()
-			self.collection.models.forEach(function(item,index){
-				var item_view = new itemView({model:item,collectionName:self.collectionName});
-				self.$el.find("#collection-item").append(item_view.render().el);
-			})
+			if(self.collection.models.length ==0){
+				self.$el.find('#no_res_grid').show()
+			}else{
+				self.$el.find('#no_res_grid').hide()
+				self.collection.models.forEach(function(item,index){
+					var item_view = new itemView({model:item,collectionName:self.collectionName});
+					self.$el.find("#collection-item").append(item_view.render().el);
+				})
+			}
+			
 		}
 
 	});
