@@ -98,6 +98,7 @@ define(function (require) {
 				buttonClass: "btn btn-primary btn-md margin-left-5",
 				label: "TRANSLATE:SELECT",
 				command: function () {
+					this.$el.find('#filter').val('')
 					this.trigger("onSelected");
 					this.close();
 				}
@@ -109,6 +110,7 @@ define(function (require) {
 		events:{
 			'keyup #filter':'renderFilter'
 		},
+
 		render: function () {
 			var self = this
 			// this.applyBindings();
@@ -121,9 +123,10 @@ define(function (require) {
 					// console.log('collection',self.collection)
 					self.renderSelectItem(self.collection.models)
 					self.renderPagination()
-					// self.$el.find('#filter').keyup(function(e){
-					// 	self.renderFilter(e.target.value)
-					// })
+					self.$el.find('#filter').off('keyup')
+					self.$el.find('#filter').keyup(function(e){
+						self.renderFilter(e)
+					})
 				},
 				error:function(){
 					// self.getApp().notify(" Lấy dữ liệu không thành công!", { type: "danger" })
@@ -133,13 +136,13 @@ define(function (require) {
 			
 			return this;
 		},
-		setupUrl:function(){
+		setupUrl:function(page=1){
 			var self = this
 			let filters = self.uiControl.filters||{}
-			// console.log(filters)
-			let order_by = self.uiControl.orderBy||{ field: "created_at", direction: "desc" }
-			let url = {"filters":filters,"order_by":order_by}
-			return JSON.stringify(url)
+			let order_by = self.uiControl.orderBy||{}
+			let query = {"filters":filters,"order_by":order_by}
+			var url =  self.urlPrefix+ self.collectionName + `?page=${page}&results_per_page=10&q=${JSON.stringify(query)}`
+			return url
 		},
 		renderPagination:function(){
 			var self = this;
@@ -193,6 +196,7 @@ define(function (require) {
 			var self = this;
 			var searchvalue = e.target.value
 			searchvalue = Helpers.replaceToAscii(searchvalue)
+			
 			if(searchvalue == ""){
 				self.uiControl.filters = {}
 				var url = self.setupUrl()
@@ -212,16 +216,24 @@ define(function (require) {
 			}else{
 				self.renderSelectItem(filtered)
 			}
+			if(e.keyCode == 13){
+				self.trigger("onSelected");
+				self.close();
+			}
 		},
 		renderSelectItem:function(data){
 			var self = this;
-			// console.log(screen.height)
+			self.uiControl.selectedItems = data.map(function (model) {
+				return model.toJSON()
+			});
 			self.$el.find("#task-select-item").empty()
 			self.$el.find("#task-select-item").css('height',screen.height-5*screen.height/19)
 			// self.$el.find("#task-select-item").css('height',"200px")
 			data.forEach(function(item,index){
 				var item_view = new itemView({model:item,selectedItems:self.uiControl.selectedItems});
+
 				self.$el.find("#task-select-item").append(item_view.render().el);
+
 			})
 		}
 
