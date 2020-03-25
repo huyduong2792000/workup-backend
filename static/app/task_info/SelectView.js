@@ -108,9 +108,6 @@ define(function (require) {
 		uiControl: {
 			orderBy: [{ field: "created_at", direction: "desc" }],
 		},
-		events:{
-			'keyup #filter':'renderFilter'
-		},
 
 		render: function () {
 			var self = this
@@ -146,8 +143,16 @@ define(function (require) {
 		eventRegister:function () {
 			var self = this;
 			self.$el.find('#filter').off('keyup')
+			self.$el.find('#select-mutiple').off('click')
+
 			self.$el.find('#filter').keyup(function(e){
 				self.renderFilter(e)
+				if(e.keyCode == 13){
+					self.uiControl.selectedItems = self.selectedItems
+					self.$el.find('#filter').val('')
+					self.trigger("onSelected");
+					self.close();
+				}
 			})
 			self.$el.find('#select-mutiple').click(function(){
 				if (self.$el.find('#select-mutiple').prop("checked") == true){
@@ -221,21 +226,14 @@ define(function (require) {
 			// 	var unsigned_name = task.get('unsigned_name') || ''
 			// 	return unsigned_name.toLowerCase().includes(searchvalue.toLowerCase());
 			// });
-			
-			// if(self.data_render.length == 0){
-				self.uiControl.filters = {"$and": [{ "unsigned_name": { "$likeI": searchvalue.toLowerCase() } }]}
-				var url = self.setupUrl()
-				self.collection.url = url 
-				self.render()
-			// }else{
-				self.renderSelectItem()
-			// }
-			if(e.keyCode == 13){
-				self.uiControl.selectedItems = self.selectedItems
-				self.$el.find('#filter').val('')
-				self.trigger("onSelected");
-				self.close();
-			}
+			self.uiControl.filters = {"$and": [{ "unsigned_name": { "$likeI": searchvalue.toLowerCase() } }]}
+			var url = self.setupUrl()
+			self.collection.url = url 
+			self.render()
+
+			self.uiControl.filters = {}
+			self.collection.url =  self.setupUrl() 
+			self.renderSelectItem()
 		},
 		renderSelectItem:function(){
 			var self = this;

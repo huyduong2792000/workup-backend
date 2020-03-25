@@ -1,13 +1,29 @@
 <style>
-    #filter:active{
-        width: 70%;
-    }
-
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: 10px;
+    left: 2px;
+    bottom: 1px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
 </style>
 <div class="align-middle">
 <!-- <div id="filter" style="width: 100%"></div> -->
-<div class="row text-light my-1 mx-2 my-0 justify-content-end" >
+<div class="row my-1 mx-2 my-0 justify-content-end d-flex" >
     <!-- <form class="form-inline my-2 my-lg-0 "> -->
+            <div class=" pt-2 mr-1 px-0" style="align-items: center; line-height: 12px;">
+                <div class="float-left text-uppercase py-0 align-middle" style="font-size: 12px;">Tự chọn nhiều&#160;</div>
+                <!-- <div class="float-left padding-lr-0 "> -->
+                        <label class="switch" style="width: 30px; height: 12px;">
+                            <input type="checkbox" class="form-control" id="select-mutiple" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    <!-- </div> -->
+            </div>
             <input id="filter" class="form-control " type="search" placeholder="Tìm kiếm" aria-label="Search"
             style="width: 40%; height: 30px; line-height: 30px;">
     <!-- </form> -->
@@ -25,16 +41,6 @@
 <div class="">
     
     <div id="pag_grid" class="d-flex justify-content-end " >
-
-        <div class="align-middle pt-2 mr-1">
-            <div class="float-left text-uppercase py-0">Tự chọn nhiều&#160;</div>
-            <div class="float-left padding-lr-0 py-0">
-                <label class="switch">
-                    <input type="checkbox" class="form-control" id="select-mutiple" checked>
-                    <span class="slider round" ></span>
-                </label>
-            </div>
-        </div>
 
         <div class="page-item" style=" list-style: none;">
             <a class="page-link" id="previous" aria-label="Previous">
