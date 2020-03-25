@@ -217,19 +217,19 @@ define(function (require) {
 				self.collection.url = url 
 				self.render()
 			}
-			self.data_render = _.filter(self.collection.models,function(task){
-				var unsigned_name = task.get('unsigned_name') || ''
-				return unsigned_name.toLowerCase().includes(searchvalue.toLowerCase());
-			});
+			// self.data_render = _.filter(self.collection.models,function(task){
+			// 	var unsigned_name = task.get('unsigned_name') || ''
+			// 	return unsigned_name.toLowerCase().includes(searchvalue.toLowerCase());
+			// });
 			
-			if(self.data_render.length == 0){
+			// if(self.data_render.length == 0){
 				self.uiControl.filters = {"$and": [{ "unsigned_name": { "$likeI": searchvalue.toLowerCase() } }]}
 				var url = self.setupUrl()
 				self.collection.url = url 
 				self.render()
-			}else{
+			// }else{
 				self.renderSelectItem()
-			}
+			// }
 			if(e.keyCode == 13){
 				self.uiControl.selectedItems = self.selectedItems
 				self.$el.find('#filter').val('')
