@@ -132,9 +132,10 @@ define(function (require) {
 				this.model.fetch({
 					success: function (data) {
 						self.applyBindings();
-		
 						self.eventRegister();
-
+						self.renderTags()
+						self.$el.find('#view_description').show()
+						self.$el.find("#view_tags").show()
 					},
 					error: function () {
 						self.getApp().notify({ message: "Get data Eror" }, { type: "danger" });
@@ -153,75 +154,56 @@ define(function (require) {
 			let UID = Date.now() + ((Math.random() * 100000).toFixed())
 			return 'UP' + UID.toUpperCase();
 		},
-
-	
-		switchUIControlRegister: function () {
-			var self = this;
-
-			self.$el.find(".switch input[id='share_switch']").unbind("click").bind("click", function ($event) {
-				if ($(this).is(":checked")) {
-					let id = self.model.get('id');
-					if (!id) {
-						self.model.save(null, {
-							success: function (model, respose, options) {
-								self.getApp().notify({ message: "Công việc đã sẵn sàng chia chỏ" }, { type: "success" });
-								self.$el.find('#form_sub_task').show();
-							},
-							error: function (modelData, xhr, options) {
-								self.$el.find('#form_sub_task').hide();
-								if (xhr && xhr.responseJSON && xhr.responseJSON.error_message) {
-									self.getApp().notify({ message: xhr.responseJSON.error_message }, { type: "danger" });
-									return;
-								}
-								self.getApp().notify({ message: "Lỗi hệ thống, thử lại sau." }, { type: "danger" });
-							}
-						});
-
-					} else {
-						self.$el.find('#form_sub_task').show();
-					}
-				} else {
-					self.$el.find('#form_sub_task').hide();
-				}
-			});
-
-		},
 		eventRegister: function () {
 			const self = this;
 			var id = this.getApp().getRouter().getParam("id");
-			self.switchUIControlRegister()
-			self.formartTime("#start_time", 'start_time')
-			self.formartTime("#end_time", 'end_time')
-			
-		},
-		
-		formartTime: function (selector, field) {
-			var self = this;
-			var time_working = null;
-			if (self.model.get(field) != 0) {
-				time_working = moment.unix(self.model.get(field)).format("YYYY-MM-DD HH:mm:ss");
-			} else {
-				time_working = null
-			}
-			if (self.model.get(field)) {
-				self.$el.find(selector).datetimepicker({
-					defaultDate: time_working,
-					format: "DD/MM/YYYY HH:mm:ss",
-					icons: {
-						time: "fa fa-clock"
-					}
-				});
-			}
+			self.model.on('change:tags', () => {
+				self.renderTags();
+			});
 
-			self.$el.find(selector).on('change.datetimepicker', function (e) {
-				if (e && e.date) {
-					let dateFomart = moment(e.date).unix()
-					self.model.set(field, dateFomart)
-				} else {
-					self.model.set(field, null);
+			self.$el.find("#tags_space").unbind("click").bind("click", () => {
+				var tagsEl = self.$el.find("#tags_space");
+				if (!tagsEl.find("#typing").length) {
+					$(`<input id="typing" class="form-control float-left" placeholder="Nhập tags" style="width: 200px;"/>`).appendTo(tagsEl).fadeIn();
+					tagsEl.find("#typing").focus();
+					tagsEl.find("#typing").unbind("keypress").bind("keypress", (event) => {
+						if (event.keyCode == 13) {
+							var val = tagsEl.find("#typing").val();
+							var tags = self.model.get('tags');
+							if (!tags || !Array.isArray(tags)) {
+								tags = [];
+							}
+							var found = false;
+							tags.forEach((item, index) => {
+								if (item == val) {
+									found = true;
+								}
+							});
+							if (!found && val && val.trim()) {
+								tags.push(val);
+
+								self.model.set('tags', tags);
+								self.model.trigger('change:tags');
+							}
+							tagsEl.find("#typing").remove();
+						}
+					});
 				}
+
 			});
 		},
+		renderTags: function () {
+			const self = this;
+			var tagsEl = self.$el.find("#tags_space");
+			tagsEl.empty();
+			var tags = self.model.get('tags');
+			if (tags && Array.isArray(tags)) {
+				tags.forEach((tag, index) => {
+					$(`<span class="bg-warning float-left m-1" style="padding: 3px 10px; border-radius: 3px;">${tag}</span>`).appendTo(tagsEl).fadeIn();
+				});
+			}
+		},
+
 		
 
 		validate: function () {
