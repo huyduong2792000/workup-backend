@@ -98,6 +98,7 @@ define(function (require) {
 				buttonClass: "btn btn-primary btn-md margin-left-5",
 				label: "TRANSLATE:SELECT",
 				command: function () {
+					this.uiControl.selectedItems = this.selectedItems
 					this.$el.find('#filter').val('')
 					this.trigger("onSelected");
 					this.close();
@@ -120,13 +121,11 @@ define(function (require) {
 			}
 			this.collection.fetch({
 				success:function(data){
-					// console.log('collection',self.collection)
-					self.renderSelectItem(self.collection.models)
+					self.data_render = self.collection.models
+					self.renderSelectItem()
 					self.renderPagination()
-					self.$el.find('#filter').off('keyup')
-					self.$el.find('#filter').keyup(function(e){
-						self.renderFilter(e)
-					})
+					self.eventRegister()
+					
 				},
 				error:function(){
 					// self.getApp().notify(" Lấy dữ liệu không thành công!", { type: "danger" })
@@ -143,6 +142,21 @@ define(function (require) {
 			let query = {"filters":filters,"order_by":order_by}
 			var url =  self.urlPrefix+ self.collectionName + `?page=${page}&results_per_page=10&q=${JSON.stringify(query)}`
 			return url
+		},
+		eventRegister:function () {
+			var self = this;
+			self.$el.find('#filter').off('keyup')
+			self.$el.find('#filter').keyup(function(e){
+				self.renderFilter(e)
+			})
+			self.$el.find('#select-mutiple').click(function(){
+				if (self.$el.find('#select-mutiple').prop("checked") == true){
+					self.select_multiple = true
+				}else{
+					self.select_multiple = false
+				}
+				self.renderSelectItem()
+			})
 		},
 		renderPagination:function(){
 			var self = this;
@@ -181,13 +195,13 @@ define(function (require) {
 			})
 			self.$el.find("#previous").on('click',function(){
 				var page = Math.max(self.collection.page -1,1)
-				var url = `/api/v1/tasks?page=${page}&results_per_page=10&q=${self.setupUrl()}`
+				var url = self.setupUrl(page)
 					self.collection.url = url
 					self.render()
 			})
 			self.$el.find("#next").on('click',function(){
 				var page = Math.min(self.collection.page +1,self.collection.totalPages)
-				var url = `/api/v1/tasks?page=${page}&results_per_page=10&q=${self.setupUrl()}`
+				var url = self.setupUrl(page)
 					self.collection.url = url
 					self.render()
 			})
@@ -203,37 +217,42 @@ define(function (require) {
 				self.collection.url = url 
 				self.render()
 			}
-			var filtered = _.filter(self.collection.models,function(task){
+			self.data_render = _.filter(self.collection.models,function(task){
 				var unsigned_name = task.get('unsigned_name') || ''
 				return unsigned_name.toLowerCase().includes(searchvalue.toLowerCase());
 			});
 			
-			if(filtered.length == 0){
+			if(self.data_render.length == 0){
 				self.uiControl.filters = {"$and": [{ "unsigned_name": { "$likeI": searchvalue.toLowerCase() } }]}
 				var url = self.setupUrl()
 				self.collection.url = url 
 				self.render()
 			}else{
-				self.renderSelectItem(filtered)
+				self.renderSelectItem()
 			}
 			if(e.keyCode == 13){
+				self.uiControl.selectedItems = self.selectedItems
+				self.$el.find('#filter').val('')
 				self.trigger("onSelected");
 				self.close();
 			}
 		},
-		renderSelectItem:function(data){
+		renderSelectItem:function(){
 			var self = this;
-			self.uiControl.selectedItems = data.map(function (model) {
-				return model.toJSON()
-			});
+			self.selectedItems = []
+			if(self.select_multiple == true || self.select_multiple == undefined){
+				self.selectedItems = self.data_render.map(function (model) {
+					return model.toJSON()
+				});
+			}else{
+				self.selectedItems = self.uiControl.selectedItems
+			}
 			self.$el.find("#task-select-item").empty()
-			self.$el.find("#task-select-item").css('height',screen.height-5*screen.height/19)
+			self.$el.find("#task-select-item").css('height',screen.height/1.5)
 			// self.$el.find("#task-select-item").css('height',"200px")
-			data.forEach(function(item,index){
-				var item_view = new itemView({model:item,selectedItems:self.uiControl.selectedItems});
-
+			self.data_render.forEach(function(item,index){
+				var item_view = new itemView({model:item,selectedItems:self.selectedItems});
 				self.$el.find("#task-select-item").append(item_view.render().el);
-
 			})
 		}
 

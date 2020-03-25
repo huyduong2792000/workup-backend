@@ -2,6 +2,7 @@
     #filter:active{
         width: 70%;
     }
+
 </style>
 <div class="align-middle">
 <!-- <div id="filter" style="width: 100%"></div> -->
@@ -21,19 +22,33 @@
     </div>
 </div>  
 <div id="task-select-item" style=" overflow-y: scroll;"></div>
-<div id="pag_grid" class="d-flex justify-content-end" >
-    <div class="page-item" style=" list-style: none;">
-        <a class="page-link" id="previous" aria-label="Previous">
-            <span aria-hidden="true">&laquo;</span>
-        </a>
-    </div>
-    <ul id="nav_list_pag_grid " class="pl-0" 
-    style="display: flex; list-style: none; max-width: 100px; overflow-x: scroll;-ms-overflow-style: none;">
-    </ul>
-    <div class="page-item" style=" list-style: none;">
-        <a class="page-link" id="next" aria-label="Previous">
-            <span aria-hidden="true">&raquo;</span>
-        </a>
+<div class="">
+    
+    <div id="pag_grid" class="d-flex justify-content-end " >
+
+        <div class="align-middle pt-2 mr-1">
+            <div class="float-left text-uppercase py-0">Tự chọn nhiều&#160;</div>
+            <div class="float-left padding-lr-0 py-0">
+                <label class="switch">
+                    <input type="checkbox" class="form-control" id="select-mutiple" checked>
+                    <span class="slider round" ></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="page-item" style=" list-style: none;">
+            <a class="page-link" id="previous" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </div>
+        <ul id="nav_list_pag_grid " class="pl-0" 
+        style="display: flex; list-style: none; max-width: 100px; overflow-x: scroll;-ms-overflow-style: none;">
+        </ul>
+        <div class="page-item" style=" list-style: none;">
+            <a class="page-link" id="next" aria-label="Previous">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </div>
     </div>
 </div>
 <div class="float-right" style="margin-bottom: 5px;"  block-bind="toolbar"></div>
