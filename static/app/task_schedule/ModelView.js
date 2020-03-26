@@ -129,6 +129,7 @@ define(function (require) {
 			self.eventTimeWorking("#end_time_working",'end_time_working')
 			self.eventDayOfWeek()
 			self.eventActive()
+			self.eventTasks()
 			self.renderTasks()
 
 		},
@@ -163,6 +164,7 @@ define(function (require) {
 				if(e.keyCode == 13 && $(this).val() != ""){
 					self.model.set({'Tasks':self.model.attributes.Tasks.concat(self.tasks_filter)})
 					$(this).val('')
+					// e.target.value = ''
 					$(this).trigger('keyup')
 					self.model.trigger('change:Tasks')
 				}
@@ -200,7 +202,7 @@ define(function (require) {
 			self.model.get('Tasks').forEach(function (task) {
 				self.$el.find('#tag-list').append(`<span class="tag">${task.task_name}<span class="close"></span></span>`)
 			})	
-			self.eventTasks()
+			// self.eventTasks()
 		},
 		eventActive:function(){
 			var self = this;
