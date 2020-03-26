@@ -148,7 +148,6 @@ define(function (require) {
 				self.eventRegister();
 			}
 
-
 		},
 		getUniqueID: function () {
 			let UID = Date.now() + ((Math.random() * 100000).toFixed())

@@ -4,11 +4,7 @@ from gatco.exceptions import ServerError
 from application.controllers.user import *
 from application.controllers.salary import *
 from application.controllers import auth_func
-
-
 import re
-
-
 def no_accent_vietnamese(s):
     s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
     s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)

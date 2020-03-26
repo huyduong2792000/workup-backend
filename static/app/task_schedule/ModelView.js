@@ -7,6 +7,8 @@ define(function (require) {
 	var template = require('text!./tpl/model.html'),
 		schema = require('json!schema/TaskScheduleSchema.json');
 	var TaskInfoSelectView = require('app/task_info/SelectView');
+	var TaskFilterView = require('./FilterView');
+	var Helpers = require('app/common/Helpers');
 
 
 
@@ -127,6 +129,78 @@ define(function (require) {
 			self.eventTimeWorking("#end_time_working",'end_time_working')
 			self.eventDayOfWeek()
 			self.eventActive()
+			self.renderTasks()
+
+		},
+		eventTasks:function () {
+			var self = this;
+			self.$el.find('#tasks-main-input').off('keyup')
+			self.$el.find('#tasks-main-input').keyup(function (e){
+				var searchvalue = Helpers.replaceToAscii(e.target.value)
+				let filter = {"$and": [{ "unsigned_name": { "$likeI": searchvalue.toLowerCase() } }]}
+				let order_by = [{ field: "created_at", direction: "desc" }]
+				let query = {"filters":filter,"order_by":order_by}
+				console.log('searchvalue',searchvalue);
+
+				$.ajax({
+					url: self.getApp().serviceURL + "/api/v1/task_info?page=1&results_per_page=10&q="+JSON.stringify(query),
+					method: "GET",
+					beforeSend: function () {
+						console.log('ajax');
+					},
+					success: function (task){
+						self.tasks_filter = task.objects;
+						var filter_view = new TaskFilterView({tasks_select:self.tasks_filter})
+						self.$el.find("#tasks-filter").empty()
+						self.$el.find("#tasks-filter").append(filter_view.render().el)
+						// console.log('task :', task.objects);
+					},
+					error: function (xhr, status, error) {
+						// console.log('task not found');
+						// self.getApp().notify("không tìm thấy công việc này", { type: "danger" });
+					},
+				});
+				if(e.keyCode == 13 && $(this).val() != ""){
+					self.model.set({'Tasks':self.model.attributes.Tasks.concat(self.tasks_filter)})
+					$(this).val('')
+					$(this).trigger('keyup')
+					self.model.trigger('change:Tasks')
+				}
+			})
+			self.$el.find('#tasks-main-input').off('keydown')
+			self.$el.find('#tasks-main-input').keydown(function (e) {
+				var task_list = self.model.get('Tasks')
+				if (e.keyCode === 8 && $(this).val()==="" && task_list.length > 0) {
+					task_list.length-=1
+					self.model.set({'Tasks':task_list})
+					self.model.trigger('change:Tasks')
+				}
+
+			})
+			self.$el.find('#tasks-main-input').one('click',function () {
+				$(this).trigger('keyup')
+				// $(this).off('keyup')
+
+			})
+			self.$el.find('.close').each(function(index,task){
+				$(this).click(function(){
+					var task_list = self.model.get('Tasks')
+					task_list.splice(index,1)
+					self.model.set({'Tasks':task_list})
+					self.model.trigger('change:Tasks')
+				})
+			})
+			self.model.on('change:Tasks',function(){
+				self.renderTasks()
+			})
+		},
+		renderTasks:function (){
+			var self = this;
+			self.$el.find('#tag-list').empty()
+			self.model.get('Tasks').forEach(function (task) {
+				self.$el.find('#tag-list').append(`<span class="tag">${task.task_name}<span class="close"></span></span>`)
+			})	
+			self.eventTasks()
 		},
 		eventActive:function(){
 			var self = this;
