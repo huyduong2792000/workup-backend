@@ -129,8 +129,8 @@ define(function (require) {
 			self.eventTimeWorking("#end_time_working",'end_time_working')
 			self.eventDayOfWeek()
 			self.eventActive()
-			self.eventTasks()
 			self.renderTasks()
+			// self.eventTasks()
 
 		},
 		eventTasks:function () {
@@ -202,7 +202,7 @@ define(function (require) {
 			self.model.get('Tasks').forEach(function (task) {
 				self.$el.find('#tag-list').append(`<span class="tag">${task.task_name}<span class="close"></span></span>`)
 			})	
-			// self.eventTasks()
+			self.eventTasks()
 		},
 		eventActive:function(){
 			var self = this;
