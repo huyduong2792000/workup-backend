@@ -86,7 +86,7 @@ define(function (require) {
             "entries": [
                
                 {
-                    "text": "Công việc",
+                    "text": "Check list",
                     "type": "view",
                     "collectionName": "task_info",
                     "route": "task_info/collection",
