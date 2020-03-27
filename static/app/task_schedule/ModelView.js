@@ -130,18 +130,17 @@ define(function (require) {
 			self.eventDayOfWeek()
 			self.eventActive()
 			self.renderTasks()
-			// self.eventTasks()
+			self.eventTasks()
 
 		},
 		eventTasks:function () {
 			var self = this;
-			self.$el.find('#tasks-main-input').off('keyup')
+			// self.$el.find('#tasks-main-input').off('keyup')
 			self.$el.find('#tasks-main-input').keyup(function (e){
 				var searchvalue = Helpers.replaceToAscii(e.target.value)
 				let filter = {"$and": [{ "unsigned_name": { "$likeI": searchvalue.toLowerCase() } }]}
 				let order_by = [{ field: "created_at", direction: "desc" }]
 				let query = {"filters":filter,"order_by":order_by}
-				console.log('searchvalue',searchvalue);
 
 				$.ajax({
 					url: self.getApp().serviceURL + "/api/v1/task_info?page=1&results_per_page=10&q="+JSON.stringify(query),
@@ -184,14 +183,14 @@ define(function (require) {
 				// $(this).off('keyup')
 
 			})
-			self.$el.find('.close').each(function(index,task){
-				$(this).click(function(){
-					var task_list = self.model.get('Tasks')
-					task_list.splice(index,1)
-					self.model.set({'Tasks':task_list})
-					self.model.trigger('change:Tasks')
-				})
-			})
+			// self.$el.find('.close').each(function(index,task){
+			// 	$(this).click(function(){
+			// 		var task_list = self.model.get('Tasks')
+			// 		task_list.splice(index,1)
+			// 		self.model.set({'Tasks':task_list})
+			// 		self.model.trigger('change:Tasks')
+			// 	})
+			// })
 			self.model.on('change:Tasks',function(){
 				self.renderTasks()
 			})
@@ -202,7 +201,15 @@ define(function (require) {
 			self.model.get('Tasks').forEach(function (task) {
 				self.$el.find('#tag-list').append(`<span class="tag">${task.task_name}<span class="close"></span></span>`)
 			})	
-			self.eventTasks()
+			self.$el.find('.close').each(function(index,task){
+				$(this).click(function(){
+					var task_list = self.model.get('Tasks')
+					task_list.splice(index,1)
+					self.model.set({'Tasks':task_list})
+					self.model.trigger('change:Tasks')
+				})
+			})
+			// self.eventTasks()
 		},
 		eventActive:function(){
 			var self = this;
