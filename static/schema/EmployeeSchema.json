@@ -80,5 +80,8 @@
     },
     "user": {
         "type": "list"
+    },
+    "task_categorys": {
+        "type": "list"
     }
 }

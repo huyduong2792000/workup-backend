@@ -9,8 +9,6 @@ from sqlalchemy import (
     Column, String, Integer, BigInteger, Date, Boolean, DECIMAL, ForeignKey, Text, SmallInteger
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB
-
-
 from sqlalchemy.orm import relationship, backref
 
 from application.database import db
@@ -62,7 +60,6 @@ class TasksEmployees(CommonModel):
 #     db.Column("employee_uid", UUID(as_uuid=True), db.ForeignKey("employee.id", ondelete="cascade"), primary_key=True)
 # )
 
-
 class Employee(CommonModel):
     __tablename__= 'employee'
     full_name = db.Column(String(255))
@@ -82,17 +79,37 @@ class Employee(CommonModel):
     start_time = db.Column(BigInteger(), index= True)
     end_time = db.Column(BigInteger(), index=True)
     user = db.relationship("User", cascade="all, delete-orphan", lazy='dynamic')
-  
+    task_categorys = db.relationship("TaskCategory",
+                        secondary="taskcategory_employee")
+#     tenants= # lấy thương hiệu ở bên accounts 
 
 class TaskInfo(CommonModel):
     __tablename__ = 'task_info'
     task_code = db.Column(String(255))
     task_name = db.Column(String)
+    task_category_uid = db.Column(UUID(as_uuid=True), ForeignKey("task_category.id"), nullable=False)
+    task_category = db.relationship("TaskCategory")
     unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
-    # original_estimate = db.Column(Integer, index=True) # minute unit 
     tags = db.Column(JSONB())
     active = db.Column(SmallInteger, default=1)
+
+class TaskCategoryEmployee(CommonModel):
+    __tablename__ = 'taskcategory_employee'
+    task_category_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_category.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task_category = db.relationship("TaskCategory")
+    employee_uid = db.Column(UUID(as_uuid=True), ForeignKey('employee.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    employee = db.relationship("Employee")
+
+         
+class TaskCategory(CommonModel):
+    __tablename__ = 'task_category'
+    name = db.Column(String)
+    unsigned_name = db.Column(String)
+    description = db.Column(String)
+    priority = db.Column(SmallInteger)
+    supervisor_uid = db.Column(UUID(as_uuid=True), ForeignKey("employee.id"), nullable=False)
+    supervisor = db.relationship("Employee")
 
 class Tasks(CommonModel):
     __tablename__='tasks'
@@ -103,7 +120,7 @@ class Tasks(CommonModel):
     parent_code = db.Column(String(255), nullable = True)
     employees = db.relationship("Employee",
                             secondary="tasks_employees")
-    task_info_uid = db.Column(UUID(as_uuid=True), ForeignKey("task_info.id"), nullable=True)
+    task_info_uid = db.Column(UUID(as_uuid=True), ForeignKey("task_info.id"), nullable=False)
     task_info = db.relationship("TaskInfo")
     tags = db.Column(JSONB())
     priority = db.Column(SmallInteger, index=True, default=2) # {1: highest, 2: high, 3: low, 4: lowest}
@@ -126,12 +143,6 @@ class TaskschedulesTaskinfo(CommonModel):
     task_schedule_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_schedule.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     task_schedule = db.relationship("TaskSchedule")
 
-    
-# taskschedules_tasks = db.Table(
-#     "taskschedules_tasks",
-#     db.Column("task_uid", UUID(as_uuid=True), db.ForeignKey("tasks.id", ondelete="cascade"), primary_key=True),
-#     db.Column("task_schedule_uid", UUID(as_uuid=True), db.ForeignKey("task_schedule.id", ondelete="cascade"), primary_key=True)
-# )
          
    
 class TaskSchedule(CommonModel):

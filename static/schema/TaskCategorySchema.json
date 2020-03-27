@@ -22,16 +22,8 @@
     "update_by": {
         "type": "string"
     },
-    "task_code": {
-        "type": "string",
-        "length": 255
-    },
-    "task_name": {
+    "name": {
         "type": "string"
-    },
-    "task_category_uid": {
-        "type": "string",
-        "required": true
     },
     "unsigned_name": {
         "type": "string"
@@ -39,14 +31,11 @@
     "description": {
         "type": "string"
     },
-    "tags": {
-        "type": "json"
+    "priority": {
+        "type": "number"
     },
-    "active": {
-        "type": "number",
-        "default": 1
-    },
-    "task_category": {
-        "type": "dict"
+    "supervisor": {
+        "type": "string",
+        "required": true
     }
 }
