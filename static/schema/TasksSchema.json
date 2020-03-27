@@ -41,7 +41,8 @@
         "length": 255
     },
     "task_info_uid": {
-        "type": "string"
+        "type": "string",
+        "required": true
     },
     "tags": {
         "type": "json"

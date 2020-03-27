@@ -74,7 +74,15 @@ define(function (require) {
             "text": "Danh mục",
             "icon": "<i class='fa fa-list'></i>",
             "type": "category",
-            "visible": true,
+            "visible": function(){
+                if (this.checkUserHasRole("admin")){
+                    console.log(this.checkUserHasRole("admin"));
+                    
+                    return true
+                }else{
+                    return false;
+                }
+            },
             "entries": [
                
                 {
