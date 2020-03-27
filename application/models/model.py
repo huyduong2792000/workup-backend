@@ -79,31 +79,31 @@ class Employee(CommonModel):
     start_time = db.Column(BigInteger(), index= True)
     end_time = db.Column(BigInteger(), index=True)
     user = db.relationship("User", cascade="all, delete-orphan", lazy='dynamic')
-    task_categorys = db.relationship("TaskCategory",
-                        secondary="taskcategory_employee")
+    task_groups = db.relationship("TaskGroup",
+                        secondary="taskgroup_employee")
 #     tenants= # lấy thương hiệu ở bên accounts 
 
 class TaskInfo(CommonModel):
     __tablename__ = 'task_info'
     task_code = db.Column(String(255))
     task_name = db.Column(String)
-    task_category_uid = db.Column(UUID(as_uuid=True), ForeignKey("task_category.id"), nullable=False)
-    task_category = db.relationship("TaskCategory")
+    task_group_uid = db.Column(UUID(as_uuid=True), ForeignKey("task_group.id"), nullable=False)
+    task_group = db.relationship("TaskGroup")
     unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
     tags = db.Column(JSONB())
     active = db.Column(SmallInteger, default=1)
 
-class TaskCategoryEmployee(CommonModel):
-    __tablename__ = 'taskcategory_employee'
-    task_category_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_category.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
-    task_category = db.relationship("TaskCategory")
+class TaskGroupEmployee(CommonModel):
+    __tablename__ = 'taskgroup_employee'
+    task_group_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_group.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task_group = db.relationship("TaskGroup")
     employee_uid = db.Column(UUID(as_uuid=True), ForeignKey('employee.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     employee = db.relationship("Employee")
 
          
-class TaskCategory(CommonModel):
-    __tablename__ = 'task_category'
+class TaskGroup(CommonModel):
+    __tablename__ = 'task_group'
     name = db.Column(String)
     unsigned_name = db.Column(String)
     description = db.Column(String)

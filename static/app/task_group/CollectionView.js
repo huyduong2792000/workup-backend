@@ -5,7 +5,7 @@ define(function (require) {
 		Gonrin = require('gonrin');
 
 	var template = require('text!./tpl/collection.html'),
-		schema = require('json!schema/TaskCategorySchema.json');
+		schema = require('json!schema/TaskGroupSchema.json');
 
 	var Helpers = require('app/common/Helpers');
 	var TemplateHelper = require('app/common/TemplateHelper');
@@ -14,14 +14,14 @@ define(function (require) {
 		template: template,
 		modelSchema: schema,
 		urlPrefix: "/api/v1/",
-		collectionName: "task_category",
+		collectionName: "task_group",
 		uiControl: {
 			orderBy: [{ field: "created_at", direction: "desc" }],
 
 			fields: [
 				{ field: "name", label: "Tên nhóm" },
 				{ field: "priority", label: "Mức độ" },
-				{ field: "supervisor", label: "Người giám sát" },
+				{ field: "supervisor", label: "Người giám sát" , textField:"full_name"},
 			],
 			onRowClick: function (event) {
 				if (event.rowId) {

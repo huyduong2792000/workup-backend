@@ -5,14 +5,14 @@ define(function (require) {
 		Gonrin = require('gonrin');
 
 	var template = require('text!./tpl/model.html'),
-		schema = require('json!schema/TaskCategorySchema.json');
+		schema = require('json!schema/TaskGroupSchema.json');
 	var Helpers = require('app/common/Helpers');
 	var EmployeeSelectView = require('app/employee/SelectView');
 	return Gonrin.ModelView.extend({
 		template: template,
 		modelSchema: schema,
 		urlPrefix: "/api/v1/",
-		collectionName: "task_category",
+		collectionName: "task_group",
 		uiControl: {
 			fields: [
 				{
@@ -24,7 +24,7 @@ define(function (require) {
 						{ "value": 1, "text": "Highest" },
 						{ "value": 2, "text": "high" },
 						{ "value": 3, "text": "low" },
-						{ "value": 3, "text": "lowest" },
+						{ "value": 4, "text": "lowest" },
 					],
 					value: 2
 				},
@@ -37,7 +37,6 @@ define(function (require) {
 					size: "large",
 					dataSource: EmployeeSelectView
 				},
-
 			],
 		},
 		tools: [{
@@ -137,10 +136,6 @@ define(function (require) {
 				this.model.fetch({
 					success: function (data) {
 						self.applyBindings();
-						self.eventRegister();
-						self.renderTags()
-						self.$el.find('#view_description').show()
-						self.$el.find("#view_tags").show()
 					},
 					error: function () {
 						self.getApp().notify({ message: "Get data Eror" }, { type: "danger" });
@@ -154,72 +149,9 @@ define(function (require) {
 			}
 
 		},
-		getUniqueID: function () {
-			let UID = Date.now() + ((Math.random() * 100000).toFixed())
-			return 'UP' + UID.toUpperCase();
-		},
-		eventRegister: function () {
-			const self = this;
-			var id = this.getApp().getRouter().getParam("id");
-			self.model.on('change:tags', () => {
-				self.renderTags();
-			});
-
-			self.$el.find("#tags_space").unbind("click").bind("click", () => {
-				var tagsEl = self.$el.find("#tags_space");
-				if (!tagsEl.find("#typing").length) {
-					$(`<input id="typing" class="form-control float-left" placeholder="Nhập tags" style="width: 200px;"/>`).appendTo(tagsEl).fadeIn();
-					tagsEl.find("#typing").focus();
-					tagsEl.find("#typing").unbind("keypress").bind("keypress", (event) => {
-						if (event.keyCode == 13) {
-							var val = tagsEl.find("#typing").val();
-							var tags = self.model.get('tags');
-							if (!tags || !Array.isArray(tags)) {
-								tags = [];
-							}
-							var found = false;
-							tags.forEach((item, index) => {
-								if (item == val) {
-									found = true;
-								}
-							});
-							if (!found && val && val.trim()) {
-								tags.push(val);
-
-								self.model.set('tags', tags);
-								self.model.trigger('change:tags');
-							}
-							tagsEl.find("#typing").remove();
-						}
-					});
-				}
-
-			});
-		},
-		renderTags: function () {
-			const self = this;
-			var tagsEl = self.$el.find("#tags_space");
-			tagsEl.empty();
-			var tags = self.model.get('tags');
-			if (tags && Array.isArray(tags)) {
-				tags.forEach((tag, index) => {
-					$(`<span class="bg-warning float-left m-1" style="padding: 3px 10px; border-radius: 3px;">${tag}</span>`).appendTo(tagsEl).fadeIn();
-				});
-			}
-		},
-
 		
 
 		validate: function () {
-			// if (!this.model.get("phone") || !this.model.get("phone").trim()) {
-			// 	this.getApp().notify({ message: "Số điện thoại không thể để trống." }, { type: "danger" });
-			// 	return false;
-			// }
-
-			// if (!this.model.get("contact_name") || !this.model.get("contact_name").trim()) {
-			// 	this.getApp().notify({ message: "Tên khách hàng không thể để trống." }, { type: "danger" });
-			// 	return false;
-			// }
 			return true;
 		}
 	});

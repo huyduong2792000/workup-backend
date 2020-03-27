@@ -27,6 +27,8 @@ def create_task_category(request=None, data=None, **kw):
     if uid is not None:
         data['created_by'] = uid
         data['unsigned_name'] = no_accent_vietnamese(data['name'])
+        data['supervisor_uid'] = data['supervisor']['id']
+
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -52,7 +54,7 @@ def filter_task_category(request=None, search_params=None, **kwargs):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)   
         
-apimanager.create_api(collection_name='task_category', model=TaskCategory,
+apimanager.create_api(collection_name='task_group', model=TaskGroup,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
     url_prefix='/api/v1',
     preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,filter_task_category], POST=[auth_func,create_task_category], PUT_SINGLE=[auth_func,create_task_category], DELETE_SINGLE=[auth_func]),

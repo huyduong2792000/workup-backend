@@ -9,7 +9,7 @@ def init_views(app):
     import application.controllers.task_schedule
     import application.controllers.tasks
     import application.controllers.task_info
-    import application.controllers.task_category
+    import application.controllers.task_group
 
     @app.route('/')
     def index(request):

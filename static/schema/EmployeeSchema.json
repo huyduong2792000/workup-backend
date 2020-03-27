@@ -81,7 +81,7 @@
     "user": {
         "type": "list"
     },
-    "task_categorys": {
+    "task_groups": {
         "type": "list"
     }
 }

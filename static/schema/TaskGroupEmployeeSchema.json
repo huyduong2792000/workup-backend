@@ -22,31 +22,18 @@
     "update_by": {
         "type": "string"
     },
-    "task_code": {
-        "type": "string",
-        "length": 255
-    },
-    "task_name": {
-        "type": "string"
-    },
     "task_group_uid": {
         "type": "string",
-        "required": true
+        "primary": true
     },
-    "unsigned_name": {
-        "type": "string"
-    },
-    "description": {
-        "type": "string"
-    },
-    "tags": {
-        "type": "json"
-    },
-    "active": {
-        "type": "number",
-        "default": 1
+    "employee_uid": {
+        "type": "string",
+        "primary": true
     },
     "task_group": {
+        "type": "dict"
+    },
+    "employee": {
         "type": "dict"
     }
 }

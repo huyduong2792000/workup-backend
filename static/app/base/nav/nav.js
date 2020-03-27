@@ -106,9 +106,9 @@ define(function (require) {
                 {
                     "text": "Nhóm công việc",
                     "type": "view",
-                    "collectionName": "task_category",
-                    "route": "task_category/collection",
-                    "$ref": "app/task_category/CollectionView",
+                    "collectionName": "task_group",
+                    "route": "task_group/collection",
+                    "$ref": "app/task_group/CollectionView",
                     "icon": "<i class='fa fa-cog'></i>",
                     "visible": function () {
                         return true;
@@ -116,9 +116,9 @@ define(function (require) {
                 },
                 {
                     "type": "view",
-                    "collectionName": "task_category",
-                    "route": "task_category/model(/:id)",
-                    "$ref": "app/task_category/ModelView",
+                    "collectionName": "task_group",
+                    "route": "task_group/model(/:id)",
+                    "$ref": "app/task_group/ModelView",
                     "visible": false
                 },
                 
