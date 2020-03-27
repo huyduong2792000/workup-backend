@@ -21,10 +21,7 @@ define(function (require) {
 			fields: [
 				{ field: "task_code", label: "Mã công việc" },
 				{ field: "task_name", label: "Tên công việc" },
-				// { field: "tags", label: "Tags" },
-				{ field: "description", label: "Mô tả" },
-				// { field: "original_estimate", label: "Thời gian ước tính(phút)" },
-
+				{ field: "task_group", label: "Nhóm công việc", textField:"name" },
 				{
 					field: "active",
 					label: "Trạng thái",

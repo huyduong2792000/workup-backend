@@ -27,6 +27,7 @@ def create_taskinfo(request=None, data=None, **kw):
     if uid is not None:
         data['created_by'] = uid
         data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
+        data['task_group_uid'] = data['task_group']['id']
     else:
         return json({
             "error_code": "USER_NOT_FOUND",

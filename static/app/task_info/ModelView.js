@@ -9,8 +9,8 @@ define(function (require) {
 	var Helpers = require('app/common/Helpers');
 	var EmployeeSelectView = require('app/employee/SelectView');
 	var SubEmployeeSelectView = require('app/employee/SelectView');
-	// var NoteView = require('app/tasks/NoteView');
-	// var ContactAttributeView = require('app/contact/ContactAttributeView');
+	var TaskGroupSelectView = require('app/task_group/SelectView');
+
 
 	return Gonrin.ModelView.extend({
 		template: template,
@@ -31,7 +31,15 @@ define(function (require) {
 					],
 					value: 1
 				},
-				
+				{
+					field: "task_group",
+					uicontrol: "ref",
+					textField: "name",
+					selectionMode: "single",
+					foreignRemoteField: "id",
+					size: "large",
+					dataSource: TaskGroupSelectView
+				},
 
 			],
 		},

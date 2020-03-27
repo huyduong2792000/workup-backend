@@ -9,7 +9,7 @@ from application.models.model import User, Role,Employee
 from application.controllers import auth_func
 from sqlalchemy import and_, or_
 from gatco_restapi.helpers import to_dict
-
+import re
  
 def response_userinfo(user, **kw):
     if user is not None:
@@ -38,7 +38,7 @@ async def user_login(request):
     password = param.get("password")
     print(user_name, password)
     if (user_name is not None) and (password is not None):
-        user = db.session.query(User).filter(User.user_name == user_name).first()
+        user = getUser(user_name)
         if (user is not None) and auth.verify_password(password, user.password, user.salt):
             try:
                 user.employee.status = 'online'
@@ -55,6 +55,18 @@ async def user_login(request):
         return json({"error_code": "PARAM_ERROR", "error_message": "param error"}, status=520)
     return text("user_login api")
 
+def getUser(user_name):
+    if(checkIsPhoneNumber(user_name) is True):
+        user = db.session.query(User).filter(User.phone_number == user_name).first()
+    else:
+        user = db.session.query(User).filter(User.user_name == user_name).first()
+    return user
+def checkIsPhoneNumber(phone):
+    x = re.search("^(09|08|07|05|03)+[0-9]{8}", phone)
+    if(x):
+        return True
+    else:
+        return False
 @app.route("/logout", methods=["GET"])
 async def user_logout(request):
     uid = auth.current_user(request)
