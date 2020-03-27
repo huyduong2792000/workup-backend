@@ -9,6 +9,8 @@ def init_views(app):
     import application.controllers.task_schedule
     import application.controllers.tasks
     import application.controllers.task_info
+    import application.controllers.task_category
+
     @app.route('/')
     def index(request):
         #return text("Index")

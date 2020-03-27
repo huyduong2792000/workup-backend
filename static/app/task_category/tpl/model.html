@@ -1,0 +1,79 @@
+<style>
+	form {
+		margin: 20px 0;
+	}
+
+	form input,
+	button {
+		padding: 5px;
+	}
+
+	table {
+		width: 100%;
+		margin-bottom: 20px;
+		border-collapse: collapse;
+	}
+
+	table,
+	th,
+	td {
+		border: 1px solid #cdcdcd;
+	}
+
+	table th,
+	table td {
+		padding: 10px;
+		text-align: left;
+	}
+
+</style>
+<div block-bind="content" style="padding: 20px 15px;">
+	<div class="card">
+		<div class="card-body">
+			<div class="row">
+				<div class="col-12 mt-2 mb-4">
+					<div block-bind="toolbar"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<h5 class="text-uppercase">Chi tiết nhóm công việc</h5>
+				</div>
+			</div>
+			<div class="row">
+
+				<div class="col-lg-6 col-md-6 col-sm-12 col-12 float-left">
+					<label class="text-uppercase">Tên nhóm *</label>
+					<div>
+						<input class="form-control" type="text" id="name" data-bind="value:name"/>
+					</div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-12 float-left" >
+					<label class="text-uppercase">Mức độ </label>
+					<div>
+						<input class="form-control" type="text" data-bind="value:priority" />
+					</div>
+				</div>
+
+			</div>
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-12 float-left" >
+					<label class="text-uppercase">Người giám sát </label>
+					<div>
+						<input class="form-control" type="text" data-bind="dict:supervisor" />
+					</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-12 float-left" id="view_description" style="display: none;">
+					<div class="text-uppercase">Mô tả</div>
+					<div>
+						<textarea name="" id="" cols="30" rows="3" data-bind="value:description" style="min-height: 80px;
+						border: 1px solid #ccc;
+						border-radius: 6px;
+						margin-top: 5px;"></textarea>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>

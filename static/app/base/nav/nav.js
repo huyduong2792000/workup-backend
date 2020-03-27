@@ -103,7 +103,24 @@ define(function (require) {
                     "$ref": "app/task_info/ModelView",
                     "visible": false
                 },
-                
+                {
+                    "text": "Nhóm công việc",
+                    "type": "view",
+                    "collectionName": "task_category",
+                    "route": "task_category/collection",
+                    "$ref": "app/task_category/CollectionView",
+                    "icon": "<i class='fa fa-cog'></i>",
+                    "visible": function () {
+                        return true;
+                    }
+                },
+                {
+                    "type": "view",
+                    "collectionName": "task_category",
+                    "route": "task_category/model(/:id)",
+                    "$ref": "app/task_category/ModelView",
+                    "visible": false
+                },
                 
             ]
         },

@@ -34,8 +34,11 @@
     "priority": {
         "type": "number"
     },
-    "supervisor": {
+    "supervisor_uid": {
         "type": "string",
         "required": true
+    },
+    "supervisor": {
+        "type": "dict"
     }
 }
