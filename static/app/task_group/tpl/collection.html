@@ -20,10 +20,14 @@
                         <input type="search" name="search" class="form-control" placeholder="Search &amp; enter" id="data-search" />
                     </div>
                     <div class="ml-auto" style="padding-right: 10px;">
-                        <select class="custom-select b-0" id="filter-data-by-status">
-                            <option value="2">All</option>
-                            <option value="1">Active</option>
-                            <option value="0">Deactive</option>
+                        <select class="custom-select b-0" id="filter-data-by-priority">
+                            <!-- {1: highest, 2: high, 3: low, 4: lowest} -->
+                            <option value="0">Tất cả</option>
+                            <option value="1">Rất cao</option>
+                            <option value="2">Cao</option>
+                            <option value="3">Thấp</option>
+                            <option value="4">Rất thấp</option>
+
                         </select>
                     </div>
 

@@ -38,14 +38,14 @@ define(function (require) {
 			return self;
 
 		},
-		registerEvent: function () {
+		registerEvent: function(){
 			var self = this;
 			self.$el.find('#data-search').keypress(function (e) {
 				if (e.which == '13') {
 					self.setupFilter();
 				}
 			});
-			var filter_data = self.$el.find("#filter-data-by-status");
+			var filter_data = self.$el.find("#filter-data-by-priority");
 			filter_data.on("change", function () {
 				self.setupFilter();
 			});
@@ -55,17 +55,14 @@ define(function (require) {
 		},
 		setupFilter: function () {
 			var self = this;
-			let search_data = self.$el.find("#data-search").val();
-			let active = self.$el.find("#filter-data-by-status").val();
-			if (search_data != null) {
-
-				if (active != "2") {
-					self.getCollectionElement().data("gonrin").filter({ "$and": [{ "active": { "$eq": active } }, { "$or": [{ "task_name": { "$like": search_data } }, { "task_code": { "$like": search_data } }] }] });
-				} else {
-					self.getCollectionElement().data("gonrin").filter({ "$and": [{ "$or": [{ "task_name": { "$like": search_data } }, { "task_code": { "$like": search_data } }] }] });
-				}
+			let search_data = Helpers.replaceToAscii(self.$el.find("#data-search").val());
+			let priority = self.$el.find("#filter-data-by-priority").val();
+			console.log(priority)
+			if(priority !="0"){
+				self.getCollectionElement().data("gonrin").filter({ "$and": [{ "priority": { "$eq": priority } }, { "unsigned_name": { "$likeI": search_data.toLowerCase() } }] });
+			}else{
+				self.getCollectionElement().data("gonrin").filter({ "$and": [{ "unsigned_name": { "$likeI": search_data.toLowerCase() } }] });
 			}
-
 		}
 
 	});
