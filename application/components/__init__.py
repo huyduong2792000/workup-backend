@@ -3,20 +3,24 @@ from gatco.response import text, json
 from application.extensions import jinja, auth
 
 
+
 def init_views(app):
-    import application.controllers.user
-    import application.controllers.apimanger
-    import application.controllers.task_schedule
-    import application.controllers.tasks
-    import application.controllers.task_info
-    import application.controllers.task_group
+    import application.components.user.api
+    import application.components.organization.api
+
+    import application.components.user
+    import application.components.apimanger
+    import application.components.task_schedule
+    import application.components.tasks
+    import application.components.task_info
+
 
     @app.route('/')
     def index(request):
         #return text("Index")
         return jinja.render('index.html', request)
-    
-    
+
+
 def auth_func(request=None, **kw):
     pass
     uid = auth.current_user(request)
@@ -24,4 +28,3 @@ def auth_func(request=None, **kw):
         pass
     else:
         json({"error": "current user not found"})
- 

@@ -19,7 +19,7 @@ from application.extensions import auth
 from application.models.model import User, Role
 import math
 
-from application.controllers.task_schedule import runSchedule
+from application.components.task_schedule import runSchedule
 from threading import Thread
 
 

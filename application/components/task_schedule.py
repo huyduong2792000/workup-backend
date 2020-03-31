@@ -6,7 +6,7 @@ import random
 import string
 from application.extensions import apimanager
 from application.models.model import User, Tasks,TaskSchedule
-from application.controllers import auth_func
+from application.components import auth_func
 from sqlalchemy import and_, or_
 from math import floor
 from datetime import datetime
