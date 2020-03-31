@@ -1,9 +1,13 @@
 from application.extensions import apimanager
 from application.models.model import *
+from application.server import app
 from gatco.exceptions import ServerError
 from application.components.user import *
 from application.components.salary import *
 from application.components import auth_func
+from application.extensions import auth
+from gatco.response import text, json
+
 import re
 def no_accent_vietnamese(s):
     s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
@@ -27,6 +31,7 @@ def create_taskinfo(request=None, data=None, **kw):
     if uid is not None:
         data['created_by'] = uid
         data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
+        data['task_group_uid'] = data['task_group']['id']
     else:
         return json({
             "error_code": "USER_NOT_FOUND",

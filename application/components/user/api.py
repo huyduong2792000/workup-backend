@@ -5,7 +5,9 @@ from application.extensions import auth
 import random
 import string
 from application.extensions import apimanager
-from application.models.model import User, Role, Employee
+from application.models.model import  Employee
+from application.components.user.model import User, Role
+
 from application.components import auth_func
 from sqlalchemy import and_, or_
 from gatco_restapi.helpers import to_dict
@@ -56,7 +58,6 @@ async def user_login(request):
     else:
         return json({"error_code": "PARAM_ERROR", "error_message": "param error"}, status=520)
     return text("user_login api")
-
 
 @app.route("/logout", methods=["GET"])
 async def user_logout(request):
