@@ -7,7 +7,9 @@ define(function (require) {
 	var template = require('text!./tpl/model.html'),
 		schema = require('json!schema/EmployeeSchema.json');
 	var Helpers = require('app/common/Helpers');
-
+	var TaskGroupSelectView = require('app/task_group/SelectView');
+	var GroupView = require('./GroupView')
+	
 
 	return Gonrin.ModelView.extend({
 		template: template,
@@ -37,6 +39,15 @@ define(function (require) {
 						{ id: 0, text: "Nữ" },
 
 					]
+				},
+				{
+					field: "task_groups",
+					uicontrol: "ref",
+					textField: "name",
+					selectionMode: "multiple",
+					foreignRemoteField: "id",
+					size: "large",
+					dataSource: TaskGroupSelectView
 				},
 				
 			]
@@ -140,7 +151,7 @@ define(function (require) {
             } else if (self.model.get("birthday")) {
                 birthday = moment(self.model.get("birthday"), "DD/MM/YYYY");
 			}
-			
+			self.eventTabs()
             // self.$el.find('#birthday').datetimepicker({
             //     defaultDate: birthday,
             //     format: "DD/MM/YYYY",
@@ -158,6 +169,33 @@ define(function (require) {
             // });
 
 
+		},
+		eventTabs:function () {
+			var self = this;
+			let data_tab_mygroup;
+			self.$el.find("#mygroup").click(function (){
+				self.$el.find("#myinfo").removeClass('active-tab')
+				$(this).addClass('active-tab')
+				self.$el.find("#card-content-info").hide()
+				if(data_tab_mygroup == undefined){
+					self.$el.find("#card-content-group").show()
+					var group_view = new GroupView(
+						{el:self.$el.find("#card-content-group"),
+						groups:self.model.get('task_groups'),
+						id_employee:self.model.get('id')})
+						self.$el.find("#card-content-group").append(group_view.render().$el)
+					data_tab_mygroup = self.$el.find("#card-content-group").children()
+				}else{
+					self.$el.find("#card-content-group").show()
+					self.$el.find("#card-content-group").append(data_tab_mygroup)
+				}
+			})
+			self.$el.find("#myinfo").click(function (){
+				$(this).addClass('active-tab')
+				self.$el.find("#mygroup").removeClass('active-tab')
+				self.$el.find("#card-content-group").hide()
+				self.$el.find("#card-content-info").show()
+			})
 		},
 		renderValidate:function(check,field_validate,field_invalid){
 			var self = this

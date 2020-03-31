@@ -170,7 +170,7 @@ require([
             }
             this.profileArea = new ProfileAreaView({ el: $('body').find('#profile-area') });
             this.profileArea.render();
-            self.router.navigate("index");
+            self.router.navigate("employee/model?id=98adba99-471d-41b9-a431-104dd0128a50");
             // this.renderTheme(self.currentUser.config_data);
         },
 
