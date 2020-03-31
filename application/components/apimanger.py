@@ -1,9 +1,9 @@
 from application.extensions import apimanager
 from application.models.model import *
 from gatco.exceptions import ServerError
-from application.controllers.user import *
-from application.controllers.salary import *
-from application.controllers import auth_func
+from application.components.user import *
+from application.components.salary import *
+from application.components import auth_func
 
 apimanager.create_api(collection_name='timesheet', model=TimeSheet,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
