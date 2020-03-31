@@ -5,7 +5,9 @@ from application.extensions import auth
 import random
 import string
 from application.extensions import apimanager
-from application.models.model import User, Role, Employee
+from application.models.model import  Employee
+from application.components.user.model import User, Role
+
 from application.components import auth_func
 from sqlalchemy import and_, or_
 from gatco_restapi.helpers import to_dict

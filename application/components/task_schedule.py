@@ -5,8 +5,10 @@ from application.extensions import auth
 import random
 import string
 from application.extensions import apimanager
-from application.models.model import User, Tasks,TaskSchedule
+from application.models.model import Tasks,TaskSchedule
 from application.components import auth_func
+from application.extensions import auth
+
 from sqlalchemy import and_, or_
 from math import floor
 from datetime import datetime

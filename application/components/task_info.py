@@ -1,9 +1,13 @@
 from application.extensions import apimanager
 from application.models.model import *
+from application.server import app
 from gatco.exceptions import ServerError
 from application.components.user import *
 from application.components.salary import *
 from application.components import auth_func
+from application.extensions import auth
+from gatco.response import text, json
+
 import re
 def no_accent_vietnamese(s):
     s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)

@@ -13,6 +13,7 @@ def init_views(app):
     import application.components.task_schedule
     import application.components.tasks
     import application.components.task_info
+    import application.components.task_group
 
 
     @app.route('/')

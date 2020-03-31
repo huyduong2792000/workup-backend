@@ -13,6 +13,7 @@ from sqlalchemy.orm import relationship, backref
 
 from application.database import db
 from application.database.model import CommonModel, default_uuid
+from application.components.organization.model import *
 
 class TasksEmployees(CommonModel):
     __tablename__ = 'tasks_employees'
