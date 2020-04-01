@@ -26,13 +26,18 @@ def createTasks():
     start_day_timestamp = datetime.timestamp(start_day)
     
     end_day_timestamp = datetime.timestamp(end_day)
+
     task_schedules = db.session.query(TaskSchedule).filter(and_(TaskSchedule.active==1,TaskSchedule.deleted == False\
-                                                                ,TaskSchedule.start_time_working <= start_day_timestamp,TaskSchedule.end_time_working >= start_day_timestamp)).all()
+    ,or_(
+        (and_(TaskSchedule.start_time_working <= start_day_timestamp,TaskSchedule.end_time_working >= start_day_timestamp)),
+        (and_(TaskSchedule.start_time_working >= start_day_timestamp,TaskSchedule.start_time_working <= end_day_timestamp))
+    ))).all()
     for task_schedule in task_schedules:
         list_day_of_week = getListDayOfWeek(task_schedule.day_of_week)
         dayindex_today = getDayindexToday()
         check = CheckIndexTodayInList(dayindex_today,list_day_of_week)
         if (check is True):
+            print('clone process')
             for task in task_schedule.Tasks:
                 new_task = Tasks()
                 new_task.status = 0
@@ -41,6 +46,8 @@ def createTasks():
                 new_task.task_code = task.task_code
                 new_task.task_name = task.task_name
                 new_task.unsigned_name = task.unsigned_name
+                new_task.task_info_uid = task.id
+                new_task.task_info = task
                 # new_task.parent_code = task.parent_code
                 # new_task.priority = task.priority
                 # new_task.attach_file = task.attach_file

@@ -9,6 +9,7 @@ def init_views(app):
     import application.components.organization.api
 
     import application.components.user
+    import application.components.organization
     import application.components.apimanger
     import application.components.task_schedule
     import application.components.tasks
