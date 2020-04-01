@@ -56,7 +56,7 @@ def createTasks():
                 new_task.description = task.description
                 new_task.tags = task.tags
                 new_task.start_time = start_day_timestamp
-                # new_task.end_time = end_day_timestamp
+                new_task.end_time = end_day_timestamp
                 db.session.add(new_task)
         else:
             pass

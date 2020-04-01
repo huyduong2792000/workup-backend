@@ -18,12 +18,12 @@ define(function (require) {
 		uiControl: {
 			orderBy: [{ field: "created_at", direction: "desc" }],
 			fields: [
-				{ field: "full_name", label: "Tên nhân viên" },
+				{ field: "full_name", label: "Tên nhân viên" ,width:150},
 				{ field: "email", label: "Email" },
 				{ field: "birthday", label: "Sinh nhật" },
 				{ field: "phone_number", label: "Điện thoại" },
 				{ field: "id_identifier", label: "Số CMND" },
-				{ field: "avatar_url", label: "ẢNH ĐẠI DIỆN", visible: true, template: '<img src="{{avatar_url}}" alt="" style="max-height:60px">', width: 150 },
+				{ field: "avatar_url", label: "ẢNH ĐẠI DIỆN", visible: true, template: '<img src="{{avatar_url}}" alt="" style="max-height:60px">'},
 				{ field: "position", label: "Chức vụ" },
 				{
 					field: "start_time", label: "Thời gian bắt đầu", template: function (rowObj) {

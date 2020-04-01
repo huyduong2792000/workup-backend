@@ -137,7 +137,7 @@ define(function (require) {
 			let filters = self.uiControl.filters||{}
 			let order_by = self.uiControl.orderBy||{}
 			let query = {"filters":filters,"order_by":order_by}
-			var url =  self.urlPrefix+ self.collectionName + `?page=${page}&results_per_page=10&q=${JSON.stringify(query)}`
+			var url = self.getApp().serviceURL +  self.urlPrefix+ self.collectionName + `?page=${page}&results_per_page=10&q=${JSON.stringify(query)}`
 			return url
 		},
 		eventRegister:function () {
