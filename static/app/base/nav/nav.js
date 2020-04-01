@@ -32,7 +32,7 @@ define(function (require) {
                     }
                 },
                 {
-                    "text": "Tạo và phần công",
+                    "text": "Tạo và phân công",
                     "type": "view",
                     "collectionName": "tasks",
                     "route": "tasks/collection",
