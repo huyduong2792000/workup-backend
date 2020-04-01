@@ -97,7 +97,7 @@ class Tasks(CommonModel):
     link_issue = db.Column(String(255))
     original_estimate = db.Column(Integer) # minute unit 
     start_time = db.Column(BigInteger(), index=True, nullable=False)
-    end_time = db.Column(BigInteger(), index=True, nullable=False)
+    end_time = db.Column(BigInteger(), index=True, nullable=True)
     status = db.Column(SmallInteger, index=True, default=0) # {0: todo, "2: processing ", "1: done"}
     rating = db.Column(SmallInteger)
     comments = db.Column(JSONB())

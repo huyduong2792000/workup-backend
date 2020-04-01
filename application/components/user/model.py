@@ -28,7 +28,7 @@ class User(CommonModel):
     user_name = db.Column(String(255), nullable=False, index=True)
     full_name = db.Column(String(255), nullable=True)
     email = db.Column(String(255), nullable=False, index=True)
-    phone_number = db.Column(String(255), nullable=False, index=True)
+    phone_number = db.Column(String(255), nullable=False, index=True,unique=True)
     password = db.Column(String(255), nullable=False)
     salt = db.Column(String(255), nullable=False)
 

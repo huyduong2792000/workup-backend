@@ -67,8 +67,7 @@
         "required": true
     },
     "end_time": {
-        "type": "",
-        "required": true
+        "type": ""
     },
     "status": {
         "type": "number",
