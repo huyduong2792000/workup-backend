@@ -192,7 +192,7 @@ def user_register(request=None, Model=None, result=None, **kw):
     letters = string.ascii_lowercase
     user_salt = ''.join(random.choice(letters) for i in range(64))
     user_password = auth.encrypt_password(password, user_salt)
-    user = User(email=param['email'], password=user_password, salt=user_salt,
+    user = User(email=param['email'], password=user_password, salt=user_salt,employee_uid=result['id'],
                 user_name=param['email'],  phone_number=param['phone_number'],  full_name=param['full_name'])
     if (param['position'] == 'employee' or param['position'] is None):
         user.roles = [role_employee]

@@ -92,9 +92,9 @@ def filter_task_group(request=None, search_params=None, **kwargs):
                 search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
                 search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
             else:
-                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"deleted":{"$eq": False} } ]
+                search_params["filters"]['$and'] = [{"deleted":{"$eq": False} } ]
         else:
-            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}},{"deleted":{"$eq": False}}]}
+            search_params["filters"] = {'$and':[{"deleted":{"$eq": False}}]}
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -166,8 +166,8 @@ def convertTaskToday(tasks_today):
             "unsigned_name":task_groupby['group'].unsigned_name,
             "description":task_groupby['group'].description,
             "priority":task_groupby['group'].priority,
-            "supervisor_uid":task_groupby['group'].supervisor_uid,
-            "supervisor":task_groupby['group'].supervisor,
+            "supervisor_uid":str(task_groupby['group'].supervisor_uid),
+            "supervisor":validEmployee(task_groupby['group'].supervisor),
             "created_by": str(task_groupby['group'].created_by),
             "tasks":[]
         }
@@ -177,7 +177,7 @@ def convertTaskToday(tasks_today):
             "task_uid": str(task.id),
             "task_code": task.task_code,
             "task_name": task.task_name,
-            "employee": task.employees,
+            "employee": [validEmployee(employee) for employee in task.employees],
             "start_time": task.start_time,
             "end_time": task.end_time,
             "status": task.status,
@@ -186,7 +186,6 @@ def convertTaskToday(tasks_today):
             }
             group_result['tasks'].append(obj)
         groups_result.append(group_result)
-    print(groups_result)
     return groups_result
 def groupbyTaskToday(tasks_today):
     #tasks_today:
@@ -210,3 +209,12 @@ def findIndex(task_today, tasks_groupby):
         if task_groupby['group'].id == task_today[1].task_group.id:
             return tasks_groupby.index(task_groupby)
     return -1
+def validEmployee(employee):
+    result = employee.__dict__
+    key_remove = ['_sa_instance_state','task_groups',"created_at", "created_by",
+     "updated_at", "updated_by",'deleted_at']
+    for key in key_remove:
+            if key in result:
+                del(result[key])
+    result['id'] = str(result['id'])    
+    return result
