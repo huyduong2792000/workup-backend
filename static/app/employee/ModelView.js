@@ -103,15 +103,18 @@ define(function (require) {
 						// visible: function(){
 						// 	return this.getApp().getRouter().getParam("id") !== null;
 						// },
+						
 						command: function () {
 							var self = this;
-							self.model.destroy({
-								success: function (model, response) {
-									self.getApp().notify('Xoá dữ liệu thành công');
-									self.getApp().getRouter().navigate(self.collectionName + "/collection");
+							self.model.set({'deleted':true})
+							self.model.save(null, {
+								success: function (model, respose, options) {
+									self.getApp().notify("Xoá dữ liệu thành công", { type: "info" });
+									var path = self.collectionName + '/collection';
+									self.getApp().getRouter().navigate(path);
 								},
 								error: function (model, xhr, options) {
-									self.getApp().notify('Xoá dữ liệu không thành công!');
+									self.getApp().notify('Xoá dữ liệu không thành công!!', { type: "warning" });
 
 								}
 							});

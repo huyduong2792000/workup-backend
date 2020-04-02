@@ -230,7 +230,7 @@ def update_user(request=None, Model=None, result=None, **kw):
     db.session.add(employee)
 
     db.session.commit()
-
+   
 
 apimanager.create_api(collection_name='user', model=User,
                       methods=['GET', 'POST', 'DELETE', 'PUT'],
@@ -252,25 +252,73 @@ apimanager.create_api(collection_name='role', model=Role,
                       )
 
 
+import re
+def no_accent_vietnamese(s):
+    s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
+    s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
+    s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
+    s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
+    s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
+    s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
+    s = re.sub(r'[ìíịỉĩ]', 'i', s)
+    s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
+    s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
+    s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
+    s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
+    s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
+    s = re.sub(r'[Đ]', 'D', s)
+    s = re.sub(r'[đ]', 'd', s)
+    return s
+
+def create_employee(request=None, data=None, **kw):
+    uid = auth.current_user(request)
+    if uid is not None:
+        data['created_by'] = uid
+        data['full_name_unsigned'] = no_accent_vietnamese(data['full_name'])
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+    
+def filter_employee(request=None, search_params=None, **kwargs):
+    uid = auth.current_user(request)
+    if uid is not None:
+        if 'filters' in search_params:
+            filters = search_params["filters"]
+            if "$and" in filters:
+                # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
+                search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
+            else:
+                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"deleted":{"$eq": False} } ]
+        else:
+            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}},{"deleted":{"$eq": False}}]}
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)   
+        
 apimanager.create_api(collection_name='employee', model=Employee,
                       methods=['GET', 'POST', 'DELETE', 'PUT'],
                       url_prefix='/api/v1',
-                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[
-                                      auth_func, valid_employe], PUT_SINGLE=[auth_func, valid_employe], DELETE_SINGLE=[auth_func]),
+                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,filter_employee], POST=[
+                                      auth_func, valid_employe,create_employee], PUT_SINGLE=[auth_func, valid_employe], DELETE_SINGLE=[auth_func]),
                       postprocess=dict(POST=[user_register], PUT_SINGLE=[
                           update_user], DELETE_SINGLE=[], GET_MANY=[])
                       )
 
-
-@app.route('/filter_employee', methods=["GET", "OPTIONS"])
-def filter_employee(request):
-    employees = db.session.query(Employee).all()
-    data_resp = []
-    for employee in employees:
-        employee = employee.__dict__
-        obj = {"id": str(employee['id']),
-               "full_name": employee['full_name'],
-               "email": employee['email']
-               }
-        data_resp.append(obj)
-    return json(data_resp)
+# @app.route('/filter_employee', methods=["GET", "OPTIONS"])
+# def filter_employee(request):
+#     employees = db.session.query(Employee).all()
+#     data_resp = []
+#     for employee in employees:
+#         employee = employee.__dict__
+#         if(employee['deleted'] is False):
+#             obj = {"id": str(employee['id']),
+#                 "full_name": employee['full_name'],
+#                 "email": employee['email']
+#                 }
+#             data_resp.append(obj)
+#     return json(data_resp)

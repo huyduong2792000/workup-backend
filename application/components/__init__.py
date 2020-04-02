@@ -16,7 +16,6 @@ def init_views(app):
     import application.components.task_info
     import application.components.task_group
 
-
     @app.route('/')
     def index(request):
         #return text("Index")
