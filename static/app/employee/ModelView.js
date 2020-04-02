@@ -106,8 +106,8 @@ define(function (require) {
 						
 						command: function () {
 							var self = this;
-							self.model.set({'deleted':true})
-							self.model.save(null, {
+							// self.model.set({'deleted':true})
+							self.model.destroy({
 								success: function (model, respose, options) {
 									self.getApp().notify("Xoá dữ liệu thành công", { type: "info" });
 									var path = self.collectionName + '/collection';

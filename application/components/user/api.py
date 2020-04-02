@@ -251,8 +251,6 @@ apimanager.create_api(collection_name='role', model=Role,
                                        DELETE_SINGLE=[], GET_MANY=[])
                       )
 
-
-import re
 def no_accent_vietnamese(s):
     s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
     s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
