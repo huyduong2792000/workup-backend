@@ -304,7 +304,7 @@ apimanager.create_api(collection_name='employee', model=Employee,
                       methods=['GET', 'POST', 'DELETE', 'PUT'],
                       url_prefix='/api/v1',
                       preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,filter_employee], POST=[
-                                      auth_func, valid_employe,create_employee], PUT_SINGLE=[auth_func, valid_employe], DELETE_SINGLE=[auth_func]),
+                                      auth_func, valid_employe,create_employee], PUT_SINGLE=[auth_func, valid_employe,create_employee], DELETE_SINGLE=[auth_func]),
                       postprocess=dict(POST=[user_register], PUT_SINGLE=[
                           update_user], DELETE_SINGLE=[], GET_MANY=[])
                       )
