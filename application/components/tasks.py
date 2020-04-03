@@ -259,3 +259,23 @@ async def tasks_employees(request):
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
+
+@app.route('api/v1/task_change_employee', methods=["PUT"])
+async def task_change_employee(request):
+    uid = auth.current_user(request)
+    task_id = request.args.get('id',None)
+    method_change_employee = request.args.get('method',None)
+
+    task =  db.session.query(Tasks).filter(Tasks.id == task_id).first()
+    user = db.session.query(User).filter(User.id == uid).first()
+    print(user.__dict__)
+    list_employee = list(task.employees)
+    if method_change_employee == "add_employee":
+        list_employee.append(user.employee if user.employee else {})
+    else:
+        for i in range(len(list_employee)):
+            if(str(list_employee[i].id) == str(user.employee.id)):
+                list_employee.pop(i)
+    task.employees = list_employee
+    db.session.add(task)
+    db.session.commit()

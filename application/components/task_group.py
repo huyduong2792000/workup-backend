@@ -120,9 +120,14 @@ async def getTaskToday(request):
         
         list_group_uid = []
         user = db.session.query(User).filter(User.id == uid).first()
-        task_groups = user.employee.task_groups
+        if(checkHasRoleAdmin(user.roles) is True):
+            task_groups = db.session.query(TaskGroup).filter(TaskGroup.deleted == False).all()
+        else:
+            task_groups = user.employee.task_groups
+
         for task_group in task_groups:
-            list_group_uid.append(task_group.id)
+            if(task_group.deleted is False):
+                list_group_uid.append(task_group.id)
         if start_time is None and end_time is None:
             now = datetime.now()
             start_day = datetime(year=now.year, month=now.month,day=now.day,
@@ -147,14 +152,17 @@ async def getTaskToday(request):
                 or_(Tasks.end_time <= end_time,Tasks.end_time == None ),
                 TaskInfo.task_group_uid.in_(list_group_uid)
                 )).all()
-        
         return json(convertTaskToday(tasks_today))
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
-
+def checkHasRoleAdmin(roles):
+    for role in roles:
+        if role.role_name =="admin":
+            return True
+    return False
 def convertTaskToday(tasks_today):
     tasks_groupby = groupbyTaskToday(tasks_today)
     group_result = {}
@@ -198,16 +206,13 @@ def groupbyTaskToday(tasks_today):
         if index_task_today_in_tasks_groupby != -1:
             tasks_groupby[index_task_today_in_tasks_groupby]['tasks'].append(task_today[0])
         else:
-            obj['group'] = task_today[1].task_group
-            obj['tasks'] = []
-            obj['tasks'].append(task_today[0])
-            tasks_groupby.append(obj)
+            tasks_groupby.append({"group":task_today[1].task_group,"tasks":[task_today[0]]})
     return tasks_groupby
 
 def findIndex(task_today, tasks_groupby):
-    for task_groupby in tasks_groupby:
-        if task_groupby['group'].id == task_today[1].task_group.id:
-            return tasks_groupby.index(task_groupby)
+    for index,task_groupby in enumerate(tasks_groupby,start=0):
+        if str(task_groupby['group'].id) == str(task_today[1].task_group_uid):
+            return index
     return -1
 def validEmployee(employee):
     result = employee.__dict__
