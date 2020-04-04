@@ -1,0 +1,108 @@
+<!-- <div id="filter" style="width: 100%"></div>
+<div block-bind="toolbar"></div>
+<div id="grid" data-bind='collection:$collection'></div> -->
+
+<style>
+        .header-order-view {
+            height: 50px;
+            /* background-color: #e6e6e6; */
+        }
+        .div-search-salesorder {
+            /* margin: 10px; */
+            /* margin-top: 10px; */
+            padding-top: 10px;
+            /* margin-left: -8px; */
+        }
+        .input-search-salesorder {
+            height: 29px;
+            border: none;
+            font-size: 13px;
+            position: relative;
+            border-radius: 20px;
+        }
+        .input-search-salesorder::placeholder {
+            /* color: red; */
+            padding-left: 14px;
+        }
+        .grid #tasks-collection table{
+            width: 100%;
+        }
+        .active-tab{
+            background-color: #315294;
+            color: white!important
+        };
+    </style>
+    <div class="card">
+        <div class="card-body py-0">
+            <!-- <div class="row mt-2">
+                <div class="col-12 ">
+                    <div block-bind="toolbar"></div>
+                </div>
+            </div> -->
+            <div class="row border border-primary  mt-3 mb-0">
+                <div class="col-6 col-md-6 bg-light text-center  p-0">
+                    <a class="nav-link active-tab" id="groups-tab">Group </a>
+                </div>
+                <div class="col-6 col-md-6 bg-light text-center  p-0">
+                    <a class="nav-link" id="mytasks-tab">Việc của tôi</a>
+                </div>
+            </div>
+            
+        </div>
+        <div class="card-body" style="padding: 0px 5px; overflow: hidden;" id="groups-tab-data">
+            <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+                <nav class="history-sidebar">
+                    <div id="history_view hide" style="color: #333; height: calc(100vh); overflow-y: scroll;">
+                    </div>
+                </nav>
+            </div> -->
+            <!-- HEADER  -->
+            <div class="row div-search-salesorder">
+                <div class="col-md-12 col-sm-12 col-12">
+                    <div id="filter"></div>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-md-1 col-sm-1 col-1">
+                    <button id="btn_tasks_filter" class="btn btn-warning btn-sm float-left">
+                        <i class="fas fa-filter"></i> Lọc
+                    </button>
+                </div>  
+                <div class="col-md-11 col-sm-11 col-11 justify-content-end d-flex">
+                    <div class="form-check-inline" style="line-height: 34px;">
+                        <label class="form-check-label px-0">
+                            <input type="checkbox" id="btn_filter_done" class="filled-in chk-col-green" value="1"> Đã làm
+                        </label>
+                    </div>
+                    <div class="form-check-inline " style="line-height: 34px;">
+                        <label class="form-check-label px-0">
+                            <input type="checkbox" id="btn_filter_inprocess" class="filled-in chk-col-green" value="2"> Đang làm
+                        </label>
+                    </div>
+                    <div class="form-check-inline" style="line-height: 34px;">
+                        <label class="form-check-label px-0">
+                            <input type="checkbox" id="btn_filter_pending" class="filled-in chk-col-green" value="0"> Chờ người
+                        </label>
+                    </div>
+                </div>
+            </div>
+        
+            <div id="grid"></div>
+            <div id="paging-space"></div>
+        </div>
+        <div class="card-body" style="overflow: hidden; padding: 0px 5px; display: none;" id="mytasks-tab-data">
+            <div class="row p-0 mx-0 mb-0 mt-3" style="border-top: 1px solid #00bcd4;background-color:#e3fffe;">
+                <div class="col-lg-4 col-sm-4 col-4 p-0 m-0">
+                    <div class="text-center mx-0">Tên việc</div>
+                </div>
+                <div class="col-lg-4 col-sm-4 col-4 px-0">
+                    <div class="pr-1 text-center">Số người nhận</div>
+                </div>
+                
+                <div class="col-lg-4 col-sm-4 col-4">
+                    <div class="text-center" >act</div>
+                </div>
+            </div>
+            <div id="grid"></div>
+        </div>
+    </div>

@@ -135,8 +135,8 @@ async def getTaskToday(request):
             end_day = datetime(year=now.year, month=now.month,day=now.day,
                                 hour=23,minute=59,second=59,microsecond=999)
             start_time = datetime.timestamp(start_day)
+
             end_time = datetime.timestamp(end_day)
-            
         if status is not None:
             tasks_today = db.session.query(Tasks,TaskInfo).select_from(Tasks).join(TaskInfo).filter(and_(
                 Tasks.task_info_uid == TaskInfo.id,
@@ -185,7 +185,7 @@ def convertTaskToday(tasks_today):
             "task_uid": str(task.id),
             "task_code": task.task_code,
             "task_name": task.task_name,
-            "employee": [validEmployee(employee) for employee in task.employees],
+            "employees": [validEmployee(employee) for employee in task.employees],
             "start_time": task.start_time,
             "end_time": task.end_time,
             "status": task.status,
@@ -196,7 +196,7 @@ def convertTaskToday(tasks_today):
         groups_result.append(group_result)
     return groups_result
 def groupbyTaskToday(tasks_today):
-    #tasks_today:
+    #tasks_today example:
     # [(<Tasks cddb29e9-b439-4d62-8995-d464262f39d4>, <TaskInfo 633b02cc-4219-43a6-88fa-90883fdb4656>),
     # (<Tasks 78fcda26-e859-4075-b307-f9b908d636b0>, <TaskInfo 633b02cc-4219-43a6-88fa-90883fdb4656>)]
     tasks_groupby = []
@@ -215,7 +215,7 @@ def findIndex(task_today, tasks_groupby):
             return index
     return -1
 def validEmployee(employee):
-    result = employee.__dict__
+    result = employee.__dict__.copy()
     key_remove = ['_sa_instance_state','task_groups',"created_at", "created_by",
      "updated_at", "updated_by",'deleted_at']
     for key in key_remove:

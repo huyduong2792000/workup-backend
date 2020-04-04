@@ -73,5 +73,5 @@ def filter_employee(request):
                "task_code": task['task_code'],	
                "task_name": task['task_name']	
               }	
-        data_resp.append(obj)	
+        data_resp.append(obj)
     return json(data_resp)
