@@ -284,16 +284,29 @@ def filter_employee(request=None, search_params=None, **kwargs):
     if uid is not None:
         user = db.session.query(User).filter(User.id == uid).first()
         employee_id = user.employee_uid
-        if 'filters' in search_params:
-            filters = search_params["filters"]
-            if "$and" in filters:
-                # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
-                search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
-                search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]})
+        if employee_id is not None:
+            if 'filters' in search_params:
+                filters = search_params["filters"]
+                if "$and" in filters:
+                    # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                    search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
+                    search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]})
+                else:
+                    search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]}, {"deleted":{"$eq": False}}]
             else:
-                search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]}, {"deleted":{"$eq": False}}]
+                search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]},{"deleted":{"$eq": False}}]}
         else:
-            search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]},{"deleted":{"$eq": False}}]}
+            if 'filters' in search_params:
+                filters = search_params["filters"]
+                if "$and" in filters:
+                    # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                    search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
+                    search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}}]})
+                else:
+                    search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}}]}, {"deleted":{"$eq": False}}]
+            else:
+                search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}}]},{"deleted":{"$eq": False}}]}
+
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
