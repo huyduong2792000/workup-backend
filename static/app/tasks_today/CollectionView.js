@@ -194,7 +194,7 @@ define(function (require) {
 					self.loadMyTasksView(data);
 				},
 				error: function (xhr, status, error) {
-					self.getApp().notify("Lấy subtask không thành công", { type: "danger" });
+					self.getApp().notify("Lấy dữ liệu không thành công", { type: "danger" });
 				},
 			});
 		},
