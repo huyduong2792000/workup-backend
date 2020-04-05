@@ -282,16 +282,18 @@ def create_employee(request=None, data=None, **kw):
 def filter_employee(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
     if uid is not None:
+        user = db.session.query(User).filter(User.id == uid).first()
+        employee_id = user.employee_uid
         if 'filters' in search_params:
             filters = search_params["filters"]
             if "$and" in filters:
                 # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
                 search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
-                search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
+                search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]})
             else:
-                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"deleted":{"$eq": False} } ]
+                search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]}, {"deleted":{"$eq": False}}]
         else:
-            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}},{"deleted":{"$eq": False}}]}
+            search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]},{"deleted":{"$eq": False}}]}
     else:
         return json({
             "error_code": "USER_NOT_FOUND",

@@ -26,7 +26,8 @@ define(function (require) {
 		events:{
 			"click #add-employee":"addEmployee",
 			'click #remove-employee':"removeEmployee",
-			'click #done':'setDoneTask'
+			'click #done':'setDoneTask',
+			'dblclick':"routeTask"
 		},
 		render:function () {
 			var self = this;
@@ -34,6 +35,11 @@ define(function (require) {
 			var data_render = self.convertDataRender(self.model)
 			self.$el.html(self.template_item(data_render))
 			return self
+		},
+		routeTask:function () {
+			var self = this;
+			var path = 'tasks/model?id=' + self.model.id + '&backcol=tasks_today';
+			self.getApp().getRouter().navigate(path);
 		},
 		addEmployee:function () {
 			var self = this;

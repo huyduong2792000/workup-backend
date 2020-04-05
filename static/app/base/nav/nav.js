@@ -23,9 +23,9 @@ define(function (require) {
                 {
                     "text": "Công việc hôm nay",
                     "type": "view",
-                    "collectionName": "tasks_employees",
-                    "route": "tasks_employees/collection",
-                    "$ref": "app/tasks_employees/CollectionView",
+                    "collectionName": "tasks_today",
+                    "route": "tasks_today/collection",
+                    "$ref": "app/tasks_today/CollectionView",
                     "icon": "<i class='fa fa-layer-group'></i>",
                     "visible": function () {
                         return true;
@@ -74,10 +74,8 @@ define(function (require) {
             "text": "Danh mục",
             "icon": "<i class='fa fa-list'></i>",
             "type": "category",
-            "visible": function(){
-                if (this.checkUserHasRole("admin")){
-                    console.log(this.checkUserHasRole("admin"));
-                    
+            "visible": function () {
+                if (this.checkUserHasRole("admin")||this.checkUserHasRole("leader")){
                     return true
                 }else{
                     return false;
@@ -93,8 +91,12 @@ define(function (require) {
                     "$ref": "app/task_info/CollectionView",
                     "icon": "<i class='fa fa-cog'></i>",
                     "visible": function () {
-                        return true;
-                    }
+                        if (this.checkUserHasRole("leader")){
+                            return true
+                        }else{
+                            return false;
+                        }
+                    },
                 },
                 {
                     "type": "view",
@@ -111,8 +113,12 @@ define(function (require) {
                     "$ref": "app/task_group/CollectionView",
                     "icon": "<i class='fa fa-cog'></i>",
                     "visible": function () {
-                        return true;
-                    }
+                        if (this.checkUserHasRole("admin")){
+                            return true
+                        }else{
+                            return false;
+                        }
+                    },
                 },
                 {
                     "type": "view",
