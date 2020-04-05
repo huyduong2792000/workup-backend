@@ -91,7 +91,7 @@ define(function (require) {
                     "$ref": "app/task_info/CollectionView",
                     "icon": "<i class='fa fa-cog'></i>",
                     "visible": function () {
-                        if (this.checkUserHasRole("leader")){
+                        if (this.checkUserHasRole("leader")||this.checkUserHasRole("admin")){
                             return true
                         }else{
                             return false;
