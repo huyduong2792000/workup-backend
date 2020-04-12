@@ -192,7 +192,7 @@ def user_register(request=None, Model=None, result=None, **kw):
     letters = string.ascii_lowercase
     user_salt = ''.join(random.choice(letters) for i in range(64))
     user_password = auth.encrypt_password(password, user_salt)
-    user = User(email=param['email'], password=user_password, salt=user_salt,
+    user = User(email=param['email'], password=user_password, salt=user_salt,employee_uid=result['id'],
                 user_name=param['email'],  phone_number=param['phone_number'],  full_name=param['full_name'])
     if (param['position'] == 'employee' or param['position'] is None):
         user.roles = [role_employee]
@@ -282,16 +282,31 @@ def create_employee(request=None, data=None, **kw):
 def filter_employee(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
     if uid is not None:
-        if 'filters' in search_params:
-            filters = search_params["filters"]
-            if "$and" in filters:
-                # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
-                search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
-                search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
+        user = db.session.query(User).filter(User.id == uid).first()
+        employee_id = user.employee_uid
+        if employee_id is not None:
+            if 'filters' in search_params:
+                filters = search_params["filters"]
+                if "$and" in filters:
+                    # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                    search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
+                    search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]})
+                else:
+                    search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]}, {"deleted":{"$eq": False}}]
             else:
-                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"deleted":{"$eq": False} } ]
+                search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]},{"deleted":{"$eq": False}}]}
         else:
-            search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}},{"deleted":{"$eq": False}}]}
+            if 'filters' in search_params:
+                filters = search_params["filters"]
+                if "$and" in filters:
+                    # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
+                    search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
+                    search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}}]})
+                else:
+                    search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}}]}, {"deleted":{"$eq": False}}]
+            else:
+                search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}}]},{"deleted":{"$eq": False}}]}
+
     else:
         return json({
             "error_code": "USER_NOT_FOUND",

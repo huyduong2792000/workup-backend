@@ -94,7 +94,7 @@ define(function (require) {
                     self.renderMoreGroup(data.objects)
                 },
                 error: function (xhr, status, error) {
-                    self.getApp().notify("Chia nhỏ công việc không thành công", { type: "danger" });
+                    self.getApp().notify("Đã có lỗi xảy ra vui lòng thử lại sau ", { type: "danger" });
                 },
             });
             

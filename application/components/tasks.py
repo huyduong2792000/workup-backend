@@ -259,3 +259,61 @@ async def tasks_employees(request):
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
+
+@app.route('api/v1/task_change_employee', methods=["PUT"])
+async def task_change_employee(request):
+    uid = auth.current_user(request)
+    task_id = request.args.get('id',None)
+    method_change_employee = request.args.get('method',None)
+    user = db.session.query(User).filter(User.id == uid).first()
+    if (user.employee_uid is None):
+        return json({
+            "error_code": "EMPLOYEE_NOT_FOUND",
+            "error_message":"EMPLOYEE_NOT_FOUND"
+        }, status = 520)
+    else:
+        task =  db.session.query(Tasks).filter(Tasks.id == task_id).first()
+        
+        list_employee = list(task.employees)
+        if method_change_employee == "add_employee" and user.employee is not None:
+            task.status = 2 #processing
+            list_employee.append(user.employee)
+            task.employees = list_employee
+
+        elif method_change_employee == "remove_employee":
+            for i in range(len(list_employee)):
+                if(str(list_employee[i].id) == str(user.employee.id)):
+                    list_employee.pop(i)
+            task.employees = list_employee
+            task.status = 0 if list_employee == [] else 2 #0:todo
+        elif method_change_employee == "done":
+            task.status = 1 #done
+            end_time = datetime.datetime.now()
+
+        db.session.add(task)
+        db.session.commit()
+        return json(validTask(task))
+def validEmployee(employee):
+    result = employee.__dict__.copy()
+    key_remove = ['_sa_instance_state','task_groups',"created_at", "created_by",
+     "updated_at", "updated_by",'deleted_at']
+    for key in key_remove:
+            if key in result:
+                del(result[key])
+    result['id'] = str(result['id'])    
+    return result
+
+def validTask(task):
+    result = {
+            "id": str(task.id),
+            "task_uid": str(task.id),
+            "task_code": task.task_code,
+            "task_name": task.task_name,
+            "employees": [validEmployee(employee) for employee in task.employees],
+            "start_time": task.start_time,
+            "end_time": task.end_time,
+            "status": task.status,
+            "priority":task.priority,
+            "created_by": str(task.created_by),
+            }
+    return result
