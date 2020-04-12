@@ -17,4 +17,4 @@ dump.rdb
 input_debug.log
 final_bill_log_debug.log
 /**/*.pyc
-/**/*.DS_Store
+# /**/*.DS_Store
