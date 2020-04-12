@@ -18,3 +18,18 @@ input_debug.log
 final_bill_log_debug.log
 /**/*.pyc
 /**/*.DS_Store
+
+mobile/node_modules/**/*
+mobile/.expo/*
+mobile/npm-debug.*
+mobile/*.jks
+mobile/*.p8
+mobile/*.p12
+mobile/*.key
+mobile/*.mobileprovision
+mobile/*.orig.*
+mobile/web-build/
+mobile/web-report/
+
+# macOS
+mobile/.DS_Store
