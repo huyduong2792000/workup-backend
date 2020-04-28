@@ -8,6 +8,7 @@ from application.extensions import apimanager
 from application.models.model import Tasks,TaskSchedule
 from application.components import auth_func
 from application.extensions import auth
+from gatco_restapi.helpers import to_dict
 
 from sqlalchemy import and_, or_
 from math import floor
@@ -123,7 +124,18 @@ def filter_taskschedule(request=None, search_params=None, **kwargs):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)   
         
-        
+@app.route('/api/v1/get_task_schedule', methods=["GET", "OPTIONS"])
+def get_task_schedule(request):
+    id_schedule = request.args.get("id", None)
+    task_schedule = db.session.query(TaskSchedule).filter(TaskSchedule.id == id_schedule).first()
+    result=to_dict(task_schedule)
+    result['task_scheduledetail']=[]
+    for task_scheduledetail in task_schedule.task_scheduledetail:
+        obj=to_dict(task_scheduledetail)
+        obj['tasks_info'] = [to_dict(task_info) for task_info in task_scheduledetail.tasks_info]
+        result['task_scheduledetail'].append(obj)
+
+    return json(result)        
 apimanager.create_api(
         collection_name='task_schedule', model=TaskSchedule,
         methods=['GET', 'POST', 'DELETE', 'PUT'],

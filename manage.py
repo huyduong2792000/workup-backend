@@ -111,6 +111,8 @@ def generate_schema(path = "static/schema", exclude = None, prettyprint = True):
 @manager.command
 def update_admin(password='123456'):
     user = User.query.filter(User.user_name == "admin").first()
+
+
     if user is not None:
         
         # create user password
@@ -146,6 +148,9 @@ def create_admin(password='123456'):
         db.session.add(role_leader)
         db.session.flush()
     user = User.query.filter(User.user_name == "admin").first()
+    # employee = Employee(full_name="Admin User", email="admin@gonrin.com",phone_number="0968244158",\
+    #             id_identifier=123456)
+    # user.employee = employee
     # user.roles = [role_admin]
     # db.session.add(user)
     db.session.commit()
@@ -158,10 +163,12 @@ def create_admin(password='123456'):
         user_password=auth.encrypt_password(password, user_salt)
 
         #create user
+        # employee = Employee(full_name="Admin User", email="admin@gonrin.com",phone_number="0968244158",\
+        #         id_identifier=123456)
         user = User(user_name='admin', full_name="Admin User", email="admin@gonrin.com",\
             password=user_password, salt=user_salt,roles = [role_admin], phone_number="0968244158")
-        
         db.session.add(user)
+
  
     db.session.commit()
 

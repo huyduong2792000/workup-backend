@@ -7,6 +7,7 @@ from application.components.salary import *
 from application.components import auth_func
 from application.extensions import auth
 from gatco.response import text, json
+from gatco_restapi.helpers import to_dict
 
 import re
 def no_accent_vietnamese(s):
@@ -63,6 +64,33 @@ apimanager.create_api(collection_name='task_info', model=TaskInfo,
     preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,filter_taskinfo], POST=[auth_func,create_taskinfo], PUT_SINGLE=[auth_func,create_taskinfo], DELETE_SINGLE=[auth_func]),
     postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
     )
+
+@app.route('/api/v1/task_info_with_supervisor', methods=["GET", "OPTIONS"])
+def task_info_with_supervisor(request):
+    id_task_info = request.args.get("id", None)
+    task_info = db.session.query(TaskInfo).filter(TaskInfo.id == id_task_info).first()
+    result=to_dict(task_info)
+    task_group = to_dict(task_info.task_group)
+    result['task_group'] = task_group
+    supervisor = to_dict(task_info.task_group.supervisor)
+    result['task_group']['supervisor'] = supervisor
+
+    return json(result)
+
+@app.route('/api/v1/task_info_delete_multiple',methods=['PUT'])
+async def delete_multiple(request):
+    param = request.json
+    # print(param)
+    list_id_select = [data['id'] for data in param['data_delete']]
+    tasks_info = db.session.query(TaskInfo).filter(TaskInfo.id.in_(list_id_select)).all()
+    for task_info in tasks_info:
+        task_info.deleted = True
+        db.session.add(task_info)
+    db.session.commit()
+    return json({
+            "message": "DELETE_SUCCESS",
+            }, status = 200)
+
 @app.route('/api/v1/task_many_time', methods=["GET", "OPTIONS"])		
 def filter_employee(request):		
     tasks_info = db.session.query(TaskInfo).all()		

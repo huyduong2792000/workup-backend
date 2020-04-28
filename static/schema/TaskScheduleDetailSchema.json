@@ -22,22 +22,23 @@
     "update_by": {
         "type": "string"
     },
-    "taskschedule_name": {
-        "type": "string"
+    "start_hours_working": {
+        "type": "number"
     },
-    "start_time_working": {
-        "type": "",
-        "default": 0
+    "end_hours_working": {
+        "type": "number"
     },
-    "end_time_working": {
-        "type": "",
-        "default": 0
+    "day_of_week": {
+        "type": ""
     },
-    "active": {
+    "week_number": {
         "type": "number",
         "default": 1
     },
-    "task_scheduledetail": {
+    "task_schedule_uid": {
+        "type": "string"
+    },
+    "tasks_info": {
         "type": "list"
     }
 }
