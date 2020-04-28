@@ -5,17 +5,25 @@ from application.extensions import jinja, auth
 
 
 def init_views(app):
-    import application.components.user.api
-    import application.components.organization.api
-
     import application.components.user
-    import application.components.organization
-    import application.components.apimanger
-    import application.components.task_schedule
-    import application.components.tasks
-    import application.components.task_info
-    import application.components.task_group
+    import application.components.user.api
 
+    import application.components.organization
+    import application.components.organization.api
+    
+    import application.components.task_schedule.api
+    import application.components.task_schedule
+    
+    import application.components.task_info
+    import application.components.task_info.api
+
+    import application.components.apimanger
+    
+    import application.components.task
+    import application.components.task.api
+
+    import application.components.group
+    import application.components.group.api
     @app.route('/')
     def index(request):
         #return text("Index")

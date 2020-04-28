@@ -19,7 +19,7 @@ from application.extensions import auth
 from application.components.user.model import User, Role
 import math
 
-from application.components.task_schedule import runSchedule
+from application.components.task_schedule.api import runSchedule
 from threading import Thread
 
 
@@ -165,8 +165,8 @@ def create_admin(password='123456'):
         #create user
         # employee = Employee(full_name="Admin User", email="admin@gonrin.com",phone_number="0968244158",\
         #         id_identifier=123456)
-        user = User(user_name='admin', full_name="Admin User", email="admin@gonrin.com",\
-            password=user_password, salt=user_salt,roles = [role_admin], phone_number="0968244158")
+        user = User(user_name='admin', display_name="Admin User", email="admin@gonrin.com",\
+            password=user_password, salt=user_salt, phone="0968244158")
         db.session.add(user)
 
  

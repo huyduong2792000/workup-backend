@@ -27,11 +27,11 @@ def response_userinfo(user, **kw):
             if attr in user_info:
                 del(user_info[attr])
         # permision
-        roles = [{"id": str(role.id), "role_name": role.role_name}
-                 for role in user.roles]
+        # roles = [{"id": str(role.id), "role_name": role.role_name}
+        #          for role in user.roles]
 
-        roleids = [role.id for role in user.roles]
-        user_info['roles'] = roles
+        # roleids = [role.id for role in user.roles]
+        # user_info['roles'] = roles
         return user_info
     return None
 
@@ -59,48 +59,48 @@ async def user_login(request):
     else:
         return json({"error_code": "PARAM_ERROR", "error_message": "param error"}, status=520)
     return text("user_login api")
-# def getUser(user_name):
-#     if(checkIsPhoneNumber(user_name) is True):
-#         user = db.session.query(User).filter(User.phone_number == user_name).first()
-#     else:
-#         user = db.session.query(User).filter(User.user_name == user_name).first()
-#     return user
-# def checkIsPhoneNumber(phone):
-#     x = re.search("^(09|08|07|05|03)+[0-9]{8}", phone)
-#     if(x):
-#         return True
-#     else:
-#         return False
+def getUser(user_name):
+    if(checkIsPhoneNumber(user_name) is True):
+        user = db.session.query(User).filter(User.phone == user_name).first()
+    else:
+        user = db.session.query(User).filter(User.user_name == user_name).first()
+    return user
+def checkIsPhoneNumber(phone):
+    x = re.search("^(09|08|07|05|03)+[0-9]{8}", phone)
+    if(x):
+        return True
+    else:
+        return False
 
-# @app.route("/logout", methods=["GET"])
-# async def user_logout(request):
-#     uid = auth.current_user(request)
-#     # user = db.session.query(User).filter(User.id == int(current_user)).first()
-#     try:
-#         user_info = db.session.query(User).filter(User.id == uid).first()
-#         user_info.employee.status = 'offline'
-#         db.session.commit()
-#     except:
-#         pass
-#     auth.logout_user(request)
-#     return json({})
+@app.route("/logout", methods=["GET"])
+async def user_logout(request):
+    uid = auth.current_user(request)
+    # user = db.session.query(User).filter(User.id == int(current_user)).first()
+    try:
+        user_info = db.session.query(User).filter(User.id == uid).first()
+        user_info.employee.status = 'offline'
+        db.session.commit()
+    except:
+        pass
+    auth.logout_user(request)
+    return json({})
 
 
-# @app.route('/current-user', methods=["GET", "OPTIONS"])
-# async def get_current_user(request):
-#     error_msg = None
-#     uid = auth.current_user(request)
-#     if uid is not None:
-#         user = db.session.query(User).filter(User.id == uid).first()
-#         user_info = response_userinfo(user)
-#         return json(user_info)
-#     else:
-#         return json({
-#             "error_code": "USER_NOT_FOUND",
-#             "error_message": "USER_NOT_FOUND"
-#         }, status=520)
+@app.route('/current-user', methods=["GET", "OPTIONS"])
+async def get_current_user(request):
+    error_msg = None
+    uid = auth.current_user(request)
+    if uid is not None:
+        user = db.session.query(User).filter(User.id == uid).first()
+        user_info = response_userinfo(user)
+        return json(user_info)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message": "USER_NOT_FOUND"
+        }, status=520)
 
-    # print("===============", user_info)
+    print("===============", user_info)
     # if user_info is not None:
 
 

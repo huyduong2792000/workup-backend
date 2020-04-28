@@ -6,22 +6,15 @@ from sqlalchemy.orm import relationship, backref
 from application.database import db
 from application.database.model import CommonModel, default_uuid
 from application.components.user.model import User,Role
+from application.components.group.model import Group
 
-
-class GroupsUsers(CommonModel):
-    __tablename__ = 'groups_users'
-    group_id = db.Column(UUID(as_uuid=True), ForeignKey('group.id',onupdate='cascade',ondelete='cascade'))
+class TaskInfo(CommonModel):
+    __tablename__ = 'task_info'
+    task_id = db.Column(String(255))
+    task_name = db.Column(String)
+    group_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"), nullable=False)
     group = db.relationship("Group")
-    user_id = db.Column(UUID(as_uuid=True), ForeignKey('user.id',onupdate='cascade',ondelete='cascade'))
-    user = db.relationship("User")
-    role_id = db.Column(UUID(as_uuid=True), ForeignKey('role.id',onupdate='cascade',ondelete='cascade'))
-    role = db.relationship("Role")
-    _table_args_ = (UniqueConstraint('group_id', 'user_id', 'role_id', name='uq_groups_users_group_id_user_id_role_id'),)
-         
-class Group(CommonModel):
-    __tablename__ = 'group'
-    group_name = db.Column(String)
-    unsigned_name = db.Column(String)
+    unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
-    # priority = db.Column(SmallInteger)
-    member = db.relationship("User",secondary="groups_users")
+    tags = db.Column(JSONB())
+    active = db.Column(SmallInteger, default=1)

@@ -1,27 +1,37 @@
 from sqlalchemy import (
-    Column, String, Integer, BigInteger, Date, Boolean, DECIMAL, ForeignKey, Text, SmallInteger,UniqueConstraint
+    Column, String, Integer,Float, BigInteger, Date, Boolean, DECIMAL, ForeignKey, Text, SmallInteger,UniqueConstraint
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship, backref
 from application.database import db
 from application.database.model import CommonModel, default_uuid
 from application.components.user.model import User,Role
+from application.components.task_info.model import TaskInfo
+
+class TaskSchedule(CommonModel):
+    __tablename__ = 'task_schedule'
+    taskschedule_name = db.Column(String())
+    # shift_of_day = db.Column(BigInteger()) #2^n
+    start_time_working = db.Column(BigInteger(), default = 0) 
+    end_time_working = db.Column(BigInteger(),default = 0) 
+    active = db.Column(SmallInteger, default=1)
+    task_scheduledetail = db.relationship('TaskScheduleDetail')
 
 
-class GroupsUsers(CommonModel):
-    __tablename__ = 'groups_users'
-    group_id = db.Column(UUID(as_uuid=True), ForeignKey('group.id',onupdate='cascade',ondelete='cascade'))
-    group = db.relationship("Group")
-    user_id = db.Column(UUID(as_uuid=True), ForeignKey('user.id',onupdate='cascade',ondelete='cascade'))
-    user = db.relationship("User")
-    role_id = db.Column(UUID(as_uuid=True), ForeignKey('role.id',onupdate='cascade',ondelete='cascade'))
-    role = db.relationship("Role")
-    _table_args_ = (UniqueConstraint('group_id', 'user_id', 'role_id', name='uq_groups_users_group_id_user_id_role_id'),)
-         
-class Group(CommonModel):
-    __tablename__ = 'group'
-    group_name = db.Column(String)
-    unsigned_name = db.Column(String)
-    description = db.Column(String)
-    # priority = db.Column(SmallInteger)
-    member = db.relationship("User",secondary="groups_users")
+class TaskScheduleDetail(CommonModel):
+    __tablename__ = 'task_scheduledetail'
+    start_hours_working = db.Column(Float)
+    end_hours_working = db.Column(Float)
+    day_of_week = db.Column(BigInteger()) 
+    week_number = db.Column(Integer,default=1)
+    task_schedule_uid = db.Column(UUID(as_uuid=True), ForeignKey("task_schedule.id"))
+    tasks_info = db.relationship("TaskInfo",
+                            secondary="taskscheduledetail_taskinfo",
+                            )
+
+class TaskschedulesTaskinfo(CommonModel):
+    __tablename__ = 'taskscheduledetail_taskinfo'
+    task_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_info.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task = db.relationship("TaskInfo")
+    task_schedule_uid = db.Column(UUID(as_uuid=True), ForeignKey('task_scheduledetail.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task_schedule = db.relationship("TaskScheduleDetail")

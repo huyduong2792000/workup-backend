@@ -8,10 +8,10 @@ from application.database.model import CommonModel, default_uuid
 
 
 
-class Organization(CommonModel):
-    __tablename__ = 'organization'
-    status = db.Column(String(255))
-    name = db.Column(String)
-    code = db.Column(String(255))
-    workstations = db.relationship("Workstation",
-                            secondary="organization_workstation",)
+# class Organization(CommonModel):
+#     __tablename__ = 'organization'
+#     status = db.Column(String(255))
+#     name = db.Column(String)
+#     code = db.Column(String(255))
+#     workstations = db.relationship("Workstation",
+#                             secondary="organization_workstation",)

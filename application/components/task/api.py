@@ -1,339 +1,319 @@
-from gatco.response import json, text
-from application.server import app
-from application.database import db, redisdb
-from application.extensions import auth
-import random
-import string
-from application.extensions import apimanager
-# from application.models.model import  Employee
-from application.components.user.model import User, Role
+# from gatco.response import json, text
+# from application.server import app
+# from application.database import db
+# from application.extensions import auth
+# import random
+# import string
+# from application.extensions import apimanager
+# from application.models.model import Tasks, Employee, TasksEmployees, TaskInfo
+# from application.components.user.model import User, Role
 
-from application.components import auth_func
-from sqlalchemy import and_, or_
-from gatco_restapi.helpers import to_dict
-import re
+# from application.components import auth_func
+# from sqlalchemy import and_, or_
+# from hashids import Hashids
+# from math import floor
+# import datetime
+# import time
+# import re
 
-def response_userinfo(user, **kw):
-    if user is not None:
-        # employee = to_dict(user.employee)
-        user_info = to_dict(user)
-        # user_info['employee'] = employee
-        exclude_attr = ["password", "salt", "created_at", "created_by", "updated_at", "updated_by",
-                        "deleted_by", "deleted_at", "deleted", "facebook_access_token", "phone_country_prefix",
-                        "phone_national_number", "last_login_at", "current_login_at",
-                        "last_login_ip", "current_login_ip", "login_count"]
+# hashids = Hashids(salt = "make task easy", alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+# def no_accent_vietnamese(s):
+#     s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
+#     s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
+#     s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
+#     s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
+#     s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
+#     s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
+#     s = re.sub(r'[ìíịỉĩ]', 'i', s)
+#     s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
+#     s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
+#     s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
+#     s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
+#     s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
+#     s = re.sub(r'[Đ]', 'D', s)
+#     s = re.sub(r'[đ]', 'd', s)
+#     return s
 
-        for attr in exclude_attr:
-            if attr in user_info:
-                del(user_info[attr])
-        # permision
-        roles = [{"id": str(role.id), "role_name": role.role_name}
-                 for role in user.roles]
-
-        roleids = [role.id for role in user.roles]
-        user_info['roles'] = roles
-        return user_info
-    return None
-
-
-@app.route("/login", methods=["POST", "GET"])
-async def user_login(request):
-    param = request.json
-    user_name = param.get("username")
-    password = param.get("password")
-    print(user_name, password)
-    if (user_name is not None) and (password is not None):
-        user = getUser(user_name)
-        if (user is not None) and auth.verify_password(password, user.password, user.salt):
-            try:
-                user.employee.status = 'online'
-                db.session.commit()
-            except:
-                pass
-            auth.login_user(request, user)
-            result = response_userinfo(user)
-            
-            # print('result==========',result)
-            return json(result)
-        return json({"error_code":"LOGIN_FAILED","error_message":"user does not exist or incorrect password"}, status=520)
-    else:
-        return json({"error_code": "PARAM_ERROR", "error_message": "param error"}, status=520)
-    return text("user_login api")
-# def getUser(user_name):
-#     if(checkIsPhoneNumber(user_name) is True):
-#         user = db.session.query(User).filter(User.phone_number == user_name).first()
-#     else:
-#         user = db.session.query(User).filter(User.user_name == user_name).first()
-#     return user
-# def checkIsPhoneNumber(phone):
-#     x = re.search("^(09|08|07|05|03)+[0-9]{8}", phone)
-#     if(x):
-#         return True
-#     else:
-#         return False
-
-# @app.route("/logout", methods=["GET"])
-# async def user_logout(request):
-#     uid = auth.current_user(request)
-#     # user = db.session.query(User).filter(User.id == int(current_user)).first()
-#     try:
-#         user_info = db.session.query(User).filter(User.id == uid).first()
-#         user_info.employee.status = 'offline'
-#         db.session.commit()
-#     except:
-#         pass
-#     auth.logout_user(request)
-#     return json({})
-
-
-# @app.route('/current-user', methods=["GET", "OPTIONS"])
-# async def get_current_user(request):
-#     error_msg = None
-#     uid = auth.current_user(request)
-#     if uid is not None:
-#         user = db.session.query(User).filter(User.id == uid).first()
-#         user_info = response_userinfo(user)
-#         return json(user_info)
-#     else:
-#         return json({
-#             "error_code": "USER_NOT_FOUND",
-#             "error_message": "USER_NOT_FOUND"
-#         }, status=520)
-
-    # print("===============", user_info)
-    # if user_info is not None:
-
-
-# def get_current_user(request):
-#     #user = auth.current_user(request)
-#     # return json({"id": user.id, "user_name": user.user_name, "full_name": user.full_name,"employee_id":user.employee_id,"role":user.roles[0].role_name})
-#     # return json({})
-#     # print('request',request.json)
-#     token = request.headers.get("Cookie", None)
-#     print("token============",token)
-#     if token is not None:
-#         uid = redisdb.get("sessions:" + token)
-#         print("uid=======",uid)
-#         scope = request.args.get("scope", None)
-#         if uid is not None:
-#             uid = uid.decode('utf8')
-#             user = db.session.query(User).filter(User.id == uid).first()
-#             if user is not None:
-#                 if user.is_active == True:
-#                     userobj = response_userinfo(user, scope)
-#                     return json(userobj)
-#                 else:
-#                     return json({"error_code": "LOGIN_FAILED", "error_message": "Tài khoản của bạn đã bị khoá. Vui lòng liên hệ quản trị hệ thống để được giải đáp"}, status=520)
-#         else:
-#             return json({
-#                 "error_code": "SESSION_EXPIRED",
-#                 "error_message":""
-#             }, status = 520)
-#     else:
-#         return json({
-#             "error_code": "SESSION_EXPIRED",
-#             "error_message":""
-#             }, status = 520)
-# def response_userinfo(user, **kw):
-#     if user is not None:
-#         user_info = to_dict(user)
-#         exclude_attr = ["password", "salt", "created_at", "created_by", "updated_at", "updated_by",\
-#                          "deleted_by", "deleted_at", "deleted","facebook_access_token","phone_country_prefix",\
-#                          "phone_national_number","last_login_at","current_login_at",\
-#                          "last_login_ip","current_login_ip","login_count"]
-
-#         for attr in exclude_attr:
-#             if attr in user_info:
-#                 del(user_info[attr])
-
-#         return user_info
-#     return None
-
-
-# def valid_employe(request=None, data=None, **kw):
-#     id_identifier = data.get('id_identifier')
-#     email = data.get('email')
-#     password = data.get('password')
-#     confirm_password = data.get('confirm_password')
-#     position = data.get('position')
-#     if data.get('id') is None:
-#         if email != None and id_identifier != None and position != None:
-#             check_employee = Employee.query.filter(
-#                 or_(Employee.email == email, Employee.id_identifier == id_identifier)).first()
-#             if check_employee is None:
-#                 pass
-# #                 request.args['password'] = data['password']
-# #                 request.args['confirm_password'] = data['confirm_password']
-# #                 del data['confirm_password']
-# #                 del data['password']
-
-#             else:
-#                 return json({"error_code": "INSERT_ERROR", "error_message": "Nhân viên đã tồn tại, vui lòng kiểm tra lại!"}, status=520)
-#         else:
-#             return json({"error_code": "PARAM_INVALID", "error_message": "Dữ liệu không đúng định dạng!"}, status=520)
-#     else:
-#         del data['email']
-#         if position is not None:
-#             pass
-#         else:
-#             return json({"error_code": "PARAM_INVALID", "error_message": "Dữ liệu không đúng định dạng!"}, status=520)
-
-
-# def user_register(request=None, Model=None, result=None, **kw):
-#     param = request.json
-# #     password = request.args['password']
-#     password = "123456"
-# #     confirm_password= request.args['confirm_password']
-
-#     role_admin = Role.query.filter(Role.role_name == "admin").first()
-#     role_user = Role.query.filter(Role.role_name == "user").first()
-#     role_employee = Role.query.filter(Role.role_name == "employee").first()
-#     role_leader = Role.query.filter(Role.role_name == "leader").first()
-#     # print("model==========",result)
-
-#     letters = string.ascii_lowercase
-#     user_salt = ''.join(random.choice(letters) for i in range(64))
-#     user_password = auth.encrypt_password(password, user_salt)
-#     user = User(email=param['email'], password=user_password, salt=user_salt,employee_uid=result['id'],
-#                 user_name=param['email'],  phone_number=param['phone_number'],  full_name=param['full_name'])
-#     if (param['position'] == 'employee' or param['position'] is None):
-#         user.roles = [role_employee]
-#     if (param['position'] == 'leader'):
-#         user.roles = [role_leader]
-
-#     employee = db.session.query(Employee).filter(
-#         Employee.id == result['id']).first()
-#     employee.user = [user]
-# #     print('role',role_employee)
-#     db.session.add(employee)
-
-#     db.session.commit()
-
-
-# def update_user(request=None, Model=None, result=None, **kw):
-#     param = request.json
-#     role_admin = Role.query.filter(Role.role_name == "admin").first()
-#     role_user = Role.query.filter(Role.role_name == "user").first()
-#     role_employee = Role.query.filter(Role.role_name == "employee").first()
-#     role_leader = Role.query.filter(Role.role_name == "leader").first()
-#     user = db.session.query(User).filter(User.email == result['email']).first()
-#     user.phone_number = param['phone_number']
-#     user.full_name = param['full_name']
-
-#     if (param['position'] == 'employee' or param['position'] is None):
-#         user.roles = [role_employee]
-#     if (param['position'] == 'leader'):
-#         user.roles = [role_leader]
-
-#     employee = db.session.query(Employee).filter(
-#         Employee.id == result['id']).first()
-#     employee.user = [user]
-# #     print('role',role_employee)
-#     db.session.add(employee)
-
-#     db.session.commit()
-   
-
-apimanager.create_api(collection_name='user', model=User,
-                      methods=['GET', 'POST', 'DELETE', 'PUT'],
-                      url_prefix='/api/v1',
-                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[
-                                      auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
-                      postprocess=dict(POST=[], PUT_SINGLE=[],
-                                       DELETE_SINGLE=[], GET_MANY=[])
-                      )
-
-
-apimanager.create_api(collection_name='role', model=Role,
-                      methods=['GET', 'POST', 'DELETE', 'PUT'],
-                      url_prefix='/api/v1',
-                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[
-                                      auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
-                      postprocess=dict(POST=[], PUT_SINGLE=[],
-                                       DELETE_SINGLE=[], GET_MANY=[])
-                      )
-
-def no_accent_vietnamese(s):
-    s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
-    s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
-    s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
-    s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
-    s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
-    s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
-    s = re.sub(r'[ìíịỉĩ]', 'i', s)
-    s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
-    s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
-    s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
-    s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
-    s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
-    s = re.sub(r'[Đ]', 'D', s)
-    s = re.sub(r'[đ]', 'd', s)
-    return s
-
-# def create_employee(request=None, data=None, **kw):
+# def create_task(request=None, data=None, **kw):
 #     uid = auth.current_user(request)
 #     if uid is not None:
 #         data['created_by'] = uid
-#         data['full_name_unsigned'] = no_accent_vietnamese(data['full_name'])
+#         data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
+#         if data['start_time'] is None:
+#             data['start_time']= time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
+#         if data['end_time'] is None:
+#             data['end_time'] = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(23, 59, 59)).timetuple())
+# #         print(data['end_time'] )
 #     else:
 #         return json({
 #             "error_code": "USER_NOT_FOUND",
 #             "error_message":"USER_NOT_FOUND"
 #         }, status = 520)
     
-# def filter_employee(request=None, search_params=None, **kwargs):
+
+
+# def filter_tasks(request=None, search_params=None, **kwargs):
 #     uid = auth.current_user(request)
 #     if uid is not None:
-#         user = db.session.query(User).filter(User.id == uid).first()
-#         employee_id = user.employee_uid
-#         if employee_id is not None:
-#             if 'filters' in search_params:
-#                 filters = search_params["filters"]
-#                 if "$and" in filters:
-#                     # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
-#                     search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
-#                     search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]})
-#                 else:
-#                     search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]}, {"deleted":{"$eq": False}}]
+#         if 'filters' in search_params:
+#             filters = search_params["filters"]
+#             if "$and" in filters:
+#                 search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
+#                 search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
 #             else:
-#                 search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]},{"deleted":{"$eq": False}}]}
+#                 search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"deleted":{"$eq": False} } ]
 #         else:
-#             if 'filters' in search_params:
-#                 filters = search_params["filters"]
-#                 if "$and" in filters:
-#                     # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
-#                     search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
-#                     search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}}]})
-#                 else:
-#                     search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}}]}, {"deleted":{"$eq": False}}]
-#             else:
-#                 search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}}]},{"deleted":{"$eq": False}}]}
-
+#             search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}},{"deleted":{"$eq": False} } ]}
+            
 #     else:
 #         return json({
 #             "error_code": "USER_NOT_FOUND",
 #             "error_message":"USER_NOT_FOUND"
 #         }, status = 520)   
-        
-# apimanager.create_api(collection_name='employee', model=Employee,
-#                       methods=['GET', 'POST', 'DELETE', 'PUT'],
-#                       url_prefix='/api/v1',
-#                       preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,filter_employee], POST=[
-#                                       auth_func, valid_employe,create_employee], PUT_SINGLE=[auth_func, valid_employe,create_employee], DELETE_SINGLE=[auth_func]),
-#                       postprocess=dict(POST=[user_register], PUT_SINGLE=[
-#                           update_user], DELETE_SINGLE=[], GET_MANY=[])
-                    #   )
+    
+    
 
-# @app.route('/filter_employee', methods=["GET", "OPTIONS"])
-# def filter_employee(request):
-#     employees = db.session.query(Employee).all()
-#     data_resp = []
-#     for employee in employees:
-#         employee = employee.__dict__
-#         if(employee['deleted'] is False):
-#             obj = {"id": str(employee['id']),
-#                 "full_name": employee['full_name'],
-#                 "email": employee['email']
-#                 }
-#             data_resp.append(obj)
-#     return json(data_resp)
+
+# def filter_tasks_employees(request=None, search_params=None, **kwargs):
+#     uid = auth.current_user(request)
+#     if uid is not None:
+#         pass
+    
+# #         if 'filters' in search_params:
+# #             filters = search_params["filters"]
+# #             if "$and" in filters:
+# #                 search_params["filters"]['$and'].append()
+# #             else:
+# #                 search_params["filters"] = {}
+# #                 search_params["filters"]['$and'] = []
+# #                 search_params["filters"]['$and'].append()
+# #         else:
+# #             search_params["filters"] = {}
+# #             search_params["filters"]['$and'] = []
+# #             search_params["filters"]['$and'].append()
+#     else:
+#         return json({
+#             "error_code": "USER_NOT_FOUND",
+#             "error_message":"USER_NOT_FOUND"
+#         }, status = 520)  
+
+    
+# apimanager.create_api(
+#         collection_name='tasks', model=Tasks,
+#         methods=['GET', 'POST', 'DELETE', 'PUT'],
+#         url_prefix='/api/v1',
+#         preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[create_task], PUT_SINGLE=[auth_func,create_task], DELETE_SINGLE=[auth_func]),
+#         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
+#     )
+
+
+# # apimanager.create_api(
+# #         collection_name='task_info', model=TaskInfo,
+# #         methods=['GET', 'POST', 'DELETE', 'PUT'],
+# #         url_prefix='/api/v1',
+# #         preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+# #         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
+# #     )
+
+# def process_employees_tasks(tasks_employees, my_tasks, user):
+#     list_task = []
+#     list_tasks_has_assignee =[]
+#     for task_employee in tasks_employees:
+#         task = task_employee.task
+#         employee = task_employee.employee
+        
+#         user_create_task = db.session.query(User).filter(User.id == task.created_by).first()
+       
+#         priority = task.priority
+        
+#         if priority == 1:
+#             priority = "highest"
+#         if priority == 2:
+#             priority = "high"
+#         if priority == 3:
+#             priority = "low"
+#         if priority == 4:
+#             priority = "lowest"
+                
+#         obj = {
+#             "id": str(task_employee.id),
+#             "task_uid": str(task.id),
+#             "task_code": task.task_code,
+#             "task_name": task.task_name,
+#             "employee_uid": str(employee.id),
+#             "employee_name": employee.full_name,
+#             "employee_phone": employee.phone_number,
+#             "employee_position": employee.position,
+#             "start_time": task.start_time,
+#             "end_time": task.end_time,
+#             "status": task.status,
+#             "priority":priority,
+#             "created_by": str(task.created_by),
+#             "created_by_name": user_create_task.full_name
+#             }
+#         list_task.append(obj)
+        
+#         list_tasks_has_assignee.append(str(task.id))
+#     auto_id = 0
+    
+    
+#     for task in my_tasks:
+#         if str(task.id) not in list_tasks_has_assignee:
+#             employees = task.employees;
+#             list_name = []
+#             list_id = []
+#             for employee in employees:
+#                 list_id.append(str(employee.id))
+#                 list_name.append(employee.full_name)
+                
+#             priority = task.priority
+#             if priority == 1:
+#                 priority = "highest"
+#             if priority == 2:
+#                 priority = "high"
+#             if priority == 3:
+#                 priority = "low"
+#             if priority == 4:
+#                 priority = "lowest"
+            
+             
+#             obj = {
+#             "id": str(auto_id),
+#             "task_uid": str(task.id),
+#             "task_code": task.task_code,
+#             "task_name": task.task_name,
+#             "employee_uid": list_id,
+#             "employee_name": list_name,
+#             "employee_phone": None,
+#             "employee_position": None,
+#             "start_time": task.start_time,
+#             "end_time": task.end_time,
+#             "status": task.status,
+#             "priority":priority,
+#             "created_by": str(task.created_by),
+#             "created_by_name": user.full_name
+#             }
+#             auto_id+=1
+#             list_tasks_has_assignee.append(str(task.id))
+            
+#         list_task.append(obj)
+#     return list_task
+
+
+# @app.route('/api/v1/tasks_employees', methods=["GET", "OPTIONS"])
+# async def tasks_employees(request):
+#     error_msg = None
+#     uid = auth.current_user(request)
+#     if uid is not None:
+#         start_time = request.args.get("start_time", None)
+#         end_time = request.args.get("end_time", None)
+        
+#         status = request.args.get("status", None)
+        
+#         if start_time is None and end_time is None:
+# #             current_date = datetime.today().strftime('%Y-%m-%d')
+#             start_time = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
+#             end_time = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(23, 59, 59)).timetuple())
+        
+        
+#         user = db.session.query(User).filter(User.id == uid).first()
+        
+#         if status is not None:
+#             tasks_employees = db.session.query(TasksEmployees).join(Tasks).filter(and_(
+#                     TasksEmployees.task_uid == Tasks.id,
+#                     Tasks.status == status,
+#                     Tasks.start_time >= start_time,
+#                     Tasks.end_time <= end_time,
+#                     TasksEmployees.employee_uid == user.employee_uid
+#                     )).all()
+                
+#             my_tasks = db.session.query(Tasks).filter(and_(
+#                     Tasks.created_by == uid,
+#                     Tasks.start_time >= start_time,
+#                     Tasks.end_time <= end_time,
+#                     Tasks.status == status,
+#                     )).all()
+                
+             
+#             return json(process_employees_tasks(tasks_employees, my_tasks, user))
+        
+#         else:
+#             tasks_employees = db.session.query(TasksEmployees).join(Tasks).filter(and_(
+#                     TasksEmployees.task_uid == Tasks.id,
+#                     TasksEmployees.employee_uid == user.employee_uid,
+#                     Tasks.start_time >= start_time,
+#                     Tasks.end_time <= end_time,
+#                     )).all()
+#             my_tasks = db.session.query(Tasks).filter(and_(
+#                     Tasks.created_by == uid,
+#                     Tasks.start_time >= start_time,
+#                     Tasks.end_time <= end_time,
+#                     )).all()
+                    
+#             return json(process_employees_tasks(tasks_employees, my_tasks, user))
+        
+        
+#     else:
+
+#         return json({
+#             "error_code": "USER_NOT_FOUND",
+#             "error_message":"USER_NOT_FOUND"
+#         }, status = 520)
+
+# @app.route('api/v1/task_change_employee', methods=["PUT"])
+# async def task_change_employee(request):
+#     uid = auth.current_user(request)
+#     task_id = request.args.get('id',None)
+#     method_change_employee = request.args.get('method',None)
+#     user = db.session.query(User).filter(User.id == uid).first()
+#     if (user.employee_uid is None):
+#         return json({
+#             "error_code": "EMPLOYEE_NOT_FOUND",
+#             "error_message":"EMPLOYEE_NOT_FOUND"
+#         }, status = 520)
+#     else:
+#         task =  db.session.query(Tasks).filter(Tasks.id == task_id).first()
+        
+#         list_employee = list(task.employees)
+#         if method_change_employee == "add_employee" and user.employee is not None:
+#             task.status = 2 #processing
+#             list_employee.append(user.employee)
+#             task.employees = list_employee
+
+#         elif method_change_employee == "remove_employee":
+#             for i in range(len(list_employee)):
+#                 if(str(list_employee[i].id) == str(user.employee.id)):
+#                     list_employee.pop(i)
+#             task.employees = list_employee
+#             task.status = 0 if list_employee == [] else 2 #0:todo
+#         elif method_change_employee == "done":
+#             task.status = 1 #done
+#             end_time = datetime.datetime.now()
+
+#         db.session.add(task)
+#         db.session.commit()
+#         return json(validTask(task))
+# def validEmployee(employee):
+#     result = employee.__dict__.copy()
+#     key_remove = ['_sa_instance_state','task_groups',"created_at", "created_by",
+#      "updated_at", "updated_by",'deleted_at']
+#     for key in key_remove:
+#             if key in result:
+#                 del(result[key])
+#     result['id'] = str(result['id'])    
+#     return result
+
+# def validTask(task):
+#     result = {
+#             "id": str(task.id),
+#             "task_uid": str(task.id),
+#             "task_code": task.task_code,
+#             "task_name": task.task_name,
+#             "employees": [validEmployee(employee) for employee in task.employees],
+#             "start_time": task.start_time,
+#             "end_time": task.end_time,
+#             "status": task.status,
+#             "priority":task.priority,
+#             "created_by": str(task.created_by),
+#             }
+#     return result
