@@ -12,11 +12,11 @@ class FollowerTask(db.Model):
     __tablename__ = 'followers_tasks'
     user_id = db.Column(UUID(as_uuid=True), ForeignKey('user.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     task_id = db.Column(UUID(as_uuid=True), ForeignKey('task.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
-    created_at = db.Column(Date)
+    created_at = db.Column(BigInteger(), index=True)
     note = db.Column(Text())
 
 
-class Tasks(CommonModel):
+class Task(CommonModel):
     __tablename__='task'
     task_code = db.Column(String(32), index=True, unique=False, nullable=False)
     task_name = db.Column(String(255), nullable=False)

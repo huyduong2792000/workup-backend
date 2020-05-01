@@ -22,11 +22,11 @@ define(function (require) {
 		},
 		processLogin: function () {
 			console.log('process login')
-			var username = this.$('[name=username]').val();
+			var email = this.$('[name=email]').val();
 			var password = this.$('[name=password]').val();
 
 			var data = JSON.stringify({
-				username: username,
+				email: email,
 				password: password
 			});
 			var self = this;

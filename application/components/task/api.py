@@ -1,110 +1,149 @@
-# from gatco.response import json, text
-# from application.server import app
-# from application.database import db
-# from application.extensions import auth
-# import random
-# import string
-# from application.extensions import apimanager
-# from application.models.model import Tasks, Employee, TasksEmployees, TaskInfo
-# from application.components.user.model import User, Role
+from gatco.response import json, text
+from application.server import app
+from application.database import db
+from application.extensions import auth
+import random
+import string
+from application.extensions import apimanager
+from application.components.task.model import Task,FollowerTask
+from application.components.user.model import User, Role
 
-# from application.components import auth_func
-# from sqlalchemy import and_, or_
-# from hashids import Hashids
-# from math import floor
-# import datetime
-# import time
-# import re
+from application.components import auth_func
+from sqlalchemy import and_, or_
+from hashids import Hashids
+from math import floor
+import datetime
+import time
+from gatco_restapi.helpers import to_dict
 
-# hashids = Hashids(salt = "make task easy", alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
-# def no_accent_vietnamese(s):
-#     s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
-#     s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
-#     s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
-#     s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
-#     s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
-#     s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
-#     s = re.sub(r'[ìíịỉĩ]', 'i', s)
-#     s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
-#     s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
-#     s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
-#     s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
-#     s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
-#     s = re.sub(r'[Đ]', 'D', s)
-#     s = re.sub(r'[đ]', 'd', s)
-#     return s
+import re
 
-# def create_task(request=None, data=None, **kw):
-#     uid = auth.current_user(request)
-#     if uid is not None:
-#         data['created_by'] = uid
-#         data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
-#         if data['start_time'] is None:
-#             data['start_time']= time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
-#         if data['end_time'] is None:
-#             data['end_time'] = time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(23, 59, 59)).timetuple())
-# #         print(data['end_time'] )
-#     else:
-#         return json({
-#             "error_code": "USER_NOT_FOUND",
-#             "error_message":"USER_NOT_FOUND"
-#         }, status = 520)
+hashids = Hashids(salt = "make task easy", alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+def no_accent_vietnamese(s):
+    s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
+    s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
+    s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
+    s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
+    s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
+    s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
+    s = re.sub(r'[ìíịỉĩ]', 'i', s)
+    s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
+    s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
+    s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
+    s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
+    s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
+    s = re.sub(r'[Đ]', 'D', s)
+    s = re.sub(r'[đ]', 'd', s)
+    return s
+
+def getNewTask(data,uid):
+    data['created_by'] = uid
+    data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
+    data['start_time']= time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
+    assignee = db.session.query(User).filter(User.id==data['assignee']['id']).first()
+     
+    del data['followers']
+    del data['assignee']
+    del data['note']
+    new_task = Task(**data)
+    new_task.assignee=assignee
+    return new_task
+
+@app.route('/api/v1/post_task', methods=["POST"])
+def createTask(request=None, **kw):
+    uid = auth.current_user(request)
+    data = request.json
+    if uid is not None:
+        note = data['note']
+        followers = data['followers']
+        new_task = getNewTask(data,uid)
+        db.session.add(new_task)
+        db.session.flush()
+
+        # list_id_followers = [follower['id'] for follower in data['followers']]
+        # followers =  db.session.query(User).filter(User.id.in_(list_id_followers)).all() 
+  
+        for follower in followers:
+            follower_task = FollowerTask(user_id=follower['id'],
+                                        task_id=new_task.id,
+                                        created_at=new_task.start_time,
+                                        note=note)
+            db.session.add(follower_task)
+        db.session.commit()
+        return json(request.json,status=201)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
     
 
 
-# def filter_tasks(request=None, search_params=None, **kwargs):
-#     uid = auth.current_user(request)
-#     if uid is not None:
-#         if 'filters' in search_params:
-#             filters = search_params["filters"]
-#             if "$and" in filters:
-#                 search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
-#                 search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
-#             else:
-#                 search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}}, {"deleted":{"$eq": False} } ]
-#         else:
-#             search_params["filters"] = {'$and':[{"created_by":{"$eq": uid}},{"deleted":{"$eq": False} } ]}
+def filter_tasks(request=None, search_params=None, **kwargs):
+    uid = auth.current_user(request)
+    
+    if uid is not None:
+        if 'filters' in search_params:
+            filters = search_params["filters"]
+            if "$and" in filters:
+                search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
+            else:
+                search_params["filters"]={}
+                search_params["filters"]['$and'] = [{"deleted":{"$eq": False}},filters]
+        else:
+            search_params["filters"] = {'$and':[{"assignee_id":{"$eq": None}},{"deleted":{"$eq": False} } ]}
             
-#     else:
-#         return json({
-#             "error_code": "USER_NOT_FOUND",
-#             "error_message":"USER_NOT_FOUND"
-#         }, status = 520)   
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)   
     
-    
+@app.route('/api/v1/get_task_create', methods=["GET"])
+def getTaskCreate(request):
+    uid = auth.current_user(request)
+    if uid is not None:
+        page = request.args.get("page", None)
+        results_per_page = request.args.get("results_per_page", None)
+        offset=(int(page)-1)*int(results_per_page)
+        tasks_create=db.session.query(Task).filter(Task.assignee_id==None).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
+        # print(tasks_create[0].column_descriptions)
+        result=[]
+        for task_create in tasks_create:
+            result.append(to_dict(task_create))
+        return json(result)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)  
 
+@app.route('/api/v1/get_task_follower', methods=["GET"])
+def getTaskFollower(request):
+    uid = auth.current_user(request)
+    if uid is not None:
 
-# def filter_tasks_employees(request=None, search_params=None, **kwargs):
-#     uid = auth.current_user(request)
-#     if uid is not None:
-#         pass
-    
-# #         if 'filters' in search_params:
-# #             filters = search_params["filters"]
-# #             if "$and" in filters:
-# #                 search_params["filters"]['$and'].append()
-# #             else:
-# #                 search_params["filters"] = {}
-# #                 search_params["filters"]['$and'] = []
-# #                 search_params["filters"]['$and'].append()
-# #         else:
-# #             search_params["filters"] = {}
-# #             search_params["filters"]['$and'] = []
-# #             search_params["filters"]['$and'].append()
-#     else:
-#         return json({
-#             "error_code": "USER_NOT_FOUND",
-#             "error_message":"USER_NOT_FOUND"
-#         }, status = 520)  
-
-    
-# apimanager.create_api(
-#         collection_name='tasks', model=Tasks,
-#         methods=['GET', 'POST', 'DELETE', 'PUT'],
-#         url_prefix='/api/v1',
-#         preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[create_task], PUT_SINGLE=[auth_func,create_task], DELETE_SINGLE=[auth_func]),
-#         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
-#     )
+        result=[]
+        list_task_id=[]
+        follower_tasks=db.session.query(FollowerTask).filter(FollowerTask.user_id == uid).all()
+        for follower_task in follower_tasks:
+            list_task_id.append(follower_task.task_id)
+        list_task = db.session.query(Task).filter(Task.id.in_(list_task_id)).all()
+        for task in list_task:
+            result.append(to_dict(task))
+        return json(result)
+    else:
+        return json({
+                "error_code": "USER_NOT_FOUND",
+                "error_message":"USER_NOT_FOUND"
+            }, status = 520) 
+apimanager.create_api(
+        collection_name='task', model=Task,
+        methods=['GET', 'POST', 'DELETE', 'PUT'],
+        url_prefix='/api/v1',
+        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+        postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
+    )
 
 
 # # apimanager.create_api(

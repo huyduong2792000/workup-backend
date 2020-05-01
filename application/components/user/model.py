@@ -20,13 +20,19 @@ class Role(CommonModel):
 class User(CommonModel):
     __tablename__ = 'user'
     # Authentication Attributes.
-    user_name = db.Column(String(255), index=True)
     display_name = db.Column(String(255), nullable=True)
     email = db.Column(String(255), nullable=False, index=True)
-    phone = db.Column(String(255), nullable=False, index=True, unique=True)
+    phone = db.Column(String(255), index=True, unique=True)
     password = db.Column(String(255), nullable=False)
     salt = db.Column(String(255), nullable=False)
     is_active = db.Column(Boolean, default=True)
+    id_identifier = db.Column(String(32), index=True)
+    gender = db.Column(SmallInteger(), default=1)
+    birthday = db.Column(BigInteger())
+    address = db.Column(String)
+    status = db.Column(String)
+    start_time = db.Column(BigInteger(), index= True)
+    end_time = db.Column(BigInteger(), index=True)
     # role_id = db.Column(UUID(as_uuid=True), ForeignKey('role.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     # role = db.relationship("Role")
     # group

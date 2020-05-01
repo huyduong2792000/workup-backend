@@ -13,6 +13,7 @@ from sqlalchemy import and_, or_
 from gatco_restapi.helpers import to_dict
 import re
 
+
 def response_userinfo(user, **kw):
     if user is not None:
         # employee = to_dict(user.employee)
@@ -34,16 +35,29 @@ def response_userinfo(user, **kw):
         # user_info['roles'] = roles
         return user_info
     return None
-
+@app.route("/signup", methods=["POST", "GET"])
+def user_register(request):
+    param = request.json
+    email = param['email']
+    password=param['password']
+    check_user_match = db.session.query(User).filter(User.email == email).all()
+    if len(check_user_match) ==0:
+        letters = string.ascii_lowercase
+        user_salt = ''.join(random.choice(letters) for i in range(64))
+        user_password = auth.encrypt_password(password, user_salt)
+        new_user = User(email=email, password=user_password, salt=user_salt)
+        db.session.add(new_user)
+        db.session.commit()
+        return json({"email":email,"password":password})
 
 @app.route("/login", methods=["POST", "GET"])
 async def user_login(request):
     param = request.json
-    user_name = param.get("username")
+    email = param.get("email")
     password = param.get("password")
-    print(user_name, password)
-    if (user_name is not None) and (password is not None):
-        user = getUser(user_name)
+    print(email, password)
+    if (email is not None) and (password is not None):
+        user = getUser(email)
         if (user is not None) and auth.verify_password(password, user.password, user.salt):
             try:
                 user.employee.status = 'online'
@@ -59,11 +73,11 @@ async def user_login(request):
     else:
         return json({"error_code": "PARAM_ERROR", "error_message": "param error"}, status=520)
     return text("user_login api")
-def getUser(user_name):
-    if(checkIsPhoneNumber(user_name) is True):
-        user = db.session.query(User).filter(User.phone == user_name).first()
+def getUser(email):
+    if(checkIsPhoneNumber(email) is True):
+        user = db.session.query(User).filter(User.phone == email).first()
     else:
-        user = db.session.query(User).filter(User.user_name == user_name).first()
+        user = db.session.query(User).filter(User.email == email).first()
     return user
 def checkIsPhoneNumber(phone):
     x = re.search("^(09|08|07|05|03)+[0-9]{8}", phone)
@@ -106,7 +120,7 @@ async def get_current_user(request):
 
 # def get_current_user(request):
 #     #user = auth.current_user(request)
-#     # return json({"id": user.id, "user_name": user.user_name, "full_name": user.full_name,"employee_id":user.employee_id,"role":user.roles[0].role_name})
+#     # return json({"id": user.id, "email": user.email, "full_name": user.full_name,"employee_id":user.employee_id,"role":user.roles[0].role_name})
 #     # return json({})
 #     # print('request',request.json)
 #     token = request.headers.get("Cookie", None)
@@ -179,36 +193,6 @@ async def get_current_user(request):
 #             return json({"error_code": "PARAM_INVALID", "error_message": "Dữ liệu không đúng định dạng!"}, status=520)
 
 
-# def user_register(request=None, Model=None, result=None, **kw):
-#     param = request.json
-# #     password = request.args['password']
-#     password = "123456"
-# #     confirm_password= request.args['confirm_password']
-
-#     role_admin = Role.query.filter(Role.role_name == "admin").first()
-#     role_user = Role.query.filter(Role.role_name == "user").first()
-#     role_employee = Role.query.filter(Role.role_name == "employee").first()
-#     role_leader = Role.query.filter(Role.role_name == "leader").first()
-#     # print("model==========",result)
-
-#     letters = string.ascii_lowercase
-#     user_salt = ''.join(random.choice(letters) for i in range(64))
-#     user_password = auth.encrypt_password(password, user_salt)
-#     user = User(email=param['email'], password=user_password, salt=user_salt,employee_uid=result['id'],
-#                 user_name=param['email'],  phone_number=param['phone_number'],  full_name=param['full_name'])
-#     if (param['position'] == 'employee' or param['position'] is None):
-#         user.roles = [role_employee]
-#     if (param['position'] == 'leader'):
-#         user.roles = [role_leader]
-
-#     employee = db.session.query(Employee).filter(
-#         Employee.id == result['id']).first()
-#     employee.user = [user]
-# #     print('role',role_employee)
-#     db.session.add(employee)
-
-#     db.session.commit()
-
 
 # def update_user(request=None, Model=None, result=None, **kw):
 #     param = request.json
@@ -237,10 +221,8 @@ async def get_current_user(request):
 apimanager.create_api(collection_name='user', model=User,
                       methods=['GET', 'POST', 'DELETE', 'PUT'],
                       url_prefix='/api/v1',
-                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[
-                                      auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
-                      postprocess=dict(POST=[], PUT_SINGLE=[],
-                                       DELETE_SINGLE=[], GET_MANY=[])
+                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+                      postprocess=dict(POST=[], PUT_SINGLE=[],DELETE_SINGLE=[], GET_MANY=[])
                       )
 
 

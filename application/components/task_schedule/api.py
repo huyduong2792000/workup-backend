@@ -5,7 +5,7 @@ from application.extensions import auth
 import random
 import string
 from application.extensions import apimanager
-from application.components.task.model import Tasks
+from application.components.task.model import Task
 from application.components.task_schedule.model import TaskSchedule
 from application.components import auth_func
 from application.extensions import auth
@@ -40,8 +40,8 @@ def createTasks():
         check = CheckIndexTodayInList(dayindex_today,list_day_of_week)
         if (check is True):
             print('clone process')
-            for task in task_schedule.Tasks:
-                new_task = Tasks()
+            for task in task_schedule.Task:
+                new_task = Task()
                 new_task.status = 0
                 new_task.task_many_times = False
                 new_task.created_by = task_schedule.created_by
@@ -95,7 +95,6 @@ def runSchedule():
 
 
 def create_taskschedule(request=None, data=None, **kw):
-
     uid = auth.current_user(request)
     if uid is not None:
         data['created_by'] = uid
