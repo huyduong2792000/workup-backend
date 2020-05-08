@@ -24,4 +24,5 @@ class Group(CommonModel):
     unsigned_name = db.Column(String)
     description = db.Column(String)
     # priority = db.Column(SmallInteger)
-    member = db.relationship("User",secondary="groups_users")
+    members = db.relationship("User",secondary="groups_users")
+    tasks = db.relationship("Task")

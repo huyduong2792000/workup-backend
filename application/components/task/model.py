@@ -7,7 +7,6 @@ from application.database import db
 from application.database.model import CommonModel, default_uuid
 from application.components.user.model import User,Role
 
-
 class FollowerTask(db.Model):
     __tablename__ = 'followers_tasks'
     user_id = db.Column(UUID(as_uuid=True), ForeignKey('user.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
@@ -41,5 +40,5 @@ class Task(CommonModel):
     comments = db.Column(JSONB())
     description = db.Column(String(255))
     active = db.Column(SmallInteger, default=1)
-    # group_id 
+    group_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"))
 

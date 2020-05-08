@@ -1,58 +1,80 @@
-# from application.extensions import apimanager
-# from application.models.model import *
-# from gatco.exceptions import ServerError
-# from application.components import auth_func
-# from application.extensions import auth
-# from gatco.response import text, json
-# from application.components.user.model import User, Role
-# from application.server import app
-# from datetime import datetime
-# from sqlalchemy import and_, or_
+from application.extensions import apimanager
+from application.models.model import *
+from gatco.exceptions import ServerError
+from application.components import auth_func
+from application.extensions import auth
+from gatco.response import text, json
+from application.components.user.model import User, Role
+from application.components.group.model import Group,GroupsUsers
+from application.server import app
+from datetime import datetime
+from sqlalchemy import and_, or_
+import re
+def no_accent_vietnamese(s):
+    s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
+    s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
+    s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
+    s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
+    s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
+    s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
+    s = re.sub(r'[ìíịỉĩ]', 'i', s)
+    s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
+    s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
+    s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
+    s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
+    s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
+    s = re.sub(r'[Đ]', 'D', s)
+    s = re.sub(r'[đ]', 'd', s)
+    return s
+@app.route('/api/v1/create_group', methods=["POST"])
+def createGroup(request=None, data=None, Model=None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        group = request.json
+        response = group
+        group['unsigned_name'] = no_accent_vietnamese(group['group_name'])
+        group['created_by'] = uid
+        members = group['members']
+        del group['members']
+        new_group = Group(**group)
+        db.session.add(new_group)
+        db.session.flush()
+        all_roles = db.session.query(Role).all()
 
-# import re
-# def no_accent_vietnamese(s):
-#     s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
-#     s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
-#     s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
-#     s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
-#     s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
-#     s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
-#     s = re.sub(r'[ìíịỉĩ]', 'i', s)
-#     s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
-#     s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
-#     s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
-#     s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
-#     s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
-#     s = re.sub(r'[Đ]', 'D', s)
-#     s = re.sub(r'[đ]', 'd', s)
-#     return s
+        for member in members:
+            role_member = getRole(all_roles,member['role_name'])
+            if role_member != None:
+                new_group_user = GroupsUsers(
+                    group_id = new_group.id,
+                    group = new_group,
+                    user_id = member['info']['id'],
+                    # user = User(**member['info']),
+                    role_id = role_member.id,
+                    role = role_member,
+                    created_by = uid
+                )
+                db.session.add(new_group_user)
+        db.session.commit()
+        response['id'] = str(new_group.id)
+        return json(response)
 
-# def create_task_group(request=None, data=None, Model=None):
-#     uid = auth.current_user(request)
-#     if uid is not None:
-#         data['created_by'] = uid
-#         data['unsigned_name'] = no_accent_vietnamese(data['name'])
-#         data['supervisor_uid'] = data['supervisor']['id']
-#         # db.session.add(result)
-#         # db.session.commit()
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+def getRole(all_roles,role_find):
+    for role in all_roles:
+        if role.role_name == role_find:
+            return role
+    return None
 
-#     else:
-#         return json({
-#             "error_code": "USER_NOT_FOUND",
-#             "error_message":"USER_NOT_FOUND"
-#         }, status = 520)
-
-# def add_group_to_employee(request=None, result=None, Model=None, headers=None):
-#     employee = db.session.query(Employee).filter(Employee.id == result['supervisor']['id']).first()
-#     group = db.session.query(TaskGroup).filter(TaskGroup.id == result['id']).first()
-
-#     task_groups = list(employee.task_groups)
-#     task_groups.append(group)
-#     employee.task_groups = task_groups.copy()
-#     db.session.add(employee)
-#     db.session.commit()
-#     return
-
+apimanager.create_api(collection_name='group', model=Group,
+    methods=['GET', 'POST', 'DELETE', 'PUT'],
+    url_prefix='/api/v1',
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+    postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
+    )
 # def remove_group_from_employee(data):
 #     if data['supervisor']['id'] != data['supervisor_uid']:
 #         employee_old = db.session.query(Employee).filter(Employee.id == data['supervisor_uid']).first()
@@ -101,12 +123,7 @@
 #             "error_message":"USER_NOT_FOUND"
 #         }, status = 520)   
         
-# apimanager.create_api(collection_name='task_group', model=TaskGroup,
-#     methods=['GET', 'POST', 'DELETE', 'PUT'],
-#     url_prefix='/api/v1',
-#     preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,filter_task_group], POST=[auth_func,create_task_group], PUT_SINGLE=[auth_func,update_task_group], DELETE_SINGLE=[auth_func]),
-#     postprocess=dict(POST=[auth_func,add_group_to_employee], PUT_SINGLE=[add_group_to_employee], DELETE_SINGLE=[], GET_MANY =[]),
-#     )
+
 
 # @app.route('/api/v1/task_group_delete_multiple',methods=['PUT'])
 # async def delete_multiple(request):

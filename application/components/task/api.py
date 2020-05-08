@@ -36,6 +36,7 @@ def no_accent_vietnamese(s):
     s = re.sub(r'[đ]', 'd', s)
     return s
 
+
 def getNewTask(data,uid):
     data['created_by'] = uid
     data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
@@ -50,7 +51,7 @@ def getNewTask(data,uid):
     return new_task
 
 @app.route('/api/v1/post_task', methods=["POST"])
-def createTask(request=None, **kw):
+def postTask(request=None, **kw):
     uid = auth.current_user(request)
     data = request.json
     if uid is not None:
@@ -59,9 +60,6 @@ def createTask(request=None, **kw):
         new_task = getNewTask(data,uid)
         db.session.add(new_task)
         db.session.flush()
-
-        # list_id_followers = [follower['id'] for follower in data['followers']]
-        # followers =  db.session.query(User).filter(User.id.in_(list_id_followers)).all() 
   
         for follower in followers:
             follower_task = FollowerTask(user_id=follower['id'],
@@ -106,7 +104,7 @@ def getTaskCreate(request):
         page = request.args.get("page", None)
         results_per_page = request.args.get("results_per_page", None)
         offset=(int(page)-1)*int(results_per_page)
-        tasks_create=db.session.query(Task).filter(Task.assignee_id==None).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
+        tasks_create=db.session.query(Task).filter(or_(Task.assignee_id!=uid,Task.assignee_id==None),Task.created_by==uid,Task.deleted==False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
         # print(tasks_create[0].column_descriptions)
         result=[]
         for task_create in tasks_create:
@@ -122,13 +120,15 @@ def getTaskCreate(request):
 def getTaskFollower(request):
     uid = auth.current_user(request)
     if uid is not None:
-
+        # page = request.args.get("page", None)
+        # results_per_page = request.args.get("results_per_page", None)
+        # offset=(int(page)-1)*int(results_per_page)
         result=[]
         list_task_id=[]
         follower_tasks=db.session.query(FollowerTask).filter(FollowerTask.user_id == uid).all()
         for follower_task in follower_tasks:
             list_task_id.append(follower_task.task_id)
-        list_task = db.session.query(Task).filter(Task.id.in_(list_task_id)).all()
+        list_task = db.session.query(Task).filter(Task.id.in_(list_task_id),Task.deleted==False).order_by(Task.created_at.desc()).all()
         for task in list_task:
             result.append(to_dict(task))
         return json(result)
@@ -137,11 +137,24 @@ def getTaskFollower(request):
                 "error_code": "USER_NOT_FOUND",
                 "error_message":"USER_NOT_FOUND"
             }, status = 520) 
+
+def createTask(request=None,data=None, **kw):
+    uid = auth.current_user(request)
+    if uid is not None:
+        data['created_by'] = uid
+        data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
+        data['start_time']= time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
+        
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
 apimanager.create_api(
         collection_name='task', model=Task,
         methods=['GET', 'POST', 'DELETE', 'PUT'],
         url_prefix='/api/v1',
-        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[createTask], PUT_SINGLE=[createTask], DELETE_SINGLE=[auth_func]),
         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
     )
 
@@ -299,8 +312,8 @@ apimanager.create_api(
 #             "error_message":"USER_NOT_FOUND"
 #         }, status = 520)
 
-# @app.route('api/v1/task_change_employee', methods=["PUT"])
-# async def task_change_employee(request):
+# @app.route('api/v1/set_task_status', methods=["PUT"])
+# async def set_task_status(request):
 #     uid = auth.current_user(request)
 #     task_id = request.args.get('id',None)
 #     method_change_employee = request.args.get('method',None)
@@ -311,7 +324,7 @@ apimanager.create_api(
 #             "error_message":"EMPLOYEE_NOT_FOUND"
 #         }, status = 520)
 #     else:
-#         task =  db.session.query(Tasks).filter(Tasks.id == task_id).first()
+#         task =  db.session.query(Task).filter(Task.id == task_id).first()
         
 #         list_employee = list(task.employees)
 #         if method_change_employee == "add_employee" and user.employee is not None:
@@ -331,7 +344,7 @@ apimanager.create_api(
 
 #         db.session.add(task)
 #         db.session.commit()
-#         return json(validTask(task))
+#         return json(to_dict(task))
 # def validEmployee(employee):
 #     result = employee.__dict__.copy()
 #     key_remove = ['_sa_instance_state','task_groups',"created_at", "created_by",
