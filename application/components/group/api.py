@@ -26,6 +26,8 @@ def no_accent_vietnamese(s):
     s = re.sub(r'[Đ]', 'D', s)
     s = re.sub(r'[đ]', 'd', s)
     return s
+
+
 @app.route('/api/v1/create_group', methods=["POST"])
 def createGroup(request=None, data=None, Model=None):
     uid = auth.current_user(request)
@@ -40,10 +42,9 @@ def createGroup(request=None, data=None, Model=None):
         db.session.add(new_group)
         db.session.flush()
         all_roles = db.session.query(Role).all()
-
         for member in members:
             role_member = getRole(all_roles,member['role_name'])
-            if role_member != None:
+            if role_member != None and 'id' in member['info'].keys():
                 new_group_user = GroupsUsers(
                     group_id = new_group.id,
                     group = new_group,
@@ -56,7 +57,7 @@ def createGroup(request=None, data=None, Model=None):
                 db.session.add(new_group_user)
         db.session.commit()
         response['id'] = str(new_group.id)
-        return json(response)
+        return json(response,status=201)
 
     else:
         return json({
@@ -69,10 +70,35 @@ def getRole(all_roles,role_find):
             return role
     return None
 
+def getMyGroup(request=None, search_params=None, **kwargs):
+    uid = auth.current_user(request)
+    if uid is not None:
+        if 'filters' in search_params and bool(search_params["filters"]):
+            filters = search_params["filters"]
+            if "$and" in filters:
+                search_params["filters"]['$and'].append({"user_id":{"$eq": uid}})
+            else:
+                search_params["filters"]={}
+                search_params["filters"]['$and'] = [{"user_id":{"$eq": uid}},filters]
+        else:
+            search_params["filters"] = {'$and':[{"user_id":{"$eq": uid}}]}
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+
 apimanager.create_api(collection_name='group', model=Group,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
     url_prefix='/api/v1',
     preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+    postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
+    )
+
+apimanager.create_api(collection_name='groups_users', model=GroupsUsers,
+    methods=['GET', 'POST', 'DELETE', 'PUT'],
+    url_prefix='/api/v1',
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,getMyGroup], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
     postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
     )
 # def remove_group_from_employee(data):

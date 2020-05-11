@@ -7,7 +7,7 @@ import string
 from application.extensions import apimanager
 from application.components.task.model import Task,FollowerTask
 from application.components.user.model import User, Role
-
+import json as to_json
 from application.components import auth_func
 from sqlalchemy import and_, or_
 from hashids import Hashids
@@ -97,7 +97,7 @@ def filter_tasks(request=None, search_params=None, **kwargs):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)   
     
-@app.route('/api/v1/get_task_create', methods=["GET"])
+@app.route('/api/v1/get_task_created_by_me', methods=["GET"])
 def getTaskCreate(request):
     uid = auth.current_user(request)
     if uid is not None:
@@ -115,6 +115,48 @@ def getTaskCreate(request):
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"
         }, status = 520)  
+
+@app.route('/api/v1/get_task_created_in_group', methods=["GET"])
+def getTaskCreate(request):
+    uid = auth.current_user(request)
+    if uid is not None:
+        page = request.args.get("page", None)
+        results_per_page = request.args.get("results_per_page", None)
+        group_id = to_json.loads(request.args.get("q", None))["filters"]["group_id"]
+        offset=(int(page)-1)*int(results_per_page)
+        tasks_create=db.session.query(Task).filter(Task.group_id==group_id,Task.deleted==False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
+        result=[]
+        for task_create in tasks_create:
+            result.append(to_dict(task_create))
+        return json(result)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+
+@app.route('/api/v1/get_task_follower_in_group', methods=["GET"])
+def getTaskFollower(request):
+    uid = auth.current_user(request)
+    if uid is not None:
+        page = request.args.get("page", None)
+        results_per_page = request.args.get("results_per_page", None)
+        group_id = to_json.loads(request.args.get("q", None))["filters"]["group_id"]
+        offset=(int(page)-1)*int(results_per_page)
+        result=[]
+        list_task_id=[]
+        follower_tasks=db.session.query(FollowerTask).filter(FollowerTask.user_id == uid).all()
+        for follower_task in follower_tasks:
+            list_task_id.append(follower_task.task_id)
+        list_task = db.session.query(Task).filter(Task.id.in_(list_task_id),Task.group_id == group_id,Task.deleted==False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
+        for task in list_task:
+            result.append(to_dict(task))
+        return json(result)
+    else:
+        return json({
+                "error_code": "USER_NOT_FOUND",
+                "error_message":"USER_NOT_FOUND"
+            }, status = 520) 
 
 @app.route('/api/v1/get_task_follower', methods=["GET"])
 def getTaskFollower(request):

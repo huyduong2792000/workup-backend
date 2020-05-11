@@ -41,14 +41,14 @@ def user_register(request):
     email = param['email']
     password=param['password']
     check_user_match = db.session.query(User).filter(User.email == email).all()
-    if len(check_user_match) ==0:
+    if len(check_user_match) == 0:
         letters = string.ascii_lowercase
         user_salt = ''.join(random.choice(letters) for i in range(64))
         user_password = auth.encrypt_password(password, user_salt)
         new_user = User(email=email, password=user_password, salt=user_salt)
         db.session.add(new_user)
         db.session.commit()
-        return json({"email":email,"password":password})
+        return json({"id":new_user.id,"email":email,"password":password})
 
 @app.route("/login", methods=["POST", "GET"])
 async def user_login(request):
@@ -116,6 +116,77 @@ async def get_current_user(request):
 
     print("===============", user_info)
     # if user_info is not None:
+
+apimanager.create_api(collection_name='user', model=User,
+                      methods=['GET', 'POST', 'DELETE', 'PUT'],
+                      url_prefix='/api/v1',
+                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+                      postprocess=dict(POST=[], PUT_SINGLE=[],DELETE_SINGLE=[], GET_MANY=[])
+                      )
+
+
+apimanager.create_api(collection_name='role', model=Role,
+                      methods=['GET', 'POST', 'DELETE', 'PUT'],
+                      url_prefix='/api/v1',
+                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[
+                                      auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+                      postprocess=dict(POST=[], PUT_SINGLE=[],
+                                       DELETE_SINGLE=[], GET_MANY=[])
+                      )
+
+def no_accent_vietnamese(s):
+    s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
+    s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
+    s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
+    s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
+    s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
+    s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
+    s = re.sub(r'[ìíịỉĩ]', 'i', s)
+    s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
+    s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
+    s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
+    s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
+    s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
+    s = re.sub(r'[Đ]', 'D', s)
+    s = re.sub(r'[đ]', 'd', s)
+    return s
+
+@app.route('/api/v1/check_user_has_been_account', methods=["GET", "POST"])
+def checkContactHasBeenAccount(request=None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        list_contact = request.json
+        list_contact_convert = convertListContact(list_contact)
+        list_phone = []
+        for contact in list_contact_convert:
+            list_phone.append(contact['phone'])
+        users_match = db.session.query(User).filter(User.phone.in_(list_phone)).all()
+        
+        response = []
+        for contact in list_contact_convert:
+            for user in users_match:
+                if(user.phone == contact['phone']):
+                    contact['display_name_server'] = user.display_name
+                    contact['email'] = user.email
+                    contact['id'] = str(user.id)
+            response.append(contact)
+        return json(response)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+
+
+def convertListContact(list_contact):
+    result = []
+    for contact in list_contact:
+        if contact['contactType'] == "person":
+            result.append({
+                "display_name": contact['name'],
+                "phone":re.sub(r'[^0-9]', '', contact['phoneNumbers'][0]['number'])
+            })
+    return result
 
 
 # def get_current_user(request):
@@ -218,39 +289,6 @@ async def get_current_user(request):
 #     db.session.commit()
    
 
-apimanager.create_api(collection_name='user', model=User,
-                      methods=['GET', 'POST', 'DELETE', 'PUT'],
-                      url_prefix='/api/v1',
-                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
-                      postprocess=dict(POST=[], PUT_SINGLE=[],DELETE_SINGLE=[], GET_MANY=[])
-                      )
-
-
-apimanager.create_api(collection_name='role', model=Role,
-                      methods=['GET', 'POST', 'DELETE', 'PUT'],
-                      url_prefix='/api/v1',
-                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[
-                                      auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
-                      postprocess=dict(POST=[], PUT_SINGLE=[],
-                                       DELETE_SINGLE=[], GET_MANY=[])
-                      )
-
-def no_accent_vietnamese(s):
-    s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
-    s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
-    s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
-    s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
-    s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
-    s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
-    s = re.sub(r'[ìíịỉĩ]', 'i', s)
-    s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
-    s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
-    s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
-    s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
-    s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
-    s = re.sub(r'[Đ]', 'D', s)
-    s = re.sub(r'[đ]', 'd', s)
-    return s
 
 # def create_employee(request=None, data=None, **kw):
 #     uid = auth.current_user(request)
