@@ -10,6 +10,8 @@ from application.server import app
 from datetime import datetime
 from sqlalchemy import and_, or_
 import re
+import json as to_json
+
 def no_accent_vietnamese(s):
     s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
     s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
@@ -70,7 +72,23 @@ def getRole(all_roles,role_find):
             return role
     return None
 
-def getMyGroup(request=None, search_params=None, **kwargs):
+
+# @app.route('/api/v1/get_list_members_group', methods=["POST"])
+# def createGroup(request=None, data=None, Model=None):
+#     uid = auth.current_user(request)
+#     if uid is not None:
+#         page = int(request.args.get("page", None))
+#         results_per_page = int(request.args.get("results_per_page", None))
+#         group_id = to_json.loads(request.args.get("q", None))["filters"]["group_id"]
+#         list_members = db.session.query(GroupsUsers).filter(Task.group_id==group_id,Task.deleted==False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
+#         return json(response,status=201)
+
+#     else:
+#         return json({
+#             "error_code": "USER_NOT_FOUND",
+#             "error_message":"USER_NOT_FOUND"
+#         }, status = 520)
+def getManyGroup(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
     if uid is not None:
         if 'filters' in search_params and bool(search_params["filters"]):
@@ -87,18 +105,36 @@ def getMyGroup(request=None, search_params=None, **kwargs):
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
+def getMyGroup(request=None, search_params=None, **kwargs):
+    uid = auth.current_user(request)
+    if uid is not None:
+        if 'filters' in search_params and bool(search_params["filters"]):
+            filters = search_params["filters"]
+            if "$and" in filters:
+                search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
+            else:
+                search_params["filters"]={}
+                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}},filters]
+        else:
+            search_params["filters"] = {"created_by":{"$eq": uid}}
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+
 
 apimanager.create_api(collection_name='group', model=Group,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
     url_prefix='/api/v1',
-    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,getMyGroup], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
     postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
     )
 
 apimanager.create_api(collection_name='groups_users', model=GroupsUsers,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
     url_prefix='/api/v1',
-    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,getMyGroup], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,getManyGroup], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
     postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
     )
 # def remove_group_from_employee(data):

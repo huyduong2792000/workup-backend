@@ -37,17 +37,19 @@ def no_accent_vietnamese(s):
     return s
 
 
-def getNewTask(data,uid):
+def convertNewTask(data,uid):
     data['created_by'] = uid
     data['unsigned_name'] = no_accent_vietnamese(data['task_name'])
     data['start_time']= time.mktime(datetime.datetime.combine(datetime.datetime.today(), datetime.time(00, 00, 00)).timetuple())
-    assignee = db.session.query(User).filter(User.id==data['assignee']['id']).first()
-     
+    # assignee = db.session.query(User).filter(User.id==data['assignee']['id']).first()
+    assignee = data['assignee']
     del data['followers']
     del data['assignee']
     del data['note']
     new_task = Task(**data)
-    new_task.assignee=assignee
+    if 'id' in assignee.keys():
+        new_task.assignee_id = assignee['id']
+    # new_task.assignee=assignee
     return new_task
 
 @app.route('/api/v1/post_task', methods=["POST"])
@@ -57,7 +59,7 @@ def postTask(request=None, **kw):
     if uid is not None:
         note = data['note']
         followers = data['followers']
-        new_task = getNewTask(data,uid)
+        new_task = convertNewTask(data,uid)
         db.session.add(new_task)
         db.session.flush()
   
@@ -103,13 +105,17 @@ def getTaskCreate(request):
     if uid is not None:
         page = request.args.get("page", None)
         results_per_page = request.args.get("results_per_page", None)
-        offset=(int(page)-1)*int(results_per_page)
-        tasks_create=db.session.query(Task).filter(or_(Task.assignee_id!=uid,Task.assignee_id==None),Task.created_by==uid,Task.deleted==False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
+        offset = (int(page)-1)*int(results_per_page)
+        tasks_create = db.session.query(Task).filter(
+            or_(Task.assignee_id != uid,Task.assignee_id == None),
+            Task.created_by == uid,
+            Task.deleted == False,
+            Task.group_id == None).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
         # print(tasks_create[0].column_descriptions)
         result=[]
         for task_create in tasks_create:
             result.append(to_dict(task_create))
-        return json(result)
+        return json({"num_results":len(result),"objects":result,"page":page})
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -124,11 +130,13 @@ def getTaskCreate(request):
         results_per_page = request.args.get("results_per_page", None)
         group_id = to_json.loads(request.args.get("q", None))["filters"]["group_id"]
         offset=(int(page)-1)*int(results_per_page)
-        tasks_create=db.session.query(Task).filter(Task.group_id==group_id,Task.deleted==False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
+        tasks_create=db.session.query(Task).filter(
+            Task.group_id == group_id,
+            Task.deleted == False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
         result=[]
         for task_create in tasks_create:
             result.append(to_dict(task_create))
-        return json(result)
+        return json({"num_results":len(result),"objects":result,"page":page})
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -148,37 +156,65 @@ def getTaskFollower(request):
         follower_tasks=db.session.query(FollowerTask).filter(FollowerTask.user_id == uid).all()
         for follower_task in follower_tasks:
             list_task_id.append(follower_task.task_id)
-        list_task = db.session.query(Task).filter(Task.id.in_(list_task_id),Task.group_id == group_id,Task.deleted==False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
+        list_task = db.session.query(Task).filter(
+            Task.id.in_(list_task_id),
+            Task.group_id == group_id,
+            Task.deleted == False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
         for task in list_task:
             result.append(to_dict(task))
-        return json(result)
+        return json({"num_results":len(result),"objects":result,"page":page})
     else:
         return json({
                 "error_code": "USER_NOT_FOUND",
                 "error_message":"USER_NOT_FOUND"
             }, status = 520) 
 
-@app.route('/api/v1/get_task_follower', methods=["GET"])
+@app.route('/api/v1/get_task_follower_by_me', methods=["GET"])
 def getTaskFollower(request):
     uid = auth.current_user(request)
     if uid is not None:
-        # page = request.args.get("page", None)
-        # results_per_page = request.args.get("results_per_page", None)
-        # offset=(int(page)-1)*int(results_per_page)
+        page = request.args.get("page", None)
+        results_per_page = request.args.get("results_per_page", None)
+        offset=(int(page)-1)*int(results_per_page)
         result=[]
         list_task_id=[]
         follower_tasks=db.session.query(FollowerTask).filter(FollowerTask.user_id == uid).all()
         for follower_task in follower_tasks:
             list_task_id.append(follower_task.task_id)
-        list_task = db.session.query(Task).filter(Task.id.in_(list_task_id),Task.deleted==False).order_by(Task.created_at.desc()).all()
+        list_task = db.session.query(Task).filter(
+            Task.id.in_(list_task_id),
+            Task.group_id == None,
+            Task.deleted == False).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
         for task in list_task:
             result.append(to_dict(task))
-        return json(result)
+        return json({"num_results":len(result),"objects":result,"page":page})
     else:
         return json({
                 "error_code": "USER_NOT_FOUND",
                 "error_message":"USER_NOT_FOUND"
             }, status = 520) 
+@app.route('/api/v1/get_task_received_by_me', methods=["GET"])
+def getTaskCreate(request):
+    uid = auth.current_user(request)
+    if uid is not None:
+        page = request.args.get("page", None) or 1
+        results_per_page = request.args.get("results_per_page", None) or 50
+        offset=(int(page)-1)*int(results_per_page)
+
+        tasks_create = db.session.query(Task).filter(
+            Task.assignee_id == uid,
+            Task.deleted == False,
+            Task.group_id == None).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
+        # print(tasks_create[0].column_descriptions)
+        result=[]
+        for task_create in tasks_create:
+            result.append(to_dict(task_create))
+        return json({"num_results":len(result),"objects":result,"page":page})
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520) 
 
 def createTask(request=None,data=None, **kw):
     uid = auth.current_user(request)
