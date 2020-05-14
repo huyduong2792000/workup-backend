@@ -9,7 +9,7 @@ from application.components.task.model import Task,FollowerTask
 from application.components.user.model import User, Role
 import json as to_json
 from application.components import auth_func
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_,update, literal
 from hashids import Hashids
 from math import floor
 import datetime
@@ -52,25 +52,62 @@ def convertNewTask(data,uid):
     # new_task.assignee=assignee
     return new_task
 
-@app.route('/api/v1/post_task', methods=["POST"])
-def postTask(request=None, **kw):
+@app.route('/api/v1/save_task/<task_id>', methods=["POST",'PUT'])
+def postTask(request=None,task_id=None, **kw):
     uid = auth.current_user(request)
     data = request.json
     if uid is not None:
-        note = data['note']
-        followers = data['followers']
-        new_task = convertNewTask(data,uid)
-        db.session.add(new_task)
-        db.session.flush()
-  
-        for follower in followers:
-            follower_task = FollowerTask(user_id=follower['id'],
-                                        task_id=new_task.id,
-                                        created_at=new_task.start_time,
-                                        note=note)
-            db.session.add(follower_task)
-        db.session.commit()
-        return json(request.json,status=201)
+        if request.method == 'POST':
+            note = data['note']
+            followers = data['followers']
+            new_task = convertNewTask(data,uid)
+            db.session.add(new_task)
+            db.session.flush()
+    
+            for follower in followers:
+                follower_task = FollowerTask(user_id = follower['id'],
+                                            task_id = new_task.id,
+                                            created_at = new_task.start_time,
+                                            note = note)
+                db.session.add(follower_task)
+            db.session.commit()
+            return json(request.json,status=201)
+        else:
+            in_relation_ids = []
+            for follower in data['followers']:
+                # CHECK EXISTS
+                check_follower = db.session.query(FollowerTask).filter(FollowerTask.task_id == data['id'],\
+                    FollowerTask.user_id == follower['id']).first()
+                # is_relation_exist = db.session.query(literal(True)).filter(check_follower.exists()).scalar()
+                if check_follower is not None:
+                    in_relation_ids.append(check_follower.id)
+                    pass
+                else:
+                    new_relation = FollowerTask(
+                        user_id = follower['id'],
+                        task_id = data['id'],
+                        note = data['note'],
+                        )
+                    db.session.add(new_relation)
+                    db.session.flush()
+                    in_relation_ids.append(new_relation.id)
+                    
+            # DELETE ALL OTHER RELATIONS NOT IN in_relation_ids
+            db.session.query(FollowerTask).filter(~FollowerTask.id.in_(in_relation_ids)).delete(synchronize_session=False)
+            del data['note']
+            del data['task_info']
+            del data['followers']
+            assignee = db.session.query(User).filter(User.id == data['assignee']['id']).first()
+            del data['assignee']
+            task_update = db.session.query(Task).filter(Task.id == task_id).first()
+            task_update.assignee = assignee
+            for atrr in data.keys():
+                setattr(task_update, atrr, data[atrr])
+            # task_update.assignee = assignee
+            db.session.add(task_update)
+            db.session.commit()
+            return json(to_dict(task_update),status=200)
+            
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -232,7 +269,7 @@ apimanager.create_api(
         collection_name='task', model=Task,
         methods=['GET', 'POST', 'DELETE', 'PUT'],
         url_prefix='/api/v1',
-        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[createTask], PUT_SINGLE=[createTask], DELETE_SINGLE=[auth_func]),
+        preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[filter_tasks], POST=[createTask], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
         postprocess=dict(POST=[], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[])
     )
 
