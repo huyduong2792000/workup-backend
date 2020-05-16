@@ -52,12 +52,11 @@ def convertNewTask(data,uid):
     # new_task.assignee=assignee
     return new_task
 
-@app.route('/api/v1/save_task/<task_id>', methods=["POST",'PUT'])
+@app.route('/api/v1/save_task', methods=["POST"])
 def postTask(request=None,task_id=None, **kw):
     uid = auth.current_user(request)
     data = request.json
     if uid is not None:
-        if request.method == 'POST':
             note = data['note']
             followers = data['followers']
             new_task = convertNewTask(data,uid)
@@ -72,41 +71,6 @@ def postTask(request=None,task_id=None, **kw):
                 db.session.add(follower_task)
             db.session.commit()
             return json(request.json,status=201)
-        else:
-            in_relation_ids = []
-            for follower in data['followers']:
-                # CHECK EXISTS
-                check_follower = db.session.query(FollowerTask).filter(FollowerTask.task_id == data['id'],\
-                    FollowerTask.user_id == follower['id']).first()
-                # is_relation_exist = db.session.query(literal(True)).filter(check_follower.exists()).scalar()
-                if check_follower is not None:
-                    in_relation_ids.append(check_follower.id)
-                    pass
-                else:
-                    new_relation = FollowerTask(
-                        user_id = follower['id'],
-                        task_id = data['id'],
-                        note = data['note'],
-                        )
-                    db.session.add(new_relation)
-                    db.session.flush()
-                    in_relation_ids.append(new_relation.id)
-                    
-            # DELETE ALL OTHER RELATIONS NOT IN in_relation_ids
-            db.session.query(FollowerTask).filter(~FollowerTask.id.in_(in_relation_ids)).delete(synchronize_session=False)
-            del data['note']
-            del data['task_info']
-            del data['followers']
-            assignee = db.session.query(User).filter(User.id == data['assignee']['id']).first()
-            del data['assignee']
-            task_update = db.session.query(Task).filter(Task.id == task_id).first()
-            task_update.assignee = assignee
-            for atrr in data.keys():
-                setattr(task_update, atrr, data[atrr])
-            # task_update.assignee = assignee
-            db.session.add(task_update)
-            db.session.commit()
-            return json(to_dict(task_update),status=200)
             
     else:
         return json({
@@ -114,7 +78,51 @@ def postTask(request=None,task_id=None, **kw):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
     
-
+@app.route('/api/v1/save_task/<task_id>', methods=['PUT'])
+def putTask(request=None,task_id=None, **kw):
+    uid = auth.current_user(request)
+    data = request.json
+    if uid is not None:
+        in_relation_ids = []
+        for follower in data['followers']:
+            # CHECK EXISTS
+            check_follower = db.session.query(FollowerTask).filter(FollowerTask.task_id == data['id'],\
+                FollowerTask.user_id == follower['id']).first()
+            # is_relation_exist = db.session.query(literal(True)).filter(check_follower.exists()).scalar()
+            if check_follower is not None:
+                in_relation_ids.append(check_follower.id)
+                pass
+            else:
+                new_relation = FollowerTask(
+                    user_id = follower['id'],
+                    task_id = data['id'],
+                    note = data['note'] or None,
+                    )
+                db.session.add(new_relation)
+                db.session.flush()
+                in_relation_ids.append(new_relation.id)
+                
+        # DELETE ALL OTHER RELATIONS NOT IN in_relation_ids
+        db.session.query(FollowerTask).filter(~FollowerTask.id.in_(in_relation_ids),FollowerTask.task_id==data['id']).delete(synchronize_session=False)
+        del data['task_info']
+        del data['followers']
+        assignee = db.session.query(User).filter(User.id == data['assignee']['id']).first()
+        data['assignee'] = db.session.query(User).filter(User.id == data['assignee']['id']).first()
+        task_update = db.session.query(Task).filter(Task.id == task_id).first()
+        task_update.assignee = assignee
+        for attr in data.keys():
+            if hasattr(task_update, attr):
+                setattr(task_update, attr, data[attr])
+        # task_update.assignee = assignee
+        db.session.add(task_update)
+        db.session.commit()
+        return json(to_dict(task_update),status=200)
+            
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
 
 def filter_tasks(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)

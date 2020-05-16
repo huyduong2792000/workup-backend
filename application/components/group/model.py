@@ -25,4 +25,4 @@ class Group(CommonModel):
     description = db.Column(String)
     # priority = db.Column(SmallInteger)
     members = db.relationship("User",secondary="groups_users")
-    tasks = db.relationship("Task")
+    # tasks = db.relationship("Task")
