@@ -234,12 +234,12 @@ def getMyGroup(request=None, search_params=None, **kwargs):
         }, status = 520)
 
 
-# apimanager.create_api(collection_name='group', model=Group,
-#     methods=['GET', 'POST', 'DELETE', 'PUT'],
-#     url_prefix='/api/v1',
-#     preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,getMyGroup], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
-#     postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
-#     )
+apimanager.create_api(collection_name='group_without_role', model=Group,
+    methods=['GET', 'POST', 'DELETE', 'PUT'],
+    url_prefix='/api/v1',
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,getMyGroup], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+    postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
+    )
 
 apimanager.create_api(collection_name='groups_users', model=GroupsUsers,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
