@@ -7,6 +7,7 @@ import string
 from application.extensions import apimanager
 # from application.models.model import  Employee
 from application.components.user.model import User, Role
+from application.components.group.model import Group,GroupsUsers
 
 from application.components import auth_func
 from sqlalchemy import and_, or_
@@ -17,7 +18,11 @@ import re
 def response_userinfo(user, **kw):
     if user is not None:
         # employee = to_dict(user.employee)
+        group_last_access = user.group_last_access
+        
         user_info = to_dict(user)
+        user_info['group_last_access_id'] = str(user.group_last_access.id)
+        user_info['group_last_access'] = to_dict(group_last_access)
         # user_info['employee'] = employee
         exclude_attr = ["password", "salt", "created_at", "created_by", "updated_at", "updated_by",
                         "deleted_by", "deleted_at", "deleted", "facebook_access_token", "phone_country_prefix",
@@ -27,6 +32,8 @@ def response_userinfo(user, **kw):
         for attr in exclude_attr:
             if attr in user_info:
                 del(user_info[attr])
+        
+        
         # permision
         # roles = [{"id": str(role.id), "role_name": role.role_name}
         #          for role in user.roles]
@@ -75,9 +82,13 @@ async def user_login(request):
     return text("user_login api")
 def getUser(email):
     if(checkIsPhoneNumber(email) is True):
-        user = db.session.query(User).filter(User.phone == email).first()
+        user = db.session.query(User).filter(User.phone == email).first()            
     else:
         user = db.session.query(User).filter(User.email == email).first()
+
+    if user.group_last_access_id == None:
+        user.group_last_access_id = db.session.query(GroupsUsers.group_id).filter(GroupsUsers.user_id == user.id).first()
+        user.group_last_access = db.session.query(Group).filter(Group.id == user.group_last_access_id).first()
     return user
 def checkIsPhoneNumber(phone):
     x = re.search("^(09|08|07|05|03)+[0-9]{8}", phone)

@@ -106,10 +106,13 @@ def putTask(request=None,task_id=None, **kw):
         db.session.query(FollowerTask).filter(~FollowerTask.id.in_(in_relation_ids),FollowerTask.task_id==data['id']).delete(synchronize_session=False)
         del data['task_info']
         del data['followers']
-        assignee = db.session.query(User).filter(User.id == data['assignee']['id']).first()
-        data['assignee'] = db.session.query(User).filter(User.id == data['assignee']['id']).first()
+        # assignee = db.session.query(User).filter(User.id == data['assignee']['id']).first()
+        try:
+            data['assignee'] = db.session.query(User).filter(User.id == data['assignee']['id']).first()
+        except:
+            pass
         task_update = db.session.query(Task).filter(Task.id == task_id).first()
-        task_update.assignee = assignee
+        # task_update.assignee = assignee
         for attr in data.keys():
             if hasattr(task_update, attr):
                 setattr(task_update, attr, data[attr])
@@ -256,7 +259,7 @@ def getTaskFollower(request):
             Task.group_id == None,
             Task.status == 1,
             Task.deleted == False).order_by(Task.updated_at.desc()).limit(10).offset(offset).all()
-        for task in list_task:
+        for task in task_follower_not_done + task_follower_done:
             result.append(to_dict(task))
         return json({"num_results":len(result),"objects":result,"page":page})
     else:
@@ -300,14 +303,20 @@ def getTaskCreate(request):
         page = request.args.get("page", None)
         results_per_page = request.args.get("results_per_page", None)
         offset = (int(page)-1)*int(results_per_page)
-        tasks_create = db.session.query(Task).filter(
+        tasks_created_not_done = db.session.query(Task).filter(
             or_(Task.assignee_id != uid,Task.assignee_id == None),
             Task.created_by == uid,
             Task.deleted == False,
+            Task.status != 1,
             Task.group_id == None).order_by(Task.created_at.desc()).limit(results_per_page).offset(offset).all()
-        # print(tasks_create[0].column_descriptions)
+        tasks_created_done = db.session.query(Task).filter(
+            or_(Task.assignee_id != uid,Task.assignee_id == None),
+            Task.created_by == uid,
+            Task.deleted == False,
+            Task.status == 1,
+            Task.group_id == None).order_by(Task.updated_at.desc()).limit(10).offset(offset).all()
         result=[]
-        for task_create in tasks_create:
+        for task_create in tasks_created_not_done + tasks_created_done:
             result.append(to_dict(task_create))
         return json({"num_results":len(result),"objects":result,"page":page})
     else:
