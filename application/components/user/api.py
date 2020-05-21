@@ -49,51 +49,73 @@ def response_userinfo(user, **kw):
 @app.route("/signup", methods=["POST", "GET"])
 def user_register(request):
     param = request.json
-    email = param['email']
-    password=param['password']
-    check_user_match = db.session.query(User).filter(User.email == email).all()
+    phone = param['phone']
+    password = param['password']
+    display_name = param['display_name']
+    # print(param)
+    check_user_match = db.session.query(User).filter(User.phone == phone).all()
     if len(check_user_match) == 0:
         letters = string.ascii_lowercase
         user_salt = ''.join(random.choice(letters) for i in range(64))
         user_password = auth.encrypt_password(password, user_salt)
-        new_user = User(email=email, password=user_password, salt=user_salt)
+        new_user = User(phone=phone, password=user_password, display_name=display_name, salt=user_salt)
         db.session.add(new_user)
         db.session.commit()
-        return json({"id":new_user.id,"email":email,"password":password})
+        return json({"id":str(new_user.id),"phone":phone,"display_name":display_name,"password":password})
+
+@app.route("/api/v1/check_phone_exist", methods=["POST"])
+def user_register(request):
+    param = request.json
+    phone = param.get('phone')
+    check = db.session.query(User.query.filter(User.phone == phone).exists()).scalar()
+    return json({"check":check},status = 200)
+
+    # check_user_match = db.session.query(User).filter(User.email == email).all()
+    # if len(check_user_match) == 0:
+    #     letters = string.ascii_lowercase
+    #     user_salt = ''.join(random.choice(letters) for i in range(64))
+    #     user_password = auth.encrypt_password(password, user_salt)
+    #     new_user = User(email=email, password=user_password, salt=user_salt)
+    #     db.session.add(new_user)
+    #     db.session.commit()
+    #     return json({"id":new_user.id,"email":email,"password":password})
 
 @app.route("/login", methods=["POST", "GET"])
 async def user_login(request):
     param = request.json
-    email = param.get("email")
+    user_name = param.get("email")
     password = param.get("password")
-    print(email, password)
-    if (email is not None) and (password is not None):
-        user = getUser(email)
+    print(param)
+    if (user_name is not None) and (password is not None):
+        user = getUser(user_name)
+        # print(user.email,user.phone,user.password)
         if (user is not None) and auth.verify_password(password, user.password, user.salt):
-            try:
-                user.employee.status = 'online'
-                db.session.commit()
-            except:
-                pass
+            # try:
+            #     user.employee.status = 'online'
+            #     db.session.commit()
+            # except:
+            #     pass
             auth.login_user(request, user)
             result = response_userinfo(user)
             
-            # print('result==========',result)
+            print('result==========',result)
             return json(result)
         return json({"error_code":"LOGIN_FAILED","error_message":"user does not exist or incorrect password"}, status=520)
     else:
         return json({"error_code": "PARAM_ERROR", "error_message": "param error"}, status=520)
     return text("user_login api")
-def getUser(email):
-    if(checkIsPhoneNumber(email) is True):
-        user = db.session.query(User).filter(User.phone == email).first()            
+
+def getUser(user_name):
+    if(checkIsPhoneNumber(user_name) is True):
+        user = db.session.query(User).filter(User.phone == user_name).first()            
     else:
-        user = db.session.query(User).filter(User.email == email).first()
+        user = db.session.query(User).filter(User.user_name == user_name).first()
 
     if user.group_last_access_id == None:
         user.group_last_access_id = db.session.query(GroupsUsers.group_id).filter(GroupsUsers.user_id == user.id).first()
         user.group_last_access = db.session.query(Group).filter(Group.id == user.group_last_access_id).first()
     return user
+
 def checkIsPhoneNumber(phone):
     x = re.search("^(09|08|07|05|03)+[0-9]{8}", phone)
     if(x):

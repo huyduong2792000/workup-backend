@@ -21,8 +21,8 @@ class User(CommonModel):
     __tablename__ = 'user'
     # Authentication Attributes.
     display_name = db.Column(String(255), nullable=True)
-    email = db.Column(String(255), nullable=False, index=True)
-    phone = db.Column(String(255), index=True, unique=True)
+    email = db.Column(String(255), index=True)
+    phone = db.Column(String(255), index=True, unique=True, nullable=False)
     password = db.Column(String(255), nullable=False)
     salt = db.Column(String(255), nullable=False)
     is_active = db.Column(Boolean, default=True)
