@@ -110,7 +110,7 @@ def generate_schema(path = "static/schema", exclude = None, prettyprint = True):
 
 @manager.command
 def update_admin(password='123456'):
-    user = User.query.filter(User.user_name == "admin").first()
+    user = User.query.filter(User.email == "admin@gmail.com").first()
 
 
     if user is not None:
@@ -147,7 +147,7 @@ def create_admin(password='123456'):
         role_leader = Role(role_name='leader', display_name="Leader")
         db.session.add(role_leader)
         db.session.flush()
-    user = User.query.filter(User.user_name == "admin").first()
+    user = User.query.filter(User.email == "admin@gmail.com").first()
     # employee = Employee(full_name="Admin User", email="admin@gonrin.com",phone_number="0968244158",\
     #             id_identifier=123456)
     # user.employee = employee
@@ -165,8 +165,8 @@ def create_admin(password='123456'):
         #create user
         # employee = Employee(full_name="Admin User", email="admin@gonrin.com",phone_number="0968244158",\
         #         id_identifier=123456)
-        user = User(user_name='admin', display_name="Admin User", email="admin@gonrin.com",\
-            password=user_password, salt=user_salt, phone="0968244158")
+        user = User(display_name="Admin User", email="admin@gmail.com",\
+            password=user_password, salt=user_salt, phone="0333333333")
         db.session.add(user)
 
  

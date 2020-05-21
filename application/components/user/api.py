@@ -59,6 +59,7 @@ def user_register(request):
         user_salt = ''.join(random.choice(letters) for i in range(64))
         user_password = auth.encrypt_password(password, user_salt)
         new_user = User(phone=phone, password=user_password, display_name=display_name, salt=user_salt)
+        # auth.login_user(request, new_user)
         db.session.add(new_user)
         db.session.commit()
         return json({"id":str(new_user.id),"phone":phone,"display_name":display_name,"password":password})
@@ -85,7 +86,7 @@ async def user_login(request):
     param = request.json
     user_name = param.get("email")
     password = param.get("password")
-    print(param)
+    # print(param)
     if (user_name is not None) and (password is not None):
         user = getUser(user_name)
         # print(user.email,user.phone,user.password)
@@ -98,7 +99,7 @@ async def user_login(request):
             auth.login_user(request, user)
             result = response_userinfo(user)
             
-            print('result==========',result)
+            # print('result==========',result)
             return json(result)
         return json({"error_code":"LOGIN_FAILED","error_message":"user does not exist or incorrect password"}, status=520)
     else:
@@ -109,7 +110,7 @@ def getUser(user_name):
     if(checkIsPhoneNumber(user_name) is True):
         user = db.session.query(User).filter(User.phone == user_name).first()            
     else:
-        user = db.session.query(User).filter(User.user_name == user_name).first()
+        user = db.session.query(User).filter(User.email == user_name).first()
 
     if user.group_last_access_id == None:
         user.group_last_access_id = db.session.query(GroupsUsers.group_id).filter(GroupsUsers.user_id == user.id).first()
