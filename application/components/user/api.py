@@ -21,8 +21,12 @@ def response_userinfo(user, **kw):
         group_last_access = user.group_last_access
         
         user_info = to_dict(user)
-        user_info['group_last_access_id'] = str(user.group_last_access.id)
-        user_info['group_last_access'] = to_dict(group_last_access)
+        if user.group_last_access:
+            user_info['group_last_access_id'] = str(user.group_last_access.id)
+            user_info['group_last_access'] = to_dict(group_last_access)
+        else:
+            user_info['group_last_access_id'] = None
+            user_info['group_last_access'] = None
         # user_info['employee'] = employee
         exclude_attr = ["password", "salt", "created_at", "created_by", "updated_at", "updated_by",
                         "deleted_by", "deleted_at", "deleted", "facebook_access_token", "phone_country_prefix",
