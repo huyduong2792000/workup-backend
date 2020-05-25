@@ -124,16 +124,15 @@ def checkIsPhoneNumber(phone):
     else:
         return False
 
-@app.route("/logout", methods=["GET"])
+@app.route("/logout", methods=["GET","POST"])
 async def user_logout(request):
     uid = auth.current_user(request)
+    params = request.json
+    print(params)
     # user = db.session.query(User).filter(User.id == int(current_user)).first()
-    try:
-        user_info = db.session.query(User).filter(User.id == uid).first()
-        user_info.employee.status = 'offline'
-        db.session.commit()
-    except:
-        pass
+    user_update = db.session.query(User).filter(User.id == uid).first()
+    user_update.group_last_access_id = params['group_last_access_id']
+    db.session.commit()
     auth.logout_user(request)
     return json({})
 

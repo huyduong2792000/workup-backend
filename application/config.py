@@ -8,3 +8,4 @@ class Config(object):
     SECRET_KEY = 'e2q8dhaushdauwd7qye'
     SESSION_COOKIE_SALT = 'dhuasud819wubadhysagd'
     TIME_CRON_JOB = "00:00"
+    AUTH_EXPIRE_TIME = 864000
