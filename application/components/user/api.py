@@ -84,18 +84,13 @@ def user_register(request):
 @app.route("/login", methods=["POST", "GET"])
 async def user_login(request):
     param = request.json
-    user_name = param.get("email")
+    user_name = param.get("phone")
     password = param.get("password")
     # print(param)
     if (user_name is not None) and (password is not None):
         user = getUser(user_name)
-        # print(user.email,user.phone,user.password)
+        # print(user)
         if (user is not None) and auth.verify_password(password, user.password, user.salt):
-            # try:
-            #     user.employee.status = 'online'
-            #     db.session.commit()
-            # except:
-            #     pass
             auth.login_user(request, user)
             result = response_userinfo(user)
             
