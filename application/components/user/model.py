@@ -20,7 +20,8 @@ class Role(CommonModel):
 class User(CommonModel):
     __tablename__ = 'user'
     # Authentication Attributes.
-    display_name = db.Column(String(255), nullable=True)
+    display_name = db.Column(String(255), nullable=False)
+    unsigned_display_name = db.Column(String(255))
     email = db.Column(String(255), index=True)
     phone = db.Column(String(255), index=True, unique=True, nullable=False)
     password = db.Column(String(255), nullable=False)

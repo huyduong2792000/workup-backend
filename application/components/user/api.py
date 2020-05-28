@@ -14,7 +14,22 @@ from sqlalchemy import and_, or_
 from gatco_restapi.helpers import to_dict
 import re
 
-
+def no_accent_vietnamese(s):
+    s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
+    s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
+    s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
+    s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
+    s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
+    s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
+    s = re.sub(r'[ìíịỉĩ]', 'i', s)
+    s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
+    s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
+    s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
+    s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
+    s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
+    s = re.sub(r'[Đ]', 'D', s)
+    s = re.sub(r'[đ]', 'd', s)
+    return s
 def response_userinfo(user, **kw):
     if user is not None:
         # employee = to_dict(user.employee)
@@ -52,13 +67,18 @@ def user_register(request):
     phone = param['phone']
     password = param['password']
     display_name = param['display_name']
+    unsigned_display_name = no_accent_vietnamese(param['display_name'])
     # print(param)
     check_user_match = db.session.query(User).filter(User.phone == phone).all()
     if len(check_user_match) == 0:
         letters = string.ascii_lowercase
         user_salt = ''.join(random.choice(letters) for i in range(64))
         user_password = auth.encrypt_password(password, user_salt)
-        new_user = User(phone=phone, password=user_password, display_name=display_name, salt=user_salt)
+        new_user = User(phone = phone,
+                        unsigned_display_name = unsigned_display_name,
+                        password = user_password, 
+                        display_name = display_name, 
+                        salt = user_salt)
         # auth.login_user(request, new_user)
         db.session.add(new_user)
         db.session.commit()

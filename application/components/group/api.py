@@ -43,18 +43,18 @@ def createGroup(request=None, data=None, Model=None):
         del group['members']
         new_group = Group(**group)
         db.session.add(new_group)
-        db.session.flush()
+        db.session.commit()
         all_roles = db.session.query(Role).all()
         for member in members:
             role_member = getRole(all_roles,member['role_name'])
             if role_member != None and 'id' in member['info'].keys():
                 new_group_user = GroupsUsers(
                     group_id = new_group.id,
-                    group = new_group,
+                    # group = new_group,
                     user_id = member['info']['id'],
                     # user = User(**member['info']),
                     role_id = role_member.id,
-                    role = role_member,
+                    # role = role_member,
                     created_by = uid
                 )
                 db.session.add(new_group_user)
