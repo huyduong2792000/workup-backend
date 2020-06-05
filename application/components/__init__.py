@@ -15,15 +15,17 @@ def init_views(app):
     import application.components.task_schedule
     
     import application.components.task_info
-    import application.components.task_info.api
+    # import application.components.task_info.api
 
-    import application.components.apimanger
+    # import application.components.apimanger
     
     import application.components.task
     import application.components.task.api
 
     import application.components.group
     import application.components.group.api
+
+    import application.components.checklist
     @app.route('/')
     def index(request):
         #return text("Index")
