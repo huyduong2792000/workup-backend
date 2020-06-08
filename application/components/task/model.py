@@ -27,7 +27,7 @@ class Task(CommonModel):
     assignee = db.relationship("User")
     followers = db.relationship("User",secondary="followers_tasks")
     task_info_id = db.Column(UUID(as_uuid=True), ForeignKey("task_info.id"))
-    task_info = db.relationship("TaskInfo")
+    # task_info = db.relationship("TaskInfo")
     tags = db.Column(JSONB())
     priority = db.Column(SmallInteger, index=True, default=2) # {1: highest, 2: high, 3: low, 4: lowest}
     attach_file = db.Column(String(255))

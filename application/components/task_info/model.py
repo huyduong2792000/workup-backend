@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship, backref
 from application.database import db
 from application.database.model import CommonModel, default_uuid
 from application.components.user.model import User,Role
-from application.components.checklist.model import GroupTask
 
 class FollowerTaskInfo(CommonModel):
     __tablename__ = 'followers_tasksinfo'
@@ -18,8 +17,8 @@ class FollowerTaskInfo(CommonModel):
 class TaskInfo(CommonModel):
     __tablename__ = 'task_info'
     task_info_name = db.Column(String(255))
-    group_task_id = db.Column(UUID(as_uuid=True), ForeignKey("group_task.id"), nullable=False)
-    # group_task = db.relationship("GroupTask")
+    checklist_id = db.Column(UUID(as_uuid=True), ForeignKey("checklist.id"), nullable=False)
+    group_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"))
     unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
     tags = db.Column(JSONB())

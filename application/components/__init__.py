@@ -26,6 +26,7 @@ def init_views(app):
     import application.components.group.api
 
     import application.components.checklist
+    import application.components.checklist.api
     @app.route('/')
     def index(request):
         #return text("Index")
