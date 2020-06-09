@@ -19,6 +19,7 @@ class TaskInfo(CommonModel):
     task_info_name = db.Column(String(255))
     checklist_id = db.Column(UUID(as_uuid=True), ForeignKey("checklist.id"), nullable=False)
     group_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"))
+    group = db.relationship('Group')
     unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
     tags = db.Column(JSONB())

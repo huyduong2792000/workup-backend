@@ -126,8 +126,7 @@ def getUser(user_name):
         user = db.session.query(User).filter(User.phone == user_name).first()            
     else:
         user = db.session.query(User).filter(User.email == user_name).first()
-
-    if user.group_last_access_id == None:
+    if hasattr(user,"group_last_access_id") == False:
         user.group_last_access_id = db.session.query(GroupsUsers.group_id).filter(GroupsUsers.user_id == user.id).first()
         user.group_last_access = db.session.query(Group).filter(Group.id == user.group_last_access_id).first()
     return user

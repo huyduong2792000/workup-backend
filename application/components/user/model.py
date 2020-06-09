@@ -34,8 +34,8 @@ class User(CommonModel):
     status = db.Column(String)
     start_time = db.Column(BigInteger(), index= True)
     end_time = db.Column(BigInteger(), index=True)
-    group_last_access_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"))
-    group_last_access = db.relationship("Group")
+    # group_last_access_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"))
+    group_last_access = db.relationship("Group",uselist=False)
     # role_id = db.Column(UUID(as_uuid=True), ForeignKey('role.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     # role = db.relationship("Role")
     # group
