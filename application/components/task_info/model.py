@@ -10,14 +10,16 @@ from application.components.user.model import User,Role
 class FollowerTaskInfo(CommonModel):
     __tablename__ = 'followers_tasksinfo'
     user_id = db.Column(UUID(as_uuid=True), ForeignKey('user.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
-    task_id = db.Column(UUID(as_uuid=True), ForeignKey('task_info.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
+    task_info_id = db.Column(UUID(as_uuid=True), ForeignKey('task_info.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
     # created_at = db.Column(BigInteger(), index=True)
     note = db.Column(Text())
 
 class TaskInfo(CommonModel):
     __tablename__ = 'task_info'
     task_info_name = db.Column(String(255))
+    unsigned_name = db.Column(String(255), nullable=True, index=True) # tên không dấu phục vụ truy vấn dữ liệu lớn
     checklist_id = db.Column(UUID(as_uuid=True), ForeignKey("checklist.id"), nullable=False)
+    checklist = db.relationship('Checklist')
     group_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"))
     group = db.relationship('Group')
     unsigned_name = db.Column(String, index=True)

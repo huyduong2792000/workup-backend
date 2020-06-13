@@ -8,6 +8,7 @@ from application.components.user.model import User, Role
 # from application.components.group.model import Group,GroupsUsers
 from application.components.checklist.model import Checklist,Shift
 from application.components.task_info.model import TaskInfo
+from application.components.group.model import Group
 
 from application.server import app
 from datetime import datetime
@@ -83,41 +84,17 @@ def createChecklist(request=None, data=None, Model=None):
 def createChecklist(request=None, checklist_id = None):
     uid = auth.current_user(request)
     if uid is not None:
-        checklist = request.json
-        # response = checklist
-        print(checklist)
-        print(checklist_id)
-        # checklist['unsigned_name'] = no_accent_vietnamese(checklist['checklist_name'])
-        # checklist['created_by'] = uid
-        
-        # new_checklist = Checklist()
-        # for key in checklist.keys():
-        #         if hasattr(new_checklist,key) and key not in ["shifts","tasks_info"]:
-        #             setattr(new_checklist, key, checklist[key])
-
-        # db.session.add(new_checklist)
-        # new_checklist.shifts = []
-        # for shift in checklist['shifts']:
-        #     new_shift = Shift()
-        #     for key in shift.keys():
-        #         if hasattr(new_shift,key):
-        #             setattr(new_shift, key, shift[key])
-        #     new_checklist.shifts.append(new_shift)
-        #     db.session.add(new_shift)
-        
-        
-        # new_checklist.tasks_info = []
-        # for task_info in checklist['tasks_info']:
-        #     new_task_info = TaskInfo()
-        #     for key in task_info.keys():
-        #         if hasattr(new_task_info,key) and key not in ["assignee","group"]:
-        #             setattr(new_task_info,key,task_info[key])
-        #     new_checklist.tasks_info.append(new_task_info)
-        #     db.session.add(new_task_info)
-        # db.session.commit()
-        # # print(new_checklist.__dict__)
-        # db.session.flush()
-        # return json(response,status=200)
+        # checklist = request.json
+        checklist = db.session.query(Checklist).filter(Checklist.id == checklist_id).first()
+        tasks_info = checklist.tasks_info
+        checklist = to_dict(checklist)
+        checklist['tasks_info'] = []
+        for task_info in tasks_info:
+            new_task_info = {}
+            new_task_info = to_dict(task_info)
+            new_task_info['group'] = to_dict(task_info.group)
+            checklist['tasks_info'].append(new_task_info)
+        return json(checklist,status=200)
 
     else:
         return json({

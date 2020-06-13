@@ -25,7 +25,7 @@ class Group(CommonModel):
     description = db.Column(String)
     parent_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"),default=None)
     assignee_id = db.Column(UUID(as_uuid=True), ForeignKey("user.id"))
-    assignee = db.relationship("User")
+    assignee = db.relationship("User", foreign_keys=[assignee_id])
     members = db.relationship("User",secondary="groups_users")
     check_lists = db.relationship("Checklist")
     tasks_info = db.relationship('TaskInfo')

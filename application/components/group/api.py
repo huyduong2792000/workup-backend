@@ -80,11 +80,12 @@ def putGroup(request=None, group_id=None):
         response = group
         group['unsigned_name'] = no_accent_vietnamese(group['group_name'])
         members = group['members']
-        del group['members']
         group_update = db.session.query(Group).filter(Group.id == group['id']).first()
         for key in group.keys():
-            if hasattr(group_update,key):
+            if hasattr(group_update,key) and key not in ["assignee","members","check_lists","tasks_info"]:
                 setattr(group_update, key, group[key])
+        if group.get("assignee",None) != None and group.get("assignee_id",None) == None:
+            setattr(group_update, "assignee_id", group["assignee"]['id'])
         # db.session.add(group_update)
         # db.session.flush()
         # return json(response,status=201)
@@ -218,15 +219,24 @@ def getManyGroup(request=None, search_params=None, **kwargs):
 def getMyGroup(request=None, search_params=None, **kwargs):
     uid = auth.current_user(request)
     if uid is not None:
-        if 'filters' in search_params and bool(search_params["filters"]):
+        list_group_create_by_me = db.session.query(Group.id).filter(Group.created_by == uid).all()
+        list_group_children = db.session.query(Group.id).filter(Group.parent_id.in_(list_group_create_by_me)).all()
+        if 'filters' in search_params:
             filters = search_params["filters"]
-            if "$and" in filters:
-                search_params["filters"]['$and'].append({"created_by":{"$eq": uid}})
+            if "$or" in filters:
+                for group_id in list_group_create_by_me + list_group_children:
+                    search_params["filters"]['$or'].append({"id":{"$eq": group_id}})
+                print(filters)
+
             else:
-                search_params["filters"]={}
-                search_params["filters"]['$and'] = [{"created_by":{"$eq": uid}},filters]
+                search_params["filters"]["$or"]=[]
+                for group_id in list_group_create_by_me + list_group_children:
+                    search_params["filters"]['$or'].append({"id":{"$eq": group_id}})
         else:
-            search_params["filters"] = {"created_by":{"$eq": uid}}
+            search_params["filters"] = {}
+            search_params["filters"]["$or"]=[]
+            for group_id in list_group_create_by_me + list_group_children:
+                search_params["filters"]['$or'].append({"id":{"$eq": group_id}})
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -234,12 +244,14 @@ def getMyGroup(request=None, search_params=None, **kwargs):
         }, status = 520)
 
 
-apimanager.create_api(collection_name='group_without_role', model=Group,
+apimanager.create_api(collection_name='filter_group', model=Group,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
     url_prefix='/api/v1',
-    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,getMyGroup], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
     postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
     )
+
+
 
 apimanager.create_api(collection_name='groups_users', model=GroupsUsers,
     methods=['GET', 'POST', 'DELETE', 'PUT'],

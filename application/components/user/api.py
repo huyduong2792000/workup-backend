@@ -145,7 +145,8 @@ async def user_logout(request):
     print(params)
     # user = db.session.query(User).filter(User.id == int(current_user)).first()
     user_update = db.session.query(User).filter(User.id == uid).first()
-    user_update.group_last_access_id = params['group_last_access_id']
+    if user_update is not None:
+        user_update.group_last_access_id = params['group_last_access_id']
     db.session.commit()
     auth.logout_user(request)
     return json({})
