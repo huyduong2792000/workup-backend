@@ -20,6 +20,10 @@ class Checklist(CommonModel):
     tasks_info = db.relationship("TaskInfo")
     group_id = db.Column(UUID(as_uuid=True), ForeignKey('group.id',onupdate='cascade',ondelete='cascade'))
     group = db.relationship("Group")
+    cycle_worker = db.Column(String(20),default="week") #week or month
+    day_worker_month = db.Column(JSONB()) #25,26,27... in month
+    day_worker_week = db.Column(JSONB(),default=[0,1,2,3,4,5,6]) #0,1,2...,6  <=> sunday, monday...saturday
+
 
 class ChecklistShift(CommonModel):
     __tablename__ = "checklists_shifts"
@@ -29,8 +33,8 @@ class ChecklistShift(CommonModel):
 class Shift(CommonModel):
     __tablename__ = "shift"
     shift_name = db.Column(String(50))
-    start_hour_working = db.Column(String(20), default="00:00")
-    end_hour_working = db.Column(String(20), default="23:59")
+    start_hour_working = db.Column(Integer, default=0)
+    end_hour_working = db.Column(Integer, default=2359)
     check_list = db.relationship("Checklist",secondary="checklists_shifts")
 
 

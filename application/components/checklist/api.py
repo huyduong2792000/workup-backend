@@ -46,7 +46,7 @@ def createChecklist(request=None, data=None, Model=None):
         
         new_checklist = Checklist()
         for key in checklist.keys():
-                if hasattr(new_checklist,key) and key not in ["shifts","tasks_info"]:
+                if hasattr(new_checklist,key) and not isinstance(checklist[key], (dict, list )):
                     setattr(new_checklist, key, checklist[key])
 
         db.session.add(new_checklist)
@@ -54,7 +54,7 @@ def createChecklist(request=None, data=None, Model=None):
         for shift in checklist['shifts']:
             new_shift = Shift()
             for key in shift.keys():
-                if hasattr(new_shift,key):
+                if hasattr(new_shift,key) and not isinstance(shift[key], (dict, list )):
                     setattr(new_shift, key, shift[key])
             new_checklist.shifts.append(new_shift)
             db.session.add(new_shift)
@@ -64,14 +64,14 @@ def createChecklist(request=None, data=None, Model=None):
         for task_info in checklist['tasks_info']:
             new_task_info = TaskInfo()
             for key in task_info.keys():
-                if hasattr(new_task_info,key) and key not in ["assignee","group"]:
+                if hasattr(new_task_info,key) and not isinstance(task_info[key], (dict, list )):
                     setattr(new_task_info,key,task_info[key])
             new_checklist.tasks_info.append(new_task_info)
             db.session.add(new_task_info)
         db.session.commit()
         # print(new_checklist.__dict__)
-        db.session.flush()
-        return json(response,status=201)
+        # db.session.flush()
+        return json(to_dict(new_checklist),status=201)
 
     else:
         return json({
@@ -85,17 +85,17 @@ def createChecklist(request=None, checklist_id = None):
     uid = auth.current_user(request)
     if uid is not None:
         # checklist = request.json
-        checklist = db.session.query(Checklist).filter(Checklist.id == checklist_id).first()
-        tasks_info = checklist.tasks_info
-        checklist = to_dict(checklist)
+        checklist = db.session.query(Checklist).filter(Checklist.id == checklist_id).scalar()
+        checklist = to_dict(checklist) or {}
+        tasks_info = db.session.query(TaskInfo).join(Group).filter(TaskInfo.checklist_id == checklist.get('id',None)).order_by(Group.group_name).all()
         checklist['tasks_info'] = []
         for task_info in tasks_info:
             new_task_info = {}
             new_task_info = to_dict(task_info)
             new_task_info['group'] = to_dict(task_info.group)
+            new_task_info['assignee'] = to_dict(task_info.assignee)
             checklist['tasks_info'].append(new_task_info)
         return json(checklist,status=200)
-
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
