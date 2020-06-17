@@ -6,7 +6,7 @@ from application.extensions import auth
 from gatco.response import text, json
 from application.components.user.model import User, Role
 # from application.components.group.model import Group,GroupsUsers
-from application.components.checklist.model import Checklist,Shift,ChecklistGroup
+from application.components.checklist.model import Checklist,Shift,ChecklistGroup,ChecklistShift
 from application.components.task_info.model import TaskInfo
 from application.components.group.model import Group
 
@@ -52,6 +52,8 @@ def createChecklist(request=None, data=None, Model=None):
 
         new_checklist.days_worker_week = checklist_request.get('days_worker_week',[])
         new_checklist.days_worker_month = checklist_request.get('days_worker_month',[])
+
+        #set groups
         new_checklist.groups = []
         for group in groups:
             if group.get('id',None) is None:
@@ -62,13 +64,18 @@ def createChecklist(request=None, data=None, Model=None):
                 db.session.add(new_group)
                 db.session.flush()
                 new_checklist.groups.append(new_group)
+            else:
+                group_query = db.session.query(Group).filter(Group.id == group.get('id')).first()
+                new_checklist.groups.append(group_query)
 
+        #set shifts
         new_checklist.shifts = []
         for shift in checklist_request['shifts']:
             new_shift = Shift()
             for key in shift.keys():
                 if hasattr(new_shift,key) and not isinstance(shift[key], (dict, list )):
                     setattr(new_shift, key, shift[key])
+            db.session.flush()
             new_checklist.shifts.append(new_shift)
             db.session.add(new_shift)
         
@@ -96,9 +103,12 @@ def createChecklist(request=None, checklist_id = None):
         tasks_info = db.session.query(TaskInfo).join(Group).filter(TaskInfo.checklist_id == checklist.id).order_by(Group.group_name).all()
         response['tasks_info'] = []
         response['groups'] = []
+        response['shifts'] = []
 
         for group in checklist.groups:
             response['groups'].append(to_dict(group))
+        for shift in checklist.shifts:
+            response['shifts'].append(to_dict(shift))
 
         for task_info in tasks_info:
             task_info_add = {}
@@ -113,4 +123,65 @@ def createChecklist(request=None, checklist_id = None):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
 
+@app.route('/api/v1/checklist/<checklist_id>', methods=["PUT"])
+def putChecklist(request=None, checklist_id = None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        checklist_request = request.json
+        # print(checklist_request)
+        response = checklist_request
+        checklist_request['unsigned_name'] = no_accent_vietnamese(checklist_request['checklist_name'])
+        checklist_request['created_by'] = uid
+        groups = checklist_request.get('groups',[])
+        checklist_update = db.session.query(Checklist).filter(Checklist.id == checklist_request.get('id')).first()
+        for key in checklist_request.keys():
+                if hasattr(checklist_update,key) and not isinstance(checklist_request[key], (dict, list )):
+                    setattr(checklist_update, key, checklist_request[key])
 
+        checklist_update.days_worker_week = checklist_request.get('days_worker_week',[])
+        checklist_update.days_worker_month = checklist_request.get('days_worker_month',[])
+        checklist_update.groups = []
+
+        #SET SHIFTS
+        shifts_in_relation_ids = []
+        for shift in checklist_request.get('shifts',[]):
+            # CHECK EXISTS
+            shift_check = db.session.query(ChecklistShift).filter(ChecklistShift.shift_id == shift.get('id'),\
+                ChecklistShift.checklist_id == checklist_request.get('id')).first()
+            if shift_check is not None:
+                #reset shift exists
+                shift_reset = db.session.query(Shift).filter(Shift.id == ChecklistShift.shift_id)
+                for key in shift.keys():
+                    if hasattr(shift_reset,key) and not isinstance(shift[key], (dict, list )) and key not in ['id']:
+                        setattr(shift_reset, key, shift[key])
+                shifts_in_relation_ids.append(shift_check.id)
+                db.session.add(shift_reset)
+            else:
+                #create new shift
+                new_shift = Shift()
+                for key in shift.keys():
+                    if hasattr(new_shift,key) and not isinstance(shift[key], (dict, list )):
+                        setattr(new_shift, key, shift[key])
+                db.session.add(new_shift)
+                db.session.flush()
+
+                #add new shift to relationship
+                new_relation = ChecklistShift(
+                    shift_id = new_shift.id,
+                    checklist_id = checklist_request.get('id'),
+                    )
+                db.session.add(new_relation)
+                db.session.flush()
+                shifts_in_relation_ids.append(new_relation.id)
+                
+        # DELETE ALL OTHER RELATIONS NOT IN shifts_in_relation_ids
+        db.session.query(ChecklistShift).filter(~ChecklistShift.id.in_(shifts_in_relation_ids),ChecklistShift.checklist_id==checklist_request.get('id')).delete(synchronize_session=False)
+
+        db.session.add(checklist_update)
+        db.session.commit()
+        return json(to_dict(checklist_update),status=200)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)

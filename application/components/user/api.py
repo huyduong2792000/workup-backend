@@ -36,7 +36,7 @@ def response_userinfo(user, **kw):
         group_last_access = user.group_last_access
         
         user_info = to_dict(user)
-        if user.group_last_access:
+        if user.group_last_access_id is not None:
             user_info['group_last_access_id'] = str(user.group_last_access.id)
             user_info['group_last_access'] = to_dict(group_last_access)
         else:
@@ -128,7 +128,7 @@ def getUser(user_name):
         user = db.session.query(User).filter(User.phone == user_name).first()            
     else:
         user = db.session.query(User).filter(User.email == user_name).first()
-    # print('user==========',user.group_last_access)
+    # print('group_last_access==========',user.group_last_access)
 
     return user
 
@@ -167,7 +167,7 @@ async def get_current_user(request):
             "error_message": "USER_NOT_FOUND"
         }, status=520)
 
-    print("===============", user_info)
+    # print("===============", user_info)
     # if user_info is not None:
 
 apimanager.create_api(collection_name='user', model=User,
