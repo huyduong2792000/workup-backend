@@ -17,6 +17,8 @@ from application.database import db
 
 from application.extensions import auth
 from application.components.user.model import User, Role
+from application.components.group.model import Group,GroupsUsers
+
 import math
 
 from application.components.task_schedule.api import runSchedule
@@ -168,8 +170,14 @@ def create_admin(password='123456'):
         user = User(display_name="Admin User", email="admin@gmail.com",\
             password=user_password, salt=user_salt, phone="0333333333")
         db.session.add(user)
-
- 
+        db.session.flush()
+        new_group = Group(
+            group_name="group Admin User",
+            unsigned_name="group Admin User" ,
+            assignee_id = user.id,
+            members=[user]
+        )
+    db.session.add(new_group)
     db.session.commit()
 
     return

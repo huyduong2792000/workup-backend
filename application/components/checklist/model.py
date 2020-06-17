@@ -18,23 +18,27 @@ class Checklist(CommonModel):
     note = db.Column(String(255))
     shifts = db.relationship("Shift",secondary="checklists_shifts")
     tasks_info = db.relationship("TaskInfo")
-    group_id = db.Column(UUID(as_uuid=True), ForeignKey('group.id',onupdate='cascade',ondelete='cascade'))
-    group = db.relationship("Group")
+    # group_id = db.Column(UUID(as_uuid=True), ForeignKey('group.id',onupdate='cascade',ondelete='cascade'))
+    groups = db.relationship("Group",secondary="checklists_groups")
     cycle_worker = db.Column(String(20),default="week") #week or month
-    day_worker_month = db.Column(JSONB()) #25,26,27... in month
-    day_worker_week = db.Column(JSONB(),default=[0,1,2,3,4,5,6]) #0,1,2...,6  <=> sunday, monday...saturday
+    days_worker_month = db.Column(JSONB(),default=[]) #25,26,27... in month
+    days_worker_week = db.Column(JSONB(),default=[0,1,2,3,4,5,6]) #0,1,2...,6  <=> sunday, monday...saturday
 
+class ChecklistGroup(CommonModel):
+    __tablename__ = "checklists_groups"
+    group_id = db.Column(UUID(as_uuid=True), ForeignKey('group.id',onupdate='cascade',ondelete='cascade'),nullable = False)
+    checklist_id = db.Column(UUID(as_uuid=True), ForeignKey('checklist.id',onupdate='cascade',ondelete='cascade'), nullable = False)
 
 class ChecklistShift(CommonModel):
     __tablename__ = "checklists_shifts"
     shift_id = db.Column(UUID(as_uuid=True), ForeignKey('shift.id',onupdate='cascade',ondelete='cascade'),nullable = False)
-    check_list_id = db.Column(UUID(as_uuid=True), ForeignKey('checklist.id',onupdate='cascade',ondelete='cascade'), nullable = False)
+    checklist_id = db.Column(UUID(as_uuid=True), ForeignKey('checklist.id',onupdate='cascade',ondelete='cascade'), nullable = False)
 
 class Shift(CommonModel):
     __tablename__ = "shift"
     shift_name = db.Column(String(50))
     start_hour_working = db.Column(Integer, default=0)
     end_hour_working = db.Column(Integer, default=2359)
-    check_list = db.relationship("Checklist",secondary="checklists_shifts")
+    checklists = db.relationship("Checklist",secondary="checklists_shifts")
 
 

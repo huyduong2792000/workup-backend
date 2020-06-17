@@ -36,9 +36,7 @@ class User(CommonModel):
     end_time = db.Column(BigInteger(), index=True)
     group_last_access_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"))
     group_last_access = db.relationship("Group", foreign_keys=[group_last_access_id])
-    # role_id = db.Column(UUID(as_uuid=True), ForeignKey('role.id',onupdate='cascade',ondelete='cascade'), primary_key=True)
-    # role = db.relationship("Role")
-    # group
+
     def __repr__(self):
         """ Show user object info. """
         return '<User: {}>'.format(self.id)

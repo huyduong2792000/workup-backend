@@ -61,7 +61,7 @@ def response_userinfo(user, **kw):
         # user_info['roles'] = roles
         return user_info
     return None
-@app.route("/signup", methods=["POST", "GET"])
+@app.route("/signup", methods=["POST"])
 def user_register(request):
     param = request.json
     phone = param['phone']
@@ -79,7 +79,19 @@ def user_register(request):
                         password = user_password, 
                         display_name = display_name, 
                         salt = user_salt)
-        # auth.login_user(request, new_user)
+        db.session.add(new_user)
+        db.session.flush()
+
+        new_group = Group(
+            group_name="group " + str(display_name),
+            unsigned_name="group " + str(unsigned_display_name),
+            assignee_id = new_user.id,
+            members=[new_user]
+        )
+        db.session.flush()
+        new_user.group_last_access_id = new_group.id
+        new_user.group_last_access = new_group
+        db.session.add(new_group)
         db.session.add(new_user)
         db.session.commit()
         return json({"id":str(new_user.id),"phone":phone,"display_name":display_name,"password":password})
@@ -91,17 +103,7 @@ def user_register(request):
     check = db.session.query(User.query.filter(User.phone == phone).exists()).scalar()
     return json({"check":check},status = 200)
 
-    # check_user_match = db.session.query(User).filter(User.email == email).all()
-    # if len(check_user_match) == 0:
-    #     letters = string.ascii_lowercase
-    #     user_salt = ''.join(random.choice(letters) for i in range(64))
-    #     user_password = auth.encrypt_password(password, user_salt)
-    #     new_user = User(email=email, password=user_password, salt=user_salt)
-    #     db.session.add(new_user)
-    #     db.session.commit()
-    #     return json({"id":new_user.id,"email":email,"password":password})
-
-@app.route("/login", methods=["POST", "GET"])
+@app.route("/login", methods=["POST"])
 async def user_login(request):
     param = request.json
     user_name = param.get("phone")
@@ -115,7 +117,7 @@ async def user_login(request):
             result = response_userinfo(user)
             
             # print('result==========',result)
-            return json(result)
+            return json(result,status=201)
         return json({"error_code":"LOGIN_FAILED","error_message":"user does not exist or incorrect password"}, status=520)
     else:
         return json({"error_code": "PARAM_ERROR", "error_message": "param error"}, status=520)
@@ -126,9 +128,8 @@ def getUser(user_name):
         user = db.session.query(User).filter(User.phone == user_name).first()            
     else:
         user = db.session.query(User).filter(User.email == user_name).first()
-    if hasattr(user,"group_last_access_id") == False:
-        user.group_last_access_id = db.session.query(GroupsUsers.group_id).filter(GroupsUsers.user_id == user.id).first()
-        user.group_last_access = db.session.query(Group).filter(Group.id == user.group_last_access_id).first()
+    # print('user==========',user.group_last_access)
+
     return user
 
 def checkIsPhoneNumber(phone):
@@ -142,7 +143,7 @@ def checkIsPhoneNumber(phone):
 async def user_logout(request):
     uid = auth.current_user(request)
     params = request.json
-    print(params)
+    # print(params)
     # user = db.session.query(User).filter(User.id == int(current_user)).first()
     user_update = db.session.query(User).filter(User.id == uid).first()
     if user_update is not None:

@@ -27,5 +27,5 @@ class Group(CommonModel):
     assignee_id = db.Column(UUID(as_uuid=True), ForeignKey("user.id"))
     assignee = db.relationship("User", foreign_keys=[assignee_id])
     members = db.relationship("User",secondary="groups_users")
-    check_lists = db.relationship("Checklist")
+    checklists = db.relationship("Checklist",secondary="checklists_groups")
     tasks_info = db.relationship('TaskInfo')

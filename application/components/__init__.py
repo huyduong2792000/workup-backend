@@ -5,11 +5,7 @@ from application.extensions import jinja, auth
 
 
 def init_views(app):
-    import application.components.group
-    import application.components.group.api
-    
-    import application.components.user
-    import application.components.user.api
+
 
     import application.components.organization
     import application.components.organization.api
@@ -25,10 +21,14 @@ def init_views(app):
     import application.components.task
     import application.components.task.api
 
-
-
     import application.components.checklist
     import application.components.checklist.api
+
+    import application.components.group
+    import application.components.group.api
+    
+    import application.components.user
+    import application.components.user.api
     @app.route('/')
     def index(request):
         #return text("Index")
