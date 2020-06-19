@@ -5,6 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship, backref
 from application.database import db
 from application.database.model import CommonModel, default_uuid
+from application.components.group.model import Group
 
 
 class Role(CommonModel):

@@ -181,9 +181,16 @@ def create_admin(password='123456'):
             group_name="group Admin User",
             unsigned_name="group Admin User" ,
             assignee_id = user.id,
-            members=[user]
+            # members=[user]
         )
         db.session.add(new_group)
+        db.session.flush()
+        new_relation = GroupsUsers(
+            user_id = user.id,
+            group_id = new_group.id,
+            role_id = role_admin.id
+        )
+        db.session.add(new_relation)
     db.session.commit()
 
     return

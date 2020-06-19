@@ -83,15 +83,21 @@ def user_register(request):
         db.session.flush()
 
         new_group = Group(
-            group_name="group " + str(display_name),
-            unsigned_name="group " + str(unsigned_display_name),
+            group_name="GROUP " + str(display_name),
+            unsigned_name="GROUP " + str(unsigned_display_name),
             assignee_id = new_user.id,
-            members=[new_user]
+            # members=[new_user]
         )
+        db.session.add(new_group)
         db.session.flush()
+        new_relation = GroupsUsers(
+            user_id = new_user.id,
+            group_id = new_group.id,
+            role_id = db.session.query(Role.id).filter(Role.role_name == "admin").scalar()
+        )
+        db.session.add(new_relation)
         new_user.group_last_access_id = new_group.id
         new_user.group_last_access = new_group
-        db.session.add(new_group)
         db.session.add(new_user)
         db.session.commit()
         return json({"id":str(new_user.id),"phone":phone,"display_name":display_name,"password":password})
