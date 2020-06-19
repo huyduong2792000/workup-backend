@@ -20,6 +20,7 @@ class Checklist(CommonModel):
     tasks_info = db.relationship("TaskInfo")
     # group_id = db.Column(UUID(as_uuid=True), ForeignKey('group.id',onupdate='cascade',ondelete='cascade'))
     groups = db.relationship("Group",secondary="checklists_groups")
+    time_worker = db.Column(SmallInteger,default = 0000) #default 0h:0m
     cycle_worker = db.Column(String(20),default="week") #week or month
     days_worker_month = db.Column(JSONB(),default=[]) #25,26,27... in month
     days_worker_week = db.Column(JSONB(),default=[0,1,2,3,4,5,6]) #0,1,2...,6  <=> sunday, monday...saturday

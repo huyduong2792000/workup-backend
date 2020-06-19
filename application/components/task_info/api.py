@@ -53,6 +53,7 @@ def postTaskInfo(request=None, data=None, Model=None):
         }, status = 520)
 
 def createTaskInfo(task_info,uid):
+    # print(task_info['group'])
     task_info['unsigned_name'] = no_accent_vietnamese(task_info['task_info_name'])
     task_info['created_by'] = uid
     assignee = task_info.get('assignee',{})
@@ -70,7 +71,21 @@ def createTaskInfo(task_info,uid):
     # print('sdfddddddddd',isinstance(getattr(new_group,"check_lists"), (float, int, str, )))
     if group.get("id",None) is not  None:
         setattr(new_task_info, "group_id", group.get("id",None))
-    else:
+        # CHECK EXISTS
+        # print('CHECK EXISTS')
+        # role_id = db.session.query(Role.id).filter(Role.role_name == "member").first()
+        # print(role_id)
+        check_member = db.session.query(GroupsUsers).filter(GroupsUsers.user_id == assignee.get('id'),\
+                GroupsUsers.group_id == group.get("id")).first()
+        if check_member is not None:
+            new_relation_member = GroupsUsers(
+                group_id = group.get('id'),
+                user_id = assignee.get('id'),
+                role_id = db.session.query(Role.id).filter(Role.role_name == "member").first()
+            )
+            db.session.add(new_relation_member)
+
+    elif group.get('id',None) is None and group.get('group_name') is not None and group.get('group_name') != '':
         new_group = Group()
         for key in group.keys():
             if hasattr(new_group,key) and not isinstance(group[key], (dict, list )):
@@ -88,6 +103,10 @@ def createTaskInfo(task_info,uid):
         db.session.add(new_group)
         db.session.flush()
         setattr(new_task_info, "group_id", new_group.id)
+        # db.session.add(new_task_info)
+        # db.session.flush()
+    else:
+        pass
     db.session.add(new_task_info)
     db.session.flush()
 
@@ -99,4 +118,6 @@ def createTaskInfo(task_info,uid):
         new_follower_task_info.note = task_info.get('Note',None)
         db.session.add(new_follower_task_info)
     db.session.commit()
+
+    # print(new_task_info.__dict__)
     return new_task_info

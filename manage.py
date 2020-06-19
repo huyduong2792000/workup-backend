@@ -31,7 +31,7 @@ manager = Manager()
 
 @manager.command
 def run():
-    Thread(target = runSchedule).start()
+    # Thread(target = runSchedule).start()
     """ Starts server on port 8000. """
     run_app(host="0.0.0.0", port=8678)
     
@@ -149,6 +149,12 @@ def create_admin(password='123456'):
         role_leader = Role(role_name='leader', display_name="Leader")
         db.session.add(role_leader)
         db.session.flush()
+
+    role_member = Role.query.filter(Role.role_name == "member").first()
+    if(role_member is None):
+        role_member = Role(role_name='member', display_name="member")
+        db.session.add(role_member)
+        db.session.flush()
     user = User.query.filter(User.email == "admin@gmail.com").first()
     # employee = Employee(full_name="Admin User", email="admin@gonrin.com",phone_number="0968244158",\
     #             id_identifier=123456)
@@ -177,7 +183,7 @@ def create_admin(password='123456'):
             assignee_id = user.id,
             members=[user]
         )
-    db.session.add(new_group)
+        db.session.add(new_group)
     db.session.commit()
 
     return

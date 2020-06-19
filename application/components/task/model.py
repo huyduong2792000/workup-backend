@@ -17,7 +17,7 @@ class FollowerTask(CommonModel):
 
 class Task(CommonModel):
     __tablename__='task'
-    task_code = db.Column(String(32), index=True, unique=False, nullable=False)
+    task_code = db.Column(String(32), index=True, unique=True, nullable=True)
     task_name = db.Column(String(255), nullable=False)
     unsigned_name = db.Column(String(255), nullable=True, index=True) # tên không dấu phục vụ truy vấn dữ liệu lớn
 #     sub_task = db.Column(Boolean, default=False) # Nếu là subtask thì bắt buộc phải có parent mới cho lưu vào

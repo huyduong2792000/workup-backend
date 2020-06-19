@@ -22,7 +22,7 @@ class TaskInfo(CommonModel):
     checklist = db.relationship('Checklist')
     group_id = db.Column(UUID(as_uuid=True), ForeignKey("group.id"))
     group = db.relationship('Group')
-    unsigned_name = db.Column(String, index=True)
+    # unsigned_name = db.Column(String, index=True)
     description = db.Column(String)
     tags = db.Column(JSONB())
     active = db.Column(SmallInteger, default=1)
