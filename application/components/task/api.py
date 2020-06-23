@@ -104,8 +104,8 @@ def putTask(request=None,task_id=None, **kw):
                 
         # DELETE ALL OTHER RELATIONS NOT IN in_relation_ids
         db.session.query(FollowerTask).filter(~FollowerTask.id.in_(in_relation_ids),FollowerTask.task_id==data['id']).delete(synchronize_session=False)
-        del data['task_info']
-        del data['followers']
+        # del data['task_info']
+        # del data['followers']
         # assignee = db.session.query(User).filter(User.id == data['assignee']['id']).first()
         try:
             data['assignee'] = db.session.query(User).filter(User.id == data['assignee']['id']).first()
@@ -113,9 +113,9 @@ def putTask(request=None,task_id=None, **kw):
             pass
         task_update = db.session.query(Task).filter(Task.id == task_id).first()
         # task_update.assignee = assignee
-        for attr in data.keys():
-            if hasattr(task_update, attr):
-                setattr(task_update, attr, data[attr])
+        for key in data.keys():
+            if hasattr(task_update, key) and not isinstance(data[key], (dict, list )):
+                setattr(task_update, key, data[key])
         # task_update.assignee = assignee
         db.session.add(task_update)
         db.session.commit()

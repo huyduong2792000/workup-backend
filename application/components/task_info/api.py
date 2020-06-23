@@ -77,7 +77,7 @@ def createTaskInfo(task_info,uid):
         # print(role_id)
         check_member = db.session.query(GroupsUsers).filter(GroupsUsers.user_id == assignee.get('id'),\
                 GroupsUsers.group_id == group.get("id")).first()
-        if check_member is not None:
+        if check_member is  None:
             new_relation_member = GroupsUsers(
                 group_id = group.get('id'),
                 user_id = assignee.get('id'),

@@ -215,18 +215,27 @@ def getChecklist(request=None, checklist_id = None):
 
 @app.route('/api/v1/checklist-worker', methods=["POST"])
 def runWorker(request=None):
-             
+
     today = int(datetime.datetime.now().strftime("%d"))
     name_today = datetime.datetime.now().strftime("%A")
+    last_day_of_current_month = findLastDayOfMonth()
     index_name_today = {"Sunday":0,"Monday":1,"Tuesday":2,"Wednesday":3,"Thursday":4,"Friday":5,"Saturday":6}[name_today]
     checklists = db.session.query(Checklist).all()
     for checklist in checklists:
         if checklist.cycle_worker == "week" and index_name_today in checklist.days_worker_week and len(checklist.tasks_info) != 0:
             cloneTaskInfoToTask(checklist.tasks_info,checklist.shifts)
-        if checklist.cycle_worker == "month" and today in checklist.days_worker_month and len(checklist.tasks_info) != 0:
-            cloneTaskInfoToTask(checklist.tasks_info,checklist.shifts)   
+        if checklist.cycle_worker == "month" :
+            if "end_day_of_month" in checklist.days_worker_month and today == last_day_of_current_month and len(checklist.tasks_info) != 0:
+                cloneTaskInfoToTask(checklist.tasks_info,checklist.shifts)
+            elif today in checklist.days_worker_month and len(checklist.tasks_info) != 0:
+                cloneTaskInfoToTask(checklist.tasks_info,checklist.shifts)   
     return json({},status=201) 
 
+def findLastDayOfMonth():
+    today = datetime.datetime.today()
+    first_day_of_next_month = datetime.datetime(year=today.year, month=today.month + 1,day=1)
+    last_day_of_current_month = first_day_of_next_month - datetime.timedelta(days=1)
+    return int(last_day_of_current_month.strftime("%d"))
 def cloneTaskInfoToTask(tasks_info,shifts):
     for shift in shifts:
         today = datetime.datetime.today() # or datetime.now to use local timezone
@@ -262,6 +271,6 @@ def cloneTaskInfoToTask(tasks_info,shifts):
                     task_id = new_task.id
                 )
                 db.session.add(new_relation)
-    db.session.commit()
+    # db.session.commit()
 
 
