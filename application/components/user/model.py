@@ -10,7 +10,6 @@ from application.components.group.model import Group
 
 class Role(CommonModel):
     __tablename__ = 'role'
-    __table_args__ = {'extend_existing': True}
     role_name = db.Column(String(100), index=True, nullable=False, unique=True)
     display_name = db.Column(String(255), nullable=False)
     description = db.Column(String(255))

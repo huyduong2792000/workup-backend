@@ -69,44 +69,53 @@ def user_register(request):
     display_name = param['display_name']
     unsigned_display_name = no_accent_vietnamese(param['display_name'])
     # print(param)
-    check_user_match = db.session.query(User).filter(User.phone == phone).all()
-    if len(check_user_match) == 0:
-        letters = string.ascii_lowercase
-        user_salt = ''.join(random.choice(letters) for i in range(64))
-        user_password = auth.encrypt_password(password, user_salt)
+    check_user_match = db.session.query(User).filter(User.phone == phone).first()
+    letters = string.ascii_lowercase
+    user_salt = ''.join(random.choice(letters) for i in range(64))
+    user_password = auth.encrypt_password(password, user_salt)
+    new_user = None
+    if check_user_match is None:
         new_user = User(phone = phone,
                         unsigned_display_name = unsigned_display_name,
                         password = user_password, 
                         display_name = display_name, 
                         salt = user_salt)
-        db.session.add(new_user)
-        db.session.flush()
+    else:
+        new_user = check_user_match
+        new_user.phone = phone
+        new_user.unsigned_display_name = unsigned_display_name
+        new_user.password = user_password
+        new_user.display_name = display_name
+        new_user.salt = user_salt
+        new_user.is_active = True
 
-        new_group = Group(
-            group_name="GROUP " + str(display_name),
-            unsigned_name="GROUP " + str(unsigned_display_name),
-            assignee_id = new_user.id,
-            # members=[new_user]
-        )
-        db.session.add(new_group)
-        db.session.flush()
-        new_relation = GroupsUsers(
-            user_id = new_user.id,
-            group_id = new_group.id,
-            role_id = db.session.query(Role.id).filter(Role.role_name == "admin").scalar()
-        )
-        db.session.add(new_relation)
-        new_user.group_last_access_id = new_group.id
-        new_user.group_last_access = new_group
-        db.session.add(new_user)
-        db.session.commit()
-        return json({"id":str(new_user.id),"phone":phone,"display_name":display_name,"password":password})
+    db.session.add(new_user)
+    db.session.flush()
+    new_group = Group(
+        group_name="GROUP " + str(display_name),
+        unsigned_name="GROUP " + str(unsigned_display_name),
+        assignee_id = new_user.id,
+        # members=[new_user]
+    )
+    db.session.add(new_group)
+    db.session.flush()
+    new_relation = GroupsUsers(
+        user_id = new_user.id,
+        group_id = new_group.id,
+        role_id = db.session.query(Role.id).filter(Role.role_name == "admin").scalar()
+    )
+    db.session.add(new_relation)
+    new_user.group_last_access_id = new_group.id
+    new_user.group_last_access = new_group
+    db.session.add(new_user)
+    db.session.commit()
+    return json({"id":str(new_user.id),"phone":phone,"display_name":display_name,"password":password})
 
 @app.route("/api/v1/check_phone_exist", methods=["POST"])
 def user_register(request):
     param = request.json
     phone = param.get('phone')
-    check = db.session.query(User.query.filter(User.phone == phone).exists()).scalar()
+    check = db.session.query(User.query.filter(User.phone == phone,User.is_active == True).exists()).scalar()
     return json({"check":check},status = 200)
 
 @app.route("/login", methods=["POST"])
@@ -193,41 +202,29 @@ apimanager.create_api(collection_name='role', model=Role,
                                        DELETE_SINGLE=[], GET_MANY=[])
                       )
 
-def no_accent_vietnamese(s):
-    s = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
-    s = re.sub(r'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
-    s = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', s)
-    s = re.sub(r'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
-    s = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
-    s = re.sub(r'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
-    s = re.sub(r'[ìíịỉĩ]', 'i', s)
-    s = re.sub(r'[ÌÍỊỈĨ]', 'I', s)
-    s = re.sub(r'[ùúụủũưừứựửữ]', 'u', s)
-    s = re.sub(r'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
-    s = re.sub(r'[ỳýỵỷỹ]', 'y', s)
-    s = re.sub(r'[ỲÝỴỶỸ]', 'Y', s)
-    s = re.sub(r'[Đ]', 'D', s)
-    s = re.sub(r'[đ]', 'd', s)
-    return s
-
 @app.route('/api/v1/check_user_has_been_account', methods=["GET", "POST"])
 def checkContactHasBeenAccount(request=None):
     uid = auth.current_user(request)
     if uid is not None:
-        list_contact = request.json
+        data = request.json
+        list_contact = data.get('contacts',[])
+        group = data.get('group',{})
+        # print(group)
         list_contact_convert = convertListContact(list_contact)
         list_phone = []
         for contact in list_contact_convert:
             list_phone.append(contact['phone'])
         users_match = db.session.query(User).filter(User.phone.in_(list_phone)).all()
-        
+        # print(users_match)
         response = []
         for contact in list_contact_convert:
+            contact['is_member'] = False
             for user in users_match:
                 if(user.phone == contact['phone']):
                     contact['display_name_server'] = user.display_name
-                    contact['email'] = user.email
+                    contact['is_member'] = checkUserIsMember(user,group)
                     contact['id'] = str(user.id)
+            # print(contact)
             response.append(contact)
         return json(response)
     else:
@@ -235,6 +232,17 @@ def checkContactHasBeenAccount(request=None):
             "error_code": "USER_NOT_FOUND",
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
+
+def checkUserIsMember(user,group):
+    user_id_match = db.session.query(GroupsUsers.id).filter(
+        GroupsUsers.group_id == group.get('id',None),
+        GroupsUsers.user_id == user.id
+    ).first()
+    if user_id_match is None:
+        return False
+    else:
+        return True
+    # is_relation_exist = db.session.query(literal(True)).filter(check_follower.exists()).scalar()
 
 
 def convertListContact(list_contact):
@@ -247,172 +255,17 @@ def convertListContact(list_contact):
             })
     return result
 
-
-# def get_current_user(request):
-#     #user = auth.current_user(request)
-#     # return json({"id": user.id, "email": user.email, "full_name": user.full_name,"employee_id":user.employee_id,"role":user.roles[0].role_name})
-#     # return json({})
-#     # print('request',request.json)
-#     token = request.headers.get("Cookie", None)
-#     print("token============",token)
-#     if token is not None:
-#         uid = redisdb.get("sessions:" + token)
-#         print("uid=======",uid)
-#         scope = request.args.get("scope", None)
-#         if uid is not None:
-#             uid = uid.decode('utf8')
-#             user = db.session.query(User).filter(User.id == uid).first()
-#             if user is not None:
-#                 if user.is_active == True:
-#                     userobj = response_userinfo(user, scope)
-#                     return json(userobj)
-#                 else:
-#                     return json({"error_code": "LOGIN_FAILED", "error_message": "Tài khoản của bạn đã bị khoá. Vui lòng liên hệ quản trị hệ thống để được giải đáp"}, status=520)
-#         else:
-#             return json({
-#                 "error_code": "SESSION_EXPIRED",
-#                 "error_message":""
-#             }, status = 520)
-#     else:
-#         return json({
-#             "error_code": "SESSION_EXPIRED",
-#             "error_message":""
-#             }, status = 520)
-# def response_userinfo(user, **kw):
-#     if user is not None:
-#         user_info = to_dict(user)
-#         exclude_attr = ["password", "salt", "created_at", "created_by", "updated_at", "updated_by",\
-#                          "deleted_by", "deleted_at", "deleted","facebook_access_token","phone_country_prefix",\
-#                          "phone_national_number","last_login_at","current_login_at",\
-#                          "last_login_ip","current_login_ip","login_count"]
-
-#         for attr in exclude_attr:
-#             if attr in user_info:
-#                 del(user_info[attr])
-
-#         return user_info
-#     return None
-
-
-# def valid_employe(request=None, data=None, **kw):
-#     id_identifier = data.get('id_identifier')
-#     email = data.get('email')
-#     password = data.get('password')
-#     confirm_password = data.get('confirm_password')
-#     position = data.get('position')
-#     if data.get('id') is None:
-#         if email != None and id_identifier != None and position != None:
-#             check_employee = Employee.query.filter(
-#                 or_(Employee.email == email, Employee.id_identifier == id_identifier)).first()
-#             if check_employee is None:
-#                 pass
-# #                 request.args['password'] = data['password']
-# #                 request.args['confirm_password'] = data['confirm_password']
-# #                 del data['confirm_password']
-# #                 del data['password']
-
-#             else:
-#                 return json({"error_code": "INSERT_ERROR", "error_message": "Nhân viên đã tồn tại, vui lòng kiểm tra lại!"}, status=520)
-#         else:
-#             return json({"error_code": "PARAM_INVALID", "error_message": "Dữ liệu không đúng định dạng!"}, status=520)
-#     else:
-#         del data['email']
-#         if position is not None:
-#             pass
-#         else:
-#             return json({"error_code": "PARAM_INVALID", "error_message": "Dữ liệu không đúng định dạng!"}, status=520)
-
-
-
-# def update_user(request=None, Model=None, result=None, **kw):
-#     param = request.json
-#     role_admin = Role.query.filter(Role.role_name == "admin").first()
-#     role_user = Role.query.filter(Role.role_name == "user").first()
-#     role_employee = Role.query.filter(Role.role_name == "employee").first()
-#     role_leader = Role.query.filter(Role.role_name == "leader").first()
-#     user = db.session.query(User).filter(User.email == result['email']).first()
-#     user.phone_number = param['phone_number']
-#     user.full_name = param['full_name']
-
-#     if (param['position'] == 'employee' or param['position'] is None):
-#         user.roles = [role_employee]
-#     if (param['position'] == 'leader'):
-#         user.roles = [role_leader]
-
-#     employee = db.session.query(Employee).filter(
-#         Employee.id == result['id']).first()
-#     employee.user = [user]
-# #     print('role',role_employee)
-#     db.session.add(employee)
-
-#     db.session.commit()
-   
-
-
-# def create_employee(request=None, data=None, **kw):
-#     uid = auth.current_user(request)
-#     if uid is not None:
-#         data['created_by'] = uid
-#         data['full_name_unsigned'] = no_accent_vietnamese(data['full_name'])
-#     else:
-#         return json({
-#             "error_code": "USER_NOT_FOUND",
-#             "error_message":"USER_NOT_FOUND"
-#         }, status = 520)
-    
-# def filter_employee(request=None, search_params=None, **kwargs):
-#     uid = auth.current_user(request)
-#     if uid is not None:
-#         user = db.session.query(User).filter(User.id == uid).first()
-#         employee_id = user.employee_uid
-#         if employee_id is not None:
-#             if 'filters' in search_params:
-#                 filters = search_params["filters"]
-#                 if "$and" in filters:
-#                     # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
-#                     search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
-#                     search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]})
-#                 else:
-#                     search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]}, {"deleted":{"$eq": False}}]
-#             else:
-#                 search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}},{"id":{"$eq":employee_id}}]},{"deleted":{"$eq": False}}]}
-#         else:
-#             if 'filters' in search_params:
-#                 filters = search_params["filters"]
-#                 if "$and" in filters:
-#                     # search_params["filters"]['$and'].append({"active":{"$eq": 1}})
-#                     search_params["filters"]['$and'].append({"deleted":{"$eq": False}})
-#                     search_params["filters"]['$and'].append({"$or":[{"created_by":{"$eq": uid}}]})
-#                 else:
-#                     search_params["filters"]['$and'] = [{"$or":[{"created_by":{"$eq": uid}}]}, {"deleted":{"$eq": False}}]
-#             else:
-#                 search_params["filters"] = {'$and':[{"$or":[{"created_by":{"$eq": uid}}]},{"deleted":{"$eq": False}}]}
-
-#     else:
-#         return json({
-#             "error_code": "USER_NOT_FOUND",
-#             "error_message":"USER_NOT_FOUND"
-#         }, status = 520)   
-        
-# apimanager.create_api(collection_name='employee', model=Employee,
-#                       methods=['GET', 'POST', 'DELETE', 'PUT'],
-#                       url_prefix='/api/v1',
-#                       preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func,filter_employee], POST=[
-#                                       auth_func, valid_employe,create_employee], PUT_SINGLE=[auth_func, valid_employe,create_employee], DELETE_SINGLE=[auth_func]),
-#                       postprocess=dict(POST=[user_register], PUT_SINGLE=[
-#                           update_user], DELETE_SINGLE=[], GET_MANY=[])
-                    #   )
-
-# @app.route('/filter_employee', methods=["GET", "OPTIONS"])
-# def filter_employee(request):
-#     employees = db.session.query(Employee).all()
-#     data_resp = []
-#     for employee in employees:
-#         employee = employee.__dict__
-#         if(employee['deleted'] is False):
-#             obj = {"id": str(employee['id']),
-#                 "full_name": employee['full_name'],
-#                 "email": employee['email']
-#                 }
-#             data_resp.append(obj)
-#     return json(data_resp)
+@app.route("api/v1/set-group-last-access/<group_id>", methods=["PUT"])
+def setGroupLastAccess(request=None,group_id=None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        user_update = db.session.query(User).filter(User.id == uid).first()
+        user_update.group_last_access_id = group_id
+        db.session.add(user_update)
+        db.session.commit()
+        return json({},status=200)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)

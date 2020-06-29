@@ -7,7 +7,8 @@ from gatco.response import text, json
 from application.components.user.model import User, Role
 from application.components.group.model import Group,GroupsUsers
 from application.components.task_info.model import TaskInfo
-
+import random
+import string
 from application.server import app
 from datetime import datetime
 from sqlalchemy import and_, or_,func,literal
@@ -114,7 +115,8 @@ def getGroup(request=None):
         for group in list_groups:
             group_append = {}
             group_append = {'id':str(group[0]),'group_name':group[1],'description':group[2]} 
-            total_members = db.session.query(func.count(GroupsUsers.user_id)).filter(GroupsUsers.group_id==group[0]).scalar()
+            role_member = db.session.query(Role).filter(Role.role_name == "member").first()
+            total_members = db.session.query(func.count(GroupsUsers.user_id)).filter(GroupsUsers.group_id==group[0],GroupsUsers.role_id == role_member.id).scalar()
             group_append['total_members'] = total_members
 
             check_current_user_is_member = db.session.query(func.count(GroupsUsers.user_id))\
@@ -155,7 +157,8 @@ def getSigleGroup(request=None,group_id=None):
         result['id'] = str(group[0]) or None
         result['group_name'] = group[1] or None
         result['description'] = group[2] or None
-        total_members = db.session.query(func.count(GroupsUsers.user_id)).filter(GroupsUsers.group_id==group[0]).scalar()
+        role_member = db.session.query(Role).filter(Role.role_name == "member").first()
+        total_members = db.session.query(func.count(GroupsUsers.user_id)).filter(GroupsUsers.group_id==group[0],GroupsUsers.role_id == role_member.id).scalar()
         result['total_members'] = total_members
         
         total_tasks_info = db.session.query(func.count(TaskInfo.id)).filter(TaskInfo.group_id == result['id']).scalar()
@@ -227,7 +230,116 @@ def getMyGroup(request=None, search_params=None, **kwargs):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
 
+@app.route('/api/v1/get_member/<group_id>', methods=["GET"])
+def getMember(request = None, group_id = None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        page = request.args.get("page", None) or 1
+        results_per_page = request.args.get("results_per_page", None) or 50
+        offset=(int(page)-1)*int(results_per_page)
 
+        members = db.session.query(GroupsUsers).filter(GroupsUsers.group_id == group_id)\
+        .order_by(GroupsUsers.updated_at.desc()).limit(results_per_page).offset(offset).all()
+        # print(members)
+        response = []
+        for member in members:
+            member_add = to_dict(member.user)
+            member_add['role_id'] = str(member.role_id)
+            member_add['role_name'] = member.role.role_name
+            if str(member_add['id']) == str(uid):
+                response.insert(0,member_add)
+            else:
+                response.append(member_add)
+        return json({"num_results":len(response),"objects":response,"page":page})
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+
+@app.route('/api/v1/member-action', methods=["POST"])
+def getMember(request = None, group_id = None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        data = request.json
+        if data['option'] == "upgrade_role_to_admin":
+            role_admin = db.session.query(Role).filter(Role.role_name == "admin").first()
+            relation_update = db.session.query(GroupsUsers).filter(
+                GroupsUsers.group_id == data['group_id'],
+                GroupsUsers.user_id == data['member_id']
+                ).first()
+            relation_update.role_id = role_admin.id
+            db.session.add(relation_update)
+            db.session.commit()
+        elif data['option'] == "downgrade_role_to_member":
+            role_member = db.session.query(Role).filter(Role.role_name == "member").first()
+            relation_update = db.session.query(GroupsUsers).filter(
+                GroupsUsers.group_id == data['group_id'],
+                GroupsUsers.user_id == data['member_id']
+                ).first()
+            relation_update.role_id = role_member.id
+            db.session.add(relation_update)
+            db.session.commit()
+        elif data['option'] == "remove_member":
+            relation_update = db.session.query(GroupsUsers).filter(
+                GroupsUsers.group_id == data['group_id'],
+                GroupsUsers.user_id == data['member_id']
+                ).first()
+            db.session.delete(relation_update)
+            db.session.commit()
+        return json({},status=200)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+
+
+@app.route('/api/v1/add_members', methods=["POST"])
+def addMembers(request = None, group_id = None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        data = request.json
+        id_role_member = db.session.query(Role.id).filter(Role.role_name == "member").first()
+        for member in data['members']:
+            if member.get('id',None) is None:
+                new_user = createUser(member)
+                db.session.add(new_user)
+                db.session.flush()
+                new_relation = GroupsUsers(
+                    user_id = new_user.id,
+                    group_id = data['group_id'],
+                    role_id = id_role_member
+                )
+                db.session.add(new_relation)
+                db.session.commit()
+            else:
+                new_relation = GroupsUsers(
+                    user_id = member['id'],
+                    group_id = data['group_id'],
+                    role_id = id_role_member
+                )
+                db.session.add(new_relation)
+                db.session.commit()
+        return json({},status=201)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+def createUser(member):
+    letters = string.ascii_lowercase
+    user_salt = ''.join(random.choice(letters) for i in range(64))
+    password = user_salt
+    user_password = auth.encrypt_password(password, user_salt)
+    new_user = User(
+        is_active = False,
+        phone = member['phone'],
+        display_name = member['display_name'],
+        unsigned_display_name = no_accent_vietnamese(member['display_name']),
+        password = user_password, 
+        salt = user_salt)
+    return new_user
 apimanager.create_api(collection_name='filter_group', model=Group,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
     url_prefix='/api/v1',
