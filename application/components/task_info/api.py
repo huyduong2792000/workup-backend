@@ -77,7 +77,7 @@ def createTaskInfo(task_info,uid):
         # print(role_id)
         check_member = db.session.query(GroupsUsers).filter(GroupsUsers.user_id == assignee.get('id'),\
                 GroupsUsers.group_id == group.get("id")).first()
-        if check_member is  None:
+        if check_member is None:
             new_relation_member = GroupsUsers(
                 group_id = group.get('id'),
                 user_id = assignee.get('id'),
@@ -99,10 +99,17 @@ def createTaskInfo(task_info,uid):
             Group.parent_id == None
         ).first()
         setattr(new_group, "parent_id", parent_id)
-        new_group.members = [assignee]
         db.session.add(new_group)
         db.session.flush()
         setattr(new_task_info, "group_id", new_group.id)
+        #set admin for new_group
+        new_relation = GroupsUsers(
+            group_id = new_group.id,
+            user_id = assignee.id,
+            role_id = db.session.query(Role.id).filter(Role.role_name == "admin").first()
+        )
+        db.session.add(new_relation)
+        db.session.flush()
         # db.session.add(new_task_info)
         # db.session.flush()
     else:
@@ -121,3 +128,26 @@ def createTaskInfo(task_info,uid):
 
     # print(new_task_info.__dict__)
     return new_task_info
+
+def valideUserUpdate(followers):
+    result = []
+    for follower in followers:
+        data_append = {}
+        for key in follower.keys():
+            if hasattr(User,key) and not isinstance(follower[key], (dict, list )):
+                data_append[key] = follower[key]
+        result.append(data_append)
+    return result
+def putProcess(request=None, instance_id=None, data=None, Model=None):
+    followers = valideUserUpdate(data.get('followers',[]))
+    data['followers'] = followers
+    data['unsigned_name'] = no_accent_vietnamese(data['task_info_name'])
+
+
+
+apimanager.create_api(collection_name='task_info', model=TaskInfo,
+    methods=['GET', 'DELETE', 'PUT'],
+    url_prefix='/api/v1',
+    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], PUT_SINGLE=[auth_func,putProcess], DELETE_SINGLE=[auth_func]),
+    )
+

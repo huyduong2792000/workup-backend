@@ -102,7 +102,7 @@ def createChecklist(request=None, checklist_id = None):
         # checklist = request.json
         checklist = db.session.query(Checklist).filter(Checklist.id == checklist_id).first()
         response = to_dict(checklist) or {}
-        tasks_info = db.session.query(TaskInfo).filter(TaskInfo.checklist_id == checklist.id).all()
+        tasks_info = db.session.query(TaskInfo).filter(TaskInfo.checklist_id == checklist.id,TaskInfo.deleted == False).all()
         response['tasks_info'] = []
         response['groups'] = []
         response['shifts'] = []
@@ -201,7 +201,7 @@ def getChecklist(request=None, checklist_id = None):
         .order_by(Checklist.created_at.desc()).limit(results_per_page).offset(offset).all()
         for checklist in checklists:
             checklist_append = to_dict(checklist)
-            checklist_append['total_tasks_info'] = db.session.query(func.count(TaskInfo.id)).filter(TaskInfo.checklist_id==checklist.id).scalar()
+            checklist_append['total_tasks_info'] = db.session.query(func.count(TaskInfo.id)).filter(TaskInfo.checklist_id==checklist.id,TaskInfo.deleted == False).scalar()
             checklist_append['total_shifts'] = db.session.query(func.count(ChecklistShift.id)).filter(ChecklistShift.checklist_id==checklist.id).scalar()
 
             results.append(checklist_append)

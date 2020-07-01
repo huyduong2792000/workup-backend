@@ -11,7 +11,7 @@ import random
 import string
 from application.server import app
 from datetime import datetime
-from sqlalchemy import and_, or_,func,literal
+from sqlalchemy import and_, or_,func,literal,update
 import re
 import json as to_json
 from gatco_restapi.helpers import to_dict
@@ -79,17 +79,28 @@ def putGroup(request=None, group_id=None):
     if uid is not None:
         group = request.json
         response = group
-        group['unsigned_name'] = no_accent_vietnamese(group['group_name'])
-        members = group['members']
-        group_update = db.session.query(Group).filter(Group.id == group['id']).first()
-        for key in group.keys():
-            if hasattr(group_update,key) and key not in ["assignee","members","check_lists","tasks_info"]:
-                setattr(group_update, key, group[key])
-        if group.get("assignee",None) != None and group.get("assignee_id",None) == None:
-            setattr(group_update, "assignee_id", group["assignee"]['id'])
-        db.session.add(group_update)
-        db.session.commit()
-        return json(to_dict(group_update),status=200)
+        group['unsigned_name'] = no_accent_vietnamese(group.get('group_name'))
+        deleted = group.get('deleted',False)
+        if not deleted:
+            members = group.get('members',[])
+            group_update = db.session.query(Group).filter(Group.id == group['id']).first()
+            for key in group.keys():
+                if hasattr(group_update,key) and key not in ["assignee","members","check_lists","tasks_info"]:
+                    setattr(group_update, key, group[key])
+            if group.get("assignee",None) != None and group.get("assignee_id",None) == None:
+                setattr(group_update, "assignee_id", group["assignee"]['id'])
+            db.session.add(group_update)
+            db.session.commit()
+            return json(to_dict(group_update),status=200)
+        else:
+            #DELETE GROUP AND TASK INFO IN GROUP
+            group_update = db.session.query(Group).filter(Group.id == group['id']).first()
+            group_update.deleted = True
+            db.session.query(TaskInfo).filter(TaskInfo.group_id == group_update.id)\
+            .update({TaskInfo.deleted:True}, synchronize_session = False)
+            db.session.add(group_update)
+            db.session.commit()
+            return json(to_dict(group_update),status=200)
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -237,12 +248,19 @@ def getMember(request = None, group_id = None):
         page = request.args.get("page", None) or 1
         results_per_page = request.args.get("results_per_page", None) or 50
         offset=(int(page)-1)*int(results_per_page)
-
-        members = db.session.query(GroupsUsers).filter(GroupsUsers.group_id == group_id)\
-        .order_by(GroupsUsers.updated_at.desc()).limit(results_per_page).offset(offset).all()
+        members = []
+        group = db.session.query(Group).filter(Group.id == group_id).first()
+        if group.parent_id is None:
+            members = db.session.query(GroupsUsers).filter(GroupsUsers.group_id == group_id)\
+            .order_by(GroupsUsers.updated_at.desc()).limit(results_per_page).offset(offset).all()
+        else:
+            members = db.session.query(GroupsUsers).filter(GroupsUsers.group_id.in_([group_id,group.parent_id]))\
+            .distinct(GroupsUsers.user_id).limit(results_per_page).offset(offset).all()
         # print(members)
         response = []
         for member in members:
+
+            # member
             member_add = to_dict(member.user)
             member_add['role_id'] = str(member.role_id)
             member_add['role_name'] = member.role.role_name
@@ -346,8 +364,6 @@ apimanager.create_api(collection_name='filter_group', model=Group,
     preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
     postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
     )
-
-
 
 apimanager.create_api(collection_name='groups_users', model=GroupsUsers,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
