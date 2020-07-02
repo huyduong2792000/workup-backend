@@ -85,7 +85,8 @@ def createTaskInfo(task_info,uid):
             )
             db.session.add(new_relation_member)
 
-    elif group.get('id',None) is None and group.get('group_name') is not None and group.get('group_name') != '':
+    else:
+        # group.get('id',None) is None and group.get('group_name') is not None and group.get('group_name') != '':
         new_group = Group()
         for key in group.keys():
             if hasattr(new_group,key) and not isinstance(group[key], (dict, list )):
@@ -112,8 +113,8 @@ def createTaskInfo(task_info,uid):
         db.session.flush()
         # db.session.add(new_task_info)
         # db.session.flush()
-    else:
-        pass
+    # else:
+    #     pass
     db.session.add(new_task_info)
     db.session.flush()
 
@@ -129,20 +130,20 @@ def createTaskInfo(task_info,uid):
     # print(new_task_info.__dict__)
     return new_task_info
 
-def valideUserUpdate(followers):
-    result = []
-    for follower in followers:
-        data_append = {}
-        for key in follower.keys():
-            if hasattr(User,key) and not isinstance(follower[key], (dict, list )):
-                data_append[key] = follower[key]
-        result.append(data_append)
+def validUserUpdate(user):
+    result = {}
+    for key in user.keys():
+        if hasattr(User,key) and not isinstance(user[key], (dict, list )):
+            result[key] = user[key]
     return result
 def putProcess(request=None, instance_id=None, data=None, Model=None):
-    followers = valideUserUpdate(data.get('followers',[]))
+    followers = []
+    for follower in data.get('followers',[]):
+        followers.append(validUserUpdate(follower))
     data['followers'] = followers
-    data['unsigned_name'] = no_accent_vietnamese(data['task_info_name'])
+    data['assignee'] = validUserUpdate(data['assignee'])
 
+    data['unsigned_name'] = no_accent_vietnamese(data['task_info_name'])
 
 
 apimanager.create_api(collection_name='task_info', model=TaskInfo,

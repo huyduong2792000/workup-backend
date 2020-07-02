@@ -247,11 +247,13 @@ def checkUserIsMember(user,group):
 
 def convertListContact(list_contact):
     result = []
+    # print(list_contact)
     for contact in list_contact:
         if contact['contactType'] == "person":
+            phone = contact.get('phoneNumbers')[0]['number'] if contact.get('phoneNumbers') is not None else ''
             result.append({
                 "display_name": contact['name'],
-                "phone":re.sub(r'[^0-9]', '', contact['phoneNumbers'][0]['number'])
+                "phone":re.sub(r'[^0-9]', '', phone)
             })
     return result
 
