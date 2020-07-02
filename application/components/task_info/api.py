@@ -44,6 +44,7 @@ def postTaskInfo(request=None, data=None, Model=None):
         task_info = createTaskInfo(task_info,uid)
         response = to_dict(task_info)
         response['group'] = to_dict(task_info.group)
+        print(response['group'])
         return json(response,status=201)
 
     else:
@@ -95,14 +96,15 @@ def createTaskInfo(task_info,uid):
         assignee = db.session.query(User).filter(User.id == assignee.get('id',None)).first()
         setattr(new_group, "assignee_id", assignee.id)
 
-        parent_id = db.session.query(Group.id).join(ChecklistGroup).filter(
-            ChecklistGroup.checklist_id == task_info.get('checklist_id',None),
-            Group.parent_id == None
-        ).first()
-        setattr(new_group, "parent_id", parent_id)
+        # parent_id = db.session.query(Group.id).join(ChecklistGroup).filter(
+        #     ChecklistGroup.checklist_id == task_info.get('checklist_id',None),
+        #     Group.parent_id == None
+        # ).first()
+        # setattr(new_group, "parent_id", parent_id)
         db.session.add(new_group)
         db.session.flush()
         setattr(new_task_info, "group_id", new_group.id)
+        # setattr(new_task_info, "group", new_group)
         #set admin for new_group
         new_relation = GroupsUsers(
             group_id = new_group.id,
