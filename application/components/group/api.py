@@ -49,6 +49,11 @@ def createGroup(request=None, data=None, Model=None):
                 setattr(new_group, key, group[key])
         db.session.add(new_group)
         db.session.flush()
+        #update group last access user to new group
+        user_update = db.session.query(User).filter(User.id == uid).first()
+        user_update.group_last_access_id = new_group.id
+        user_update.group = new_group
+        db.session.add(user_update)
         #set current user become admin default
         role_admin_id = db.session.query(Role.id).filter(Role.role_name == 'admin').first()
         new_group_user = GroupsUsers(
@@ -57,7 +62,7 @@ def createGroup(request=None, data=None, Model=None):
             role_id = role_admin_id
         )
         db.session.add(new_group_user)
-        db.session.commit()
+        # db.session.commit()
         all_roles = db.session.query(Role).all()
         db.session.commit()
         response['id'] = str(new_group.id)
