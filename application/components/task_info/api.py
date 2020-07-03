@@ -86,8 +86,7 @@ def createTaskInfo(task_info,uid):
             )
             db.session.add(new_relation_member)
 
-    else:
-        # group.get('id',None) is None and group.get('group_name') is not None and group.get('group_name') != '':
+    elif group.get('id',None) is None and group.get('group_name') is not None and group.get('group_name') != '':
         new_group = Group()
         for key in group.keys():
             if hasattr(new_group,key) and not isinstance(group[key], (dict, list )):
@@ -115,8 +114,8 @@ def createTaskInfo(task_info,uid):
         db.session.flush()
         # db.session.add(new_task_info)
         # db.session.flush()
-    # else:
-    #     pass
+    else:
+        pass
     db.session.add(new_task_info)
     db.session.flush()
 

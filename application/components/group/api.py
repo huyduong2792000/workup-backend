@@ -42,7 +42,7 @@ def createGroup(request=None, data=None, Model=None):
         response = group
         group['unsigned_name'] = no_accent_vietnamese(group['group_name'])
         group['created_by'] = uid
-        members = group['members']
+        # members = group['members']
         new_group = Group()
         for key in group.keys():
             if hasattr(new_group,key) and not isinstance(group[key], (dict, list )):
@@ -250,7 +250,8 @@ def getMember(request = None, group_id = None):
         offset=(int(page)-1)*int(results_per_page)
         members = []
         group = db.session.query(Group).filter(Group.id == group_id).first()
-        if group.parent_id is None:
+        print(group.parent_id)
+        if group.parent_id is not None:
             members = db.session.query(GroupsUsers).filter(GroupsUsers.group_id == group_id)\
             .order_by(GroupsUsers.updated_at.desc()).limit(results_per_page).offset(offset).all()
         else:

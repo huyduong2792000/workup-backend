@@ -197,7 +197,7 @@ def getChecklist(request=None, checklist_id = None):
         page = request.args.get("page", None) or 1
         results_per_page = request.args.get("results_per_page", None) or 50
         offset=(int(page)-1)*int(results_per_page)
-        checklists = db.session.query(Checklist).filter(Checklist.created_by == uid)\
+        checklists = db.session.query(Checklist).filter(Checklist.created_by == uid,Checklist.deleted == False)\
         .order_by(Checklist.created_at.desc()).limit(results_per_page).offset(offset).all()
         for checklist in checklists:
             checklist_append = to_dict(checklist)
@@ -271,6 +271,6 @@ def cloneTaskInfoToTask(tasks_info,shifts):
                     task_id = new_task.id
                 )
                 db.session.add(new_relation)
-    # db.session.commit()
+    db.session.commit()
 
 
