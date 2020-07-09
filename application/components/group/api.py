@@ -352,10 +352,8 @@ def addMembers(request = None, group_id = None):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
 def createUser(member):
-    letters = string.ascii_lowercase
-    user_salt = ''.join(random.choice(letters) for i in range(64))
-    password = user_salt
-    user_password = auth.encrypt_password(password, user_salt)
+    user_salt = random.choices('e2q8dhaushdauwd7qye', weights = [10, 1, 1], k = 14)
+    user_password = random.choices('e2q8dhaushdauwd7qye', weights = [10, 1, 1], k = 14)
     new_user = User(
         is_active = False,
         phone = member['phone'],
