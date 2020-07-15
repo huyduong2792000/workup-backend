@@ -33,6 +33,17 @@ def no_accent_vietnamese(s):
     s = re.sub(r'[đ]', 'd', s)
     return s
 
+def generate_string(num=7):
+    code = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                   for _ in range(num))
+
+    while code[:1] == '0':
+        code = ''.join(random.choice(string.ascii_uppercase +
+                                     string.digits) for _ in range(num))
+
+    return "%s" % (code)
+
+
 
 @app.route('/api/v1/group', methods=["POST"])
 def createGroup(request=None, data=None, Model=None):
@@ -352,8 +363,11 @@ def addMembers(request = None, group_id = None):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
 def createUser(member):
-    user_salt = random.choices('e2q8dhaushdauwd7qye', weights = [10, 1, 1], k = 14)
-    user_password = random.choices('e2q8dhaushdauwd7qye', weights = [10, 1, 1], k = 14)
+    #user_salt = random.choices('e2q8dhaushdauwd7qye', weights = [10, 1, 1], k = 14)
+    #user_password = random.choices('e2q8dhaushdauwd7qye', weights = [10, 1, 1], k = 14)
+    user_salt = generate_string(16)
+    user_password = generate_string(32)
+
     new_user = User(
         is_active = False,
         phone = member['phone'],
