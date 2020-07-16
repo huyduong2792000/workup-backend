@@ -195,9 +195,13 @@ def getChecklist(request=None, checklist_id = None):
     if uid is not None:
         results = []
         page = request.args.get("page", None) or 1
-        results_per_page = request.args.get("results_per_page", None) or 50
+        results_per_page = request.args.get("results_per_page", 50)
         offset=(int(page)-1)*int(results_per_page)
-        checklists = db.session.query(Checklist).filter(Checklist.created_by == uid,Checklist.deleted == False)\
+        group_id = request.args.get("group_id", None)
+        checklists = db.session.query(Checklist).join(ChecklistGroup).filter(
+            Checklist.created_by == uid,
+            ChecklistGroup.group_id == group_id,
+            Checklist.deleted == False)\
         .order_by(Checklist.created_at.desc()).limit(results_per_page).offset(offset).all()
         for checklist in checklists:
             checklist_append = to_dict(checklist)
