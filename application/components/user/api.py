@@ -8,7 +8,7 @@ from application.extensions import apimanager
 # from application.models.model import  Employee
 from application.components.user.model import User, Role
 from application.components.group.model import Group,GroupsUsers
-
+import json as use_json
 from application.components import auth_func
 from sqlalchemy import and_, or_
 from gatco_restapi.helpers import to_dict
@@ -182,9 +182,41 @@ async def get_current_user(request):
             "error_message": "USER_NOT_FOUND"
         }, status=520)
 
-    # print("===============", user_info)
-    # if user_info is not None:
+def post_search_user(request=None, result=None, search_params=None, Model=None, headers=None):
+    # print("post_search_user search_param====================",search_params)
+    # search_params = use_json(search_params)
+    group_id = search_params['filters']['$group_id']
+    # print('group_id',group_id)
+    # print('result',result)
+    response = []
+    for user in result['objects']:
+        # print(user)
+        is_member = False
+        user_id_match = db.session.query(GroupsUsers.id).filter(
+        GroupsUsers.group_id == group_id,
+        GroupsUsers.user_id == user['id']
+        ).first()
+        if user_id_match is None:
+            is_member =  False
+        else:
+            is_member =  True
 
+        user['is_member'] = is_member
+        user['display_name_server'] = user['display_name']
+        user['id'] = str(user['id'])
+        # print(contact)
+        response.append(user)
+    # return response
+    # print(result)
+    # print(response)
+
+apimanager.create_api(collection_name='search_user', model=User,
+                      methods=['GET', 'POST', 'DELETE', 'PUT'],
+                      url_prefix='/api/v1',
+                      preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
+                      postprocess=dict(POST=[], PUT_SINGLE=[],DELETE_SINGLE=[], GET_MANY=[post_search_user]),
+                      exclude_columns = ['password','salt']
+                      )
 apimanager.create_api(collection_name='user', model=User,
                       methods=['GET', 'POST', 'DELETE', 'PUT'],
                       url_prefix='/api/v1',
@@ -243,7 +275,6 @@ def checkUserIsMember(user,group):
     else:
         return True
     # is_relation_exist = db.session.query(literal(True)).filter(check_follower.exists()).scalar()
-
 
 def convertListContact(list_contact):
     result = []
