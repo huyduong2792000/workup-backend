@@ -36,7 +36,7 @@ def no_accent_vietnamese(s):
     return s
 
 
-@app.route('/api/v1/taskinfo', methods=["POST"])
+@app.route('/api/v1/task_info', methods=["POST"])
 def postTaskInfo(request=None, data=None, Model=None):
     uid = auth.current_user(request)
     if uid is not None:
@@ -70,15 +70,14 @@ def createTaskInfo(task_info,uid):
     setattr(new_task_info, "assignee_id", assignee.get('id',None))
     #set group
     # print('sdfddddddddd',isinstance(getattr(new_group,"check_lists"), (float, int, str, )))
-    if group.get("id",None) is not  None:
+    if group.get("id",None) is not None:
         setattr(new_task_info, "group_id", group.get("id",None))
         # CHECK EXISTS
         # print('CHECK EXISTS')
-        # role_id = db.session.query(Role.id).filter(Role.role_name == "member").first()
-        # print(role_id)
         check_member = db.session.query(GroupsUsers).filter(GroupsUsers.user_id == assignee.get('id'),\
                 GroupsUsers.group_id == group.get("id")).first()
         if check_member is None:
+            #SET ASSIGNEE TO ADMIN OF GROUP
             new_relation_member = GroupsUsers(
                 group_id = group.get('id'),
                 user_id = assignee.get('id'),
@@ -137,19 +136,119 @@ def validUserUpdate(user):
         if hasattr(User,key) and not isinstance(user[key], (dict, list )):
             result[key] = user[key]
     return result
-def putProcess(request=None, instance_id=None, data=None, Model=None):
-    followers = []
-    for follower in data.get('followers',[]):
-        followers.append(validUserUpdate(follower))
-    data['followers'] = followers
-    data['assignee'] = validUserUpdate(data['assignee'])
 
-    data['unsigned_name'] = no_accent_vietnamese(data['task_info_name'])
+@app.route('/api/v1/task_info/<task_info_id>', methods=["PUT"])
+def put_task_info(request,task_info_id):
+    uid = auth.current_user(request)
+    if uid is not None:
+        task_info = request.json
+        task_info['unsigned_name'] = no_accent_vietnamese(task_info['task_info_name'])
+        task_info['created_by'] = uid
+        assignee = task_info.get('assignee',{})
+        group = task_info.get('group',{})
+        checklist = task_info.get('checklist',{})
+        
+        task_info_update = db.session.query(TaskInfo).filter(TaskInfo.id == task_info_id, TaskInfo.deleted == False).first()
+        for key in task_info.keys():
+                if hasattr(task_info_update,key) and not isinstance(task_info[key], (dict, list )):
+                    setattr(task_info_update, key, task_info[key])
+
+        #set ssignee
+        setattr(task_info_update, "assignee_id", assignee.get('id',None))
+        #set group
+        # print('sdfddddddddd',isinstance(getattr(new_group,"check_lists"), (float, int, str, )))
+        if group.get("id",None) is not None:
+            setattr(task_info_update, "group_id", group.get("id",None))
+            # CHECK EXISTS
+            # print('CHECK EXISTS')
+            check_member = db.session.query(GroupsUsers).filter(GroupsUsers.user_id == assignee.get('id'),\
+                    GroupsUsers.group_id == group.get("id")).first()
+            if check_member is None:
+                #SET ASSIGNEE BECOME ADMIN OF GROUP
+                new_relation_member = GroupsUsers(
+                    group_id = group.get('id'),
+                    user_id = assignee.get('id'),
+                    role_id = db.session.query(Role.id).filter(Role.role_name == "member").first()
+                )
+                db.session.add(new_relation_member)
+
+        elif group.get('id',None) is None and group.get('group_name') is not None and group.get('group_name') != '':
+            new_group = Group()
+            for key in group.keys():
+                if hasattr(new_group,key) and not isinstance(group[key], (dict, list )):
+                    setattr(new_group, key, group[key])
+
+            assignee = db.session.query(User).filter(User.id == assignee.get('id',None)).first()
+            setattr(new_group, "assignee_id", assignee.id)
+
+            # parent_id = db.session.query(Group.id).join(ChecklistGroup).filter(
+            #     ChecklistGroup.checklist_id == task_info.get('checklist_id',None),
+            #     Group.parent_id == None
+            # ).first()
+            # setattr(new_group, "parent_id", parent_id)
+            db.session.add(new_group)
+            db.session.flush()
+            setattr(task_info_update, "group_id", new_group.id)
+            # setattr(task_info_update, "group", new_group)
+            #set admin for new_group
+            new_relation = GroupsUsers(
+                group_id = new_group.id,
+                user_id = assignee.id,
+                role_id = db.session.query(Role.id).filter(Role.role_name == "admin").first()
+            )
+            db.session.add(new_relation)
+            db.session.flush()
+            # db.session.add(task_info_update)
+            # db.session.flush()
+        else:
+            pass
+        db.session.add(task_info_update)
+        db.session.flush()
+
+        #set followers
+        for follower in task_info.get('followers',[]):
+            new_follower_task_info = FollowerTaskInfo()
+            new_follower_task_info.user_id = follower.get('id',None)
+            new_follower_task_info.task_info_id = task_info_update.id
+            new_follower_task_info.note = task_info.get('Note',None)
+            db.session.add(new_follower_task_info)
+        db.session.commit()
+
+        # print(task_info_update.__dict__)
+    # return task_info_update
+        return json(to_dict(task_info_update),status=201)
+
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+
+@app.route('/api/v1/task_info/<task_info_id>', methods=["GET"])
+def get_task_info(request, task_info_id):
+    uid = auth.current_user(request)
+    if uid is not None:
+        task_info = db.session.query(TaskInfo).filter(TaskInfo.id == task_info_id, TaskInfo.deleted == False).first()
+        return json(to_dict(task_info),status=200)
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+
+# def putProcess(request=None, instance_id=None, data=None, Model=None):
+#     followers = []
+#     for follower in data.get('followers',[]):
+#         followers.append(validUserUpdate(follower))
+#     data['followers'] = followers
+#     data['assignee'] = validUserUpdate(data['assignee'])
+
+#     data['unsigned_name'] = no_accent_vietnamese(data['task_info_name'])
 
 
-apimanager.create_api(collection_name='task_info', model=TaskInfo,
-    methods=['GET', 'DELETE', 'PUT'],
-    url_prefix='/api/v1',
-    preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], PUT_SINGLE=[auth_func,putProcess], DELETE_SINGLE=[auth_func]),
-    )
+# apimanager.create_api(collection_name='task_info', model=TaskInfo,
+#     methods=['GET', 'DELETE', 'PUT'],
+#     url_prefix='/api/v1',
+#     preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], PUT_SINGLE=[auth_func,putProcess], DELETE_SINGLE=[auth_func]),
+#     )
 
