@@ -13,7 +13,7 @@ from application.server import app
 from datetime import datetime
 from sqlalchemy import and_, or_,func,literal,update
 import re
-import json as to_json
+import json as ujson
 from gatco_restapi.helpers import to_dict
 
 def no_accent_vietnamese(s):
@@ -123,6 +123,39 @@ def putGroup(request=None, group_id=None):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
 
+def format_list_group(list_groups,uid):
+    result = []
+    id_role_admin = db.session.query(Role.id).filter(Role.role_name == 'admin')
+    for group in list_groups:
+        group_append = {}
+        group_append = {'id':str(group[0]),'group_name':group[1],'description':group[2]} 
+        role_member = db.session.query(Role).filter(Role.role_name == "member").first()
+        total_members = db.session.query(func.count(GroupsUsers.user_id)).filter(GroupsUsers.group_id==group[0],GroupsUsers.role_id == role_member.id).scalar()
+        group_append['total_members'] = total_members
+
+        check_current_user_is_member = db.session.query(func.count(GroupsUsers.user_id))\
+        .filter(GroupsUsers.group_id == group[0],GroupsUsers.user_id == uid,GroupsUsers.role_id != id_role_admin).scalar()
+        group_append['check_current_user_is_member'] = check_current_user_is_member
+
+        first_five_members = db.session.query(User.id,User.phone,User.email,User.display_name).join(GroupsUsers)\
+        .filter(GroupsUsers.group_id == group[0],GroupsUsers.role_id != id_role_admin).order_by(GroupsUsers.created_at.desc()).limit(5).all()
+        group_append['first_five_members'] = [{'id':str(member[0]),'phone':member[1],'email':member[2],'display_name':member[3]} for member in first_five_members]
+        
+
+        total_admins = db.session.query(func.count(GroupsUsers.user_id)).filter(GroupsUsers.group_id==group[0],GroupsUsers.role_id == id_role_admin).scalar()
+        group_append['total_admins'] = total_admins
+
+        check_current_user_is_admin = db.session.query(func.count(GroupsUsers.user_id))\
+        .filter(GroupsUsers.group_id == group[0],GroupsUsers.user_id == uid,GroupsUsers.role_id == id_role_admin).scalar()
+        group_append['check_current_user_is_admin'] = check_current_user_is_admin
+
+        first_five_admins = db.session.query(User.id,User.phone,User.email,User.display_name).join(GroupsUsers)\
+        .filter(GroupsUsers.group_id == group[0],GroupsUsers.role_id == id_role_admin).order_by(GroupsUsers.created_at.desc()).limit(5).all()
+        group_append['first_five_admins'] = [{'id':str(member[0]),'phone':member[1],'email':member[2],'display_name':member[3]} for member in first_five_admins]
+
+        result.append(group_append)
+    return result
+
 @app.route('/api/v1/group', methods=["GET"])
 def getGroup(request=None):
     uid = auth.current_user(request)
@@ -130,43 +163,42 @@ def getGroup(request=None):
         page = request.args.get("page", None) or 1
         results_per_page = request.args.get("results_per_page", None) or 50
         offset=(int(page)-1)*int(results_per_page)
-
         list_groups = db.session.query(Group.id,Group.group_name,Group.description)\
         .join(GroupsUsers)\
         .filter(GroupsUsers.user_id == uid,Group.deleted == False)\
         .order_by(GroupsUsers.created_at.desc()).limit(results_per_page).offset(offset).all()
-        # list_groups = db.session.query(Group.id,Group.group_name,Group.description).filter(Group.members.any(User.id == uid),Group.deleted == False).order_by(Group.created_at.desc()).limit(results_per_page).offset(offset).all()
-        # print(list_groups)
-        result = []
-        id_role_admin = db.session.query(Role.id).filter(Role.role_name == 'admin')
-        for group in list_groups:
-            group_append = {}
-            group_append = {'id':str(group[0]),'group_name':group[1],'description':group[2]} 
-            role_member = db.session.query(Role).filter(Role.role_name == "member").first()
-            total_members = db.session.query(func.count(GroupsUsers.user_id)).filter(GroupsUsers.group_id==group[0],GroupsUsers.role_id == role_member.id).scalar()
-            group_append['total_members'] = total_members
 
-            check_current_user_is_member = db.session.query(func.count(GroupsUsers.user_id))\
-            .filter(GroupsUsers.group_id == group[0],GroupsUsers.user_id == uid,GroupsUsers.role_id != id_role_admin).scalar()
-            group_append['check_current_user_is_member'] = check_current_user_is_member
+        result = format_list_group(list_groups,uid)
 
-            first_five_members = db.session.query(User.id,User.phone,User.email,User.display_name).join(GroupsUsers)\
-            .filter(GroupsUsers.group_id == group[0],GroupsUsers.role_id != id_role_admin).order_by(GroupsUsers.created_at.desc()).limit(5).all()
-            group_append['first_five_members'] = [{'id':str(member[0]),'phone':member[1],'email':member[2],'display_name':member[3]} for member in first_five_members]
-            
+        return json({"num_results":len(result),"objects":result,"page":page})
 
-            total_admins = db.session.query(func.count(GroupsUsers.user_id)).filter(GroupsUsers.group_id==group[0],GroupsUsers.role_id == id_role_admin).scalar()
-            group_append['total_admins'] = total_admins
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
 
-            check_current_user_is_admin = db.session.query(func.count(GroupsUsers.user_id))\
-            .filter(GroupsUsers.group_id == group[0],GroupsUsers.user_id == uid,GroupsUsers.role_id == id_role_admin).scalar()
-            group_append['check_current_user_is_admin'] = check_current_user_is_admin
+@app.route('/api/v1/filter_group_by_group_name', methods=["GET"])
+def getGroup(request=None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        page = request.args.get("page", None) or 1
+        results_per_page = request.args.get("results_per_page", 50)
+        offset=(int(page)-1)*int(results_per_page)
+        filters = ujson.loads(request.args.get("q")).get("filters",{}).get("$or",[])
+        search_args = []
+        if(len(filters) != 0):
+            for filter in filters:
+                for key, value in filter.items():
+                    search_args.append(
+                        getattr(Group, key).ilike('%%%s%%' % value.get("$like"))
+                    )
+        list_groups = db.session.query(Group.id,Group.group_name,Group.description)\
+        .filter(Group.deleted == False, Group.parent_id == None, or_(*search_args))\
+        .limit(results_per_page).offset(offset).all()
 
-            first_five_admins = db.session.query(User.id,User.phone,User.email,User.display_name).join(GroupsUsers)\
-            .filter(GroupsUsers.group_id == group[0],GroupsUsers.role_id == id_role_admin).order_by(GroupsUsers.created_at.desc()).limit(5).all()
-            group_append['first_five_admins'] = [{'id':str(member[0]),'phone':member[1],'email':member[2],'display_name':member[3]} for member in first_five_admins]
+        result = format_list_group(list_groups,uid)
 
-            result.append(group_append)
         return json({"num_results":len(result),"objects":result,"page":page})
 
     else:
@@ -416,6 +448,7 @@ apimanager.create_api(collection_name='filter_group', model=Group,
     url_prefix='/api/v1',
     preprocess=dict(GET_SINGLE=[auth_func], GET_MANY=[auth_func], POST=[auth_func,], PUT_SINGLE=[auth_func], DELETE_SINGLE=[auth_func]),
     postprocess=dict(POST=[auth_func], PUT_SINGLE=[], DELETE_SINGLE=[], GET_MANY =[]),
+    exclude_columns = ['members','checklists','tasks_info']
     )
 
 apimanager.create_api(collection_name='groups_users', model=GroupsUsers,
