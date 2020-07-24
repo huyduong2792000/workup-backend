@@ -77,7 +77,7 @@ def createTaskInfo(task_info,uid):
         check_member = db.session.query(GroupsUsers).filter(GroupsUsers.user_id == assignee.get('id'),\
                 GroupsUsers.group_id == group.get("id")).first()
         if check_member is None:
-            #SET ASSIGNEE TO ADMIN OF GROUP
+            #SET ASSIGNEE TO MEMBER OF GROUP
             new_relation_member = GroupsUsers(
                 group_id = group.get('id'),
                 user_id = assignee.get('id'),
@@ -102,8 +102,7 @@ def createTaskInfo(task_info,uid):
         db.session.add(new_group)
         db.session.flush()
         setattr(new_task_info, "group_id", new_group.id)
-        # setattr(new_task_info, "group", new_group)
-        #set admin for new_group
+        #ASSIGNE BECOMT ADMIN OF NEW GROUP
         new_relation = GroupsUsers(
             group_id = new_group.id,
             user_id = assignee.id,
@@ -156,15 +155,13 @@ def put_task_info(request,task_info_id):
         #set ssignee
         setattr(task_info_update, "assignee_id", assignee.get('id',None))
         #set group
-        # print('sdfddddddddd',isinstance(getattr(new_group,"check_lists"), (float, int, str, )))
         if group.get("id",None) is not None:
             setattr(task_info_update, "group_id", group.get("id",None))
             # CHECK EXISTS
-            # print('CHECK EXISTS')
             check_member = db.session.query(GroupsUsers).filter(GroupsUsers.user_id == assignee.get('id'),\
                     GroupsUsers.group_id == group.get("id")).first()
             if check_member is None:
-                #SET ASSIGNEE BECOME ADMIN OF GROUP
+                #SET ASSIGNEE BECOME MEMBER OF GROUP
                 new_relation_member = GroupsUsers(
                     group_id = group.get('id'),
                     user_id = assignee.get('id'),
@@ -180,12 +177,6 @@ def put_task_info(request,task_info_id):
 
             assignee = db.session.query(User).filter(User.id == assignee.get('id',None)).first()
             setattr(new_group, "assignee_id", assignee.id)
-
-            # parent_id = db.session.query(Group.id).join(ChecklistGroup).filter(
-            #     ChecklistGroup.checklist_id == task_info.get('checklist_id',None),
-            #     Group.parent_id == None
-            # ).first()
-            # setattr(new_group, "parent_id", parent_id)
             db.session.add(new_group)
             db.session.flush()
             setattr(task_info_update, "group_id", new_group.id)

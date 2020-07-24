@@ -266,7 +266,7 @@ def getMember(request = None, group_id = None):
         offset=(int(page)-1)*int(results_per_page)
         members = []
         group = db.session.query(Group).filter(Group.id == group_id).first()
-        print(group.parent_id)
+        # print(group.parent_id)
         if group.parent_id is not None:
             members = db.session.query(GroupsUsers).filter(GroupsUsers.group_id == group_id)\
             .order_by(GroupsUsers.updated_at.desc()).limit(results_per_page).offset(offset).all()
@@ -275,9 +275,11 @@ def getMember(request = None, group_id = None):
             .distinct(GroupsUsers.user_id).limit(results_per_page).offset(offset).all()
         # print(members)
         response = []
+        # print(members)
         for member in members:
 
             # member
+            print(member.user, member.role_id)
             member_add = to_dict(member.user)
             member_add['role_id'] = str(member.role_id)
             member_add['role_name'] = member.role.role_name
@@ -376,6 +378,39 @@ def createUser(member):
         password = user_password, 
         salt = user_salt)
     return new_user
+
+
+@app.route('/api/v1/add_member', methods=["POST"])
+async def addMembers(request = None, group_id = None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        data = request.json
+        phone = data.get("phone")
+        group_id = data.get("group_id")
+        user_id = db.session.query(User.id).filter(User.phone == phone, User.is_active == True).first()
+        if user_id is not None:
+            id_role_member = db.session.query(Role.id).filter(Role.role_name == "member").first()
+            check_is_member = db.session.query(GroupsUsers.id).filter(GroupsUsers.user_id == user_id, GroupsUsers.group_id == group_id).first()
+            if check_is_member is None:
+                new_relation = GroupsUsers(
+                    user_id = user_id,
+                    group_id = group_id,
+                    role_id = id_role_member
+                )
+                db.session.add(new_relation)
+                db.session.commit()
+                return json({},status=201)
+        else:
+            return json({
+            "error_message":"Không tìm được số điện thoại này"
+        }, status = 520)
+
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+
 apimanager.create_api(collection_name='filter_group', model=Group,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
     url_prefix='/api/v1',
