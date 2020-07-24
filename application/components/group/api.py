@@ -125,7 +125,7 @@ def putGroup(request=None, group_id=None):
 
 def format_list_group(list_groups,uid):
     result = []
-    id_role_admin = db.session.query(Role.id).filter(Role.role_name == 'admin')
+    id_role_admin = db.session.query(Role.id).filter(Role.role_name == 'admin').first()
     for group in list_groups:
         group_append = {}
         group_append = {'id':str(group[0]),'group_name':group[1],'description':group[2]} 
@@ -443,6 +443,48 @@ async def addMembers(request = None, group_id = None):
             "error_message":"USER_NOT_FOUND"
         }, status = 520)
 
+@app.route('/api/v1/join_to_group', methods=["POST"])
+def join_to_group(request = None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        data = request.json
+        group_id = data.get('group_id')
+        user_id = data.get('user_id')
+        check_is_member = db.session.query(GroupsUsers.id).filter(GroupsUsers.group_id == group_id, GroupsUsers.user_id == user_id).first()
+        if check_is_member is None:
+            id_role_member = db.session.query(Role.id).filter(Role.role_name == 'member').first()
+            new_relation = GroupsUsers(
+                user_id = user_id,
+                group_id = group_id,
+                role_id = id_role_member
+            )
+            db.session.add(new_relation)
+            db.session.commit()
+        return json({"ok":True})
+
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
+@app.route('/api/v1/leave_to_group', methods=["POST"])
+def join_to_group(request = None):
+    uid = auth.current_user(request)
+    if uid is not None:
+        data = request.json
+        group_id = data.get('group_id')
+        user_id = data.get('user_id')
+        relation = db.session.query(GroupsUsers).filter(GroupsUsers.group_id == group_id, GroupsUsers.user_id == user_id).first()
+        if relation is not None:
+            db.session.delete(relation)
+            db.session.commit()
+        return json({"ok":True})
+
+    else:
+        return json({
+            "error_code": "USER_NOT_FOUND",
+            "error_message":"USER_NOT_FOUND"
+        }, status = 520)
 apimanager.create_api(collection_name='filter_group', model=Group,
     methods=['GET', 'POST', 'DELETE', 'PUT'],
     url_prefix='/api/v1',
