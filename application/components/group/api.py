@@ -460,8 +460,12 @@ def join_to_group(request = None):
             )
             db.session.add(new_relation)
             db.session.commit()
-        return json({"ok":True})
-
+            group_after_join = db.session.query(Group.id,Group.group_name,Group.description)\
+            .filter(Group.id == group_id, Group.deleted == False).first()
+            group_after_join = format_list_group([group_after_join],uid)
+            return json(group_after_join[0], status = 201)
+        else:
+            return json({}, status = 500)
     else:
         return json({
             "error_code": "USER_NOT_FOUND",
@@ -478,7 +482,12 @@ def join_to_group(request = None):
         if relation is not None:
             db.session.delete(relation)
             db.session.commit()
-        return json({"ok":True})
+            group_after_leave = db.session.query(Group.id,Group.group_name,Group.description)\
+            .filter(Group.id == group_id, Group.deleted == False).first()
+            group_after_leave = format_list_group([group_after_leave],uid)
+            return json(group_after_leave[0], status = 201)
+        else:
+            return json({}, status = 500)
 
     else:
         return json({
